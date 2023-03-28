@@ -4,6 +4,10 @@ block content
     h1 Register
 
     form(action='' method='POST')
+        label First Name
+            input(type='text' name='firstName')
+        label Last Name 
+            input(type='text' name='lastName')
         label Username 
             input(type='text' name='username')
         label Password  
@@ -13,4 +17,4 @@ block content
 
         button Register
 
-    a(href='/login') Cancel?
+    a(href='/login') Cancel

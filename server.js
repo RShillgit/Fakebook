@@ -36,7 +36,7 @@ app.set('view engine', 'pug');
 app.use(session({
   resave: false,
   saveUninitialized: true,
-  secret: 'SECRET' // TODO .env secret
+  secret: process.env.session_secret
 }));
 
 /**

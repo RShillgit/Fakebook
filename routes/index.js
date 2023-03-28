@@ -4,6 +4,8 @@ const passport = require('passport');
 const User = require('../models/user');
 const { genPassword } = require('../utils/passwordUtils');
 
+// TODO: CHANGE SUCCESSREDIRECT & FAILUREREDIRECT TO JSON MESSAGES FOR THE FRONT END
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -38,10 +40,10 @@ router.post('/register', (req, res, next) => {
       // Create user with salt and hash
       const newUser = new User({
           username: req.body.username,
+          name: `${req.body.firstName} ${req.body.lastName}`,
           hash: hash,
           salt: salt,
       })
-      console.log(newUser)
       newUser.save()
         .then(result => res.json(result))
         .catch(err => res.json(err))
@@ -62,7 +64,6 @@ router.post('/login', passport.authenticate('local', {
 
 // GET FACEBOOK LOKIN
 router.get('/auth/facebook', passport.authenticate('facebook' , { scope : ['email'] } ) );
-
 // AUTHENITCATE FACEBOOK LOGIN
 router.get("/auth/facebook/callback",passport.authenticate("facebook", {
   successRedirect: "/profile",
