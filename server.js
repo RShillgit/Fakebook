@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
+const session = require('express-session');
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -28,6 +29,27 @@ mongoose.connect(mongoDBURL, mongoDBOptions)
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+/**
+ * ----------------- SESSION -----------------
+ */
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'SECRET'
+}));
+
+/**
+ * ----------- PASSPORT AUTHENTICATION ----------
+ */
+const passport = require('passport'); 
+require('./config/passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+/**
+ * -----------------------------------------------
+ */
 
 app.use(logger('dev'));
 app.use(express.json());
