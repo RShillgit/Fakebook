@@ -6,16 +6,19 @@ const { genPassword } = require('../utils/passwordUtils');
 
 // TODO: CHANGE SUCCESSREDIRECT & FAILUREREDIRECT TO JSON MESSAGES FOR THE FRONT END
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+/*
+* ------------------ HOME ------------------ 
+*/
+router.get('/', isLoggedIn, (req, res, next) => {
   res.render('index', { title: 'Express' });
 });
 
-// GET REGISTER
+/*
+* ------------------ REGISTER ------------------ 
+*/
 router.get('/register', (req, res, next) => {
   res.render('register');
 })
-// POST REGISTER
 router.post('/register', (req, res, next) => {
 
   // Check if passwords match
@@ -52,34 +55,44 @@ router.post('/register', (req, res, next) => {
     .catch(err => res.json(err))
 })
 
-// GET LOGIN
+/*
+* ------------------ LOGIN ------------------ 
+*/
 router.get('/login', (req, res, next) => {
   res.render('login')
 })
-// POST LOGIN
 router.post('/login', passport.authenticate('local', {
   failureRedirect: '/login',
   successRedirect: '/profile'
 }))
 
-// GET FACEBOOK LOKIN
+/*
+* ------------------ FACEBOOK ------------------ 
+*/
 router.get('/auth/facebook', passport.authenticate('facebook' , { scope : ['email'] } ) );
-// AUTHENITCATE FACEBOOK LOGIN
 router.get("/auth/facebook/callback",passport.authenticate("facebook", {
   successRedirect: "/profile",
   failureRedirect: "/error",
   })
 );
 
+/*
+* ------------------ PROFILE ------------------ 
+*/
 router.get('/profile', isLoggedIn, (req,res) => {
   res.json(req.user);
 });
- 
+
+/*
+* ------------------ ERROR ------------------ 
+*/
 router.get('/error', isLoggedIn, (req,res) => {
   res.send("Error");
 });
 
-// LOGOUT
+/*
+* ------------------ LOGOUT ------------------ 
+*/
 router.get('/logout', (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
@@ -87,7 +100,7 @@ router.get('/logout', (req, res, next) => {
   });
 })
 
-// Checks if user is logged in
+// Function to check if user is logged in
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated())
     return next();
