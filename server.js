@@ -9,6 +9,7 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
+const profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -59,7 +60,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/posts', postsRouter);
+app.use('/posts', isLoggedIn, postsRouter);
+app.use('/profile', isLoggedIn, profileRouter);
+
+// Function to check if user is logged in
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/login');
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

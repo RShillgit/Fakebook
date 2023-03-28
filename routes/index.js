@@ -77,13 +77,6 @@ router.get("/auth/facebook/callback",passport.authenticate("facebook", {
 );
 
 /*
-* ------------------ PROFILE ------------------ 
-*/
-router.get('/profile', isLoggedIn, (req,res) => {
-  res.json(req.user);
-});
-
-/*
 * ------------------ ERROR ------------------ 
 */
 router.get('/error', isLoggedIn, (req,res) => {
