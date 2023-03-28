@@ -10,7 +10,10 @@ const UserSchema = new Schema({
     */
    fbID: {type: String},
    name: {type: String},
-   email: {type: String}
+   email: {type: String},
+   username: {type: String, maxLength: 50},
+   hash: {type: String},
+   salt: {type: String},
    // friends : [{}],
    // posts" [{}],
 })

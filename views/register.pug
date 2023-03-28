@@ -1,15 +1,16 @@
 extends layout
 
 block content
-    h1 Login Page
+    h1 Register
 
     form(action='' method='POST')
         label Username 
             input(type='text' name='username')
         label Password  
             input(type='password' name='password')
-        button login
+        label Confirm Password  
+            input(type='password' name='confirmPassword')
 
-    a(href='register') Dont Have An Account?
-    br
-    a(href='/auth/facebook') Sign In With Facebook
+        button Register
+
+    a(href='/login') Cancel?
