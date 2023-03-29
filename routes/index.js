@@ -4,8 +4,6 @@ const passport = require('passport');
 const User = require('../models/user');
 const { genPassword } = require('../utils/passwordUtils');
 
-// TODO: CHANGE SUCCESSREDIRECT & FAILUREREDIRECT TO JSON MESSAGES FOR THE FRONT END
-
 /*
 * ------------------ HOME ------------------ 
 */
@@ -61,10 +59,21 @@ router.post('/register', (req, res, next) => {
 router.get('/login', (req, res, next) => {
   res.render('login')
 })
-router.post('/login', passport.authenticate('local', {
-  failureRedirect: '/login',
-  successRedirect: '/profile'
-}))
+
+router.post('/login', passport.authenticate('local', 
+  {
+    failWithError: true,
+    passReqToCallback: true
+  }), 
+  (req, res) => {
+    return res.status(200).json({auth: req.isAuthenticated()});
+  },
+  (err, req, res, next) => {
+    return res.status(401).json({
+      auth: req.isAuthenticated(),
+    });
+  }
+)
 
 /*
 * ------------------ FACEBOOK ------------------ 
@@ -97,7 +106,8 @@ router.get('/logout', (req, res, next) => {
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated())
     return next();
-  res.redirect('/login');
+  res.status(401).json('Not Logged In')
+  //res.redirect('/login');
 }
 
 module.exports = router;

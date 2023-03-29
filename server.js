@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const cors = require('cors');
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -55,6 +56,7 @@ app.use(passport.session());
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

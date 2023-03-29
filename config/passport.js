@@ -26,33 +26,6 @@ passport.use(new LocalStrategy(function (username, password, done) {
         }) 
 }))
 
-/*
-const verifyCallback = (username, password, done) => {
-
-    User.findOne({ username: username }, (err, user) => {
-     
-        if (err) { 
-            return done(err);
-        }
-        if (user === null) {
-            return done(null);
-        }
-
-        const isValid = validatePassword(password, user.hash, user.salt);
-
-        if (isValid) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-        }
-    });
-}
-
-const strategy = new LocalStrategy(verifyCallback);
-
-passport.use(strategy);
-*/
-
 // Serialize
 passport.serializeUser((user, done) => {
     done(null, user.id);
