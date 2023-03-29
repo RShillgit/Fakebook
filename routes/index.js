@@ -78,6 +78,7 @@ router.post('/login', passport.authenticate('local',
 )
 */
 
+// JWT Login
 router.post('/login', (req, res, next) => {
     // Look for user in DB
     User.findOne({ username: req.body.username })
@@ -104,33 +105,6 @@ router.post('/login', (req, res, next) => {
       }
     })
 })
-
-// TODO: Attempting to create jwt authentication
-router.get('/test',
-  async (req, res, next) => {
-    req.headers.authorization = req.cookies.token;
-    /*
-    try {
-      const token = jwtUtils.jwtVerify(req.cookies.token)
-      console.log(token.sub)
-
-    }
-    catch (error) {
-      console.log(error)
-    }
-    */
-    next();
-  }, 
-  passport.authenticate('jwt', {session: false}), 
-  (req, res) => {
-    return res.status(200).json({auth: req.isAuthenticated()});
-  },
-  (err, req, res, next) => {
-    return res.status(401).json({
-      auth: req.isAuthenticated(),
-    });
-  }
-)
 
 /*
 * ------------------ FACEBOOK ------------------ 

@@ -61,19 +61,41 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// TODO: JWT authorization middleware
+const jwtAuth = [
+  
+  (req, res, next) => {
+
+    // If there is a token
+    if(req.cookies.token) {
+      // Set auth header to token
+      req.headers.authorization = req.cookies.token;
+      next();
+    }
+    // If there is not a token
+    else {
+      res.status(401).json({auth: req.isAuthenticated()});
+    }
+  },
+  passport.authenticate('jwt', {session: false}), 
+  (req, res) => {
+    return res.status(200).json({auth: req.isAuthenticated()});
+  }
+]
+
 app.use('/', indexRouter);
-app.use('/posts', isLoggedIn, postsRouter);
-app.use('/profile', isLoggedIn, profileRouter);
+app.use('/posts', jwtAuth, postsRouter);
+app.use('/profile', jwtAuth, profileRouter);
 
 // Function to check if user is logged in
+// REPLACED BY JWTAUTH
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
   res.status(401).json('Not Authorized')
 }
-
-// TODO: Create JWT authorization middleware instead of isLoggedIn
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

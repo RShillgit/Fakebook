@@ -4,6 +4,7 @@ const Login = (props) => {
 
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e) => {
         if (e.target.name === 'username') setUsername(e.target.value)
@@ -23,7 +24,24 @@ const Login = (props) => {
             mode: 'cors'
         })
         .then((res) => res.json())
-        .then((data) => {console.log(data)})
+        .then((data) => {
+
+            // If login credentials were incorrect render error message
+            if (data.success === false) {
+                setErrorMessage(
+                    <div className="errorMessage">
+                        <p>{data.error_message}</p>
+                    </div>
+                )
+            }
+            //If they were correct make token persistant somehow
+            //TODO
+            if (data.success === true) {
+                console.log(data.token)
+            }
+
+
+        })
     }
 
     return (
@@ -39,6 +57,8 @@ const Login = (props) => {
                 </label>
                 <button>Login</button>
             </form>
+
+            {errorMessage}
         </div>
     )
 
