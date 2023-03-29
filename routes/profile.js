@@ -2,34 +2,61 @@ var express = require('express');
 var router = express.Router();
 
 /*
-* ------------------ PROFILE HOME ------------------ 
+* ------------------ /profile redirects to user's profile page ------------------ 
 */
-router.get('/', (req,res) => {
-    res.json(req.user);
+router.get('/', (req, res, next) => {
+    res.redirect(`/profile/${req.user._id}`)
 });
-router.post('/', (req,res) => {
-    res.send('Post Request on Profile');
+router.post('/', (req, res, next) => {
+    res.redirect(`/profile/${req.user._id}`)
 });
-router.put('/', (req,res) => {
-    res.send('Update Profile Info');
+router.put('/', (req, res, next) => {
+    res.redirect(`/profile/${req.user._id}`)
 });
-router.delete('/', (req,res) => {
-    res.send('Delete Profile');
+router.delete('/', (req, res, next) => {
+    res.redirect(`/profile/${req.user._id}`)
 });
 
 /*
 * ------------------ /profile/:id ------------------ 
 */
-router.get('/:id', (req,res) => {
+// Get Profile Page
+router.get('/:id', (req, res, next) => {
+    if (req.user._id.toString() === req.params.id) {
+        return res.json(req.user)
+    }
     res.send(`User ${req.params.id}'s Profile`);
 });
+// TODO POST
+router.post('/:id', (req, res, next) => {
+    res.send(`POST request on User ${req.params.id}`);
+});
+// Update Profile Info
+router.put('/:id', (req, res, next) => {
+    res.send(`Update Profile Info`);
+});
+// Delte Profile
+router.delete('/:id', (req, res, next) => {
+    res.send(`Delete User ${req.params.id}`);
+});
+
+/*
+* ------------------ /profile/:id/friends ------------------ 
+*/
+router.get('/:id/friends', (req, res, next) => {
+    res.send(`User ${req.params.id}'s Friends List`);
+});
 // Friend Request
-router.post('/:id', (req,res) => {
-    res.send(`Friend Request Sent To ${req.params.id}`);
+router.post('/:id/friends', (req, res, next) => {
+    res.send(`Friend Request Sent`);
+});
+// Accept Friend Request
+router.put('/:id/friends', (req, res, next) => {
+    res.send(`Accepted Friend Request`);
 });
 // Delte Friend
-router.delete('/:id', (req,res) => {
-    res.send(`Delete User ${req.params.id} From Friends List`);
+router.delete('/:id/friends', (req, res, next) => {
+    res.send(`Delete User From Friends List`);
 });
 
 module.exports = router;
