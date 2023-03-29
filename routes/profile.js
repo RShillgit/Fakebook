@@ -22,10 +22,13 @@ router.delete('/', (req, res, next) => {
 */
 // Get Profile Page
 router.get('/:id', (req, res, next) => {
+    /*
     if (req.user._id.toString() === req.params.id) {
         return res.json(req.user)
     }
-    res.send(`User ${req.params.id}'s Profile`);
+    res.json(`User ${req.params.id}'s Profile`);
+    */
+    res.json(req.user)
 });
 // TODO POST
 router.post('/:id', (req, res, next) => {

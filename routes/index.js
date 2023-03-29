@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
-const { genPassword } = require('../utils/passwordUtils');
+const { genPassword, validatePassword } = require('../utils/passwordUtils');
+const jwtUtils = require('../utils/jwtUtils');
 
 /*
 * ------------------ HOME ------------------ 
@@ -60,11 +61,67 @@ router.get('/login', (req, res, next) => {
   res.render('login')
 })
 
+/* LOCAL STRATEGY LOGIN
 router.post('/login', passport.authenticate('local', 
   {
     failWithError: true,
     passReqToCallback: true
   }), 
+  (req, res) => {
+    return res.status(200).json({auth: req.isAuthenticated()});
+  },
+  (err, req, res, next) => {
+    return res.status(401).json({
+      auth: req.isAuthenticated(),
+    });
+  }
+)
+*/
+
+router.post('/login', (req, res, next) => {
+    // Look for user in DB
+    User.findOne({ username: req.body.username })
+    .then((user) => {
+
+      // If no user send error
+      if (!user) {
+        return res.status(401).json({success: false, error_message: "Could not find user"});
+      }
+
+      // Check if password is valid
+      const isValid = validatePassword(req.body.password, user.hash, user.salt);
+
+      // If password is valid send success
+      if (isValid) {
+        const tokenObject = jwtUtils.issueJWT(user);
+
+        res.cookie('token', tokenObject.token); // Send token as cookie for the front end to use
+        return res.status(200).json({success: true, user: user, token: tokenObject.token, expiresIn: tokenObject.expires});
+      } 
+      // If password is invalid send error message
+      else {
+        return res.status(401).json({success: false, error_message: "Invalid Username/Password Combination"})
+      }
+    })
+})
+
+// TODO: Attempting to create jwt authentication
+router.get('/test',
+  async (req, res, next) => {
+    req.headers.authorization = req.cookies.token;
+    /*
+    try {
+      const token = jwtUtils.jwtVerify(req.cookies.token)
+      console.log(token.sub)
+
+    }
+    catch (error) {
+      console.log(error)
+    }
+    */
+    next();
+  }, 
+  passport.authenticate('jwt', {session: false}), 
   (req, res) => {
     return res.status(200).json({auth: req.isAuthenticated()});
   },
@@ -98,16 +155,17 @@ router.get('/error', isLoggedIn, (req,res) => {
 router.get('/logout', (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
+    res.clearCookie("token"); // Delete token from cookies
     res.redirect('/login');
   });
 })
 
 // Function to check if user is logged in
 function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated()) {
     return next();
-  res.status(401).json('Not Logged In')
-  //res.redirect('/login');
+  }
+  res.status(401).json('Unauthenticated')
 }
 
 module.exports = router;

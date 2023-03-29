@@ -25,9 +25,6 @@ const mongoDBOptions = {
 } 
 mongoose.connect(mongoDBURL, mongoDBOptions)
   .catch((err) => console.log(`Error Connecting: ${err}`))
-/**
- * -----------------------------
- */
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,9 +34,12 @@ app.set('view engine', 'pug');
  * ----------------- SESSION -----------------
  */
 app.use(session({
+  //secure: true, TODO: SET SECURE TO TRUE FOR DEVELOPMENT ENVIROMENT
   resave: false,
   saveUninitialized: true,
-  secret: process.env.session_secret
+  secret: process.env.session_secret, 
+  name: 'session',
+  expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
 }));
 
 /**
@@ -67,10 +67,13 @@ app.use('/profile', isLoggedIn, profileRouter);
 
 // Function to check if user is logged in
 function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated()) {
     return next();
-  res.redirect('/login');
+  }
+  res.status(401).json('Not Authorized')
 }
+
+// TODO: Create JWT authorization middleware instead of isLoggedIn
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,7 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Loading from './components/loading';
 import './styles/App.css';
 
 function App(props) {
+
+  const [auth, setAuth] = useState(null);
 
   useEffect(() => {
 
@@ -10,6 +13,18 @@ function App(props) {
       .then(data => console.log(data))
 
   }, [])
+
+
+  if (auth === null) {
+    return <Loading />
+  }
+  if (auth) {
+    return (
+      <div>
+        <h1>Authorized</h1>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
