@@ -4,12 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 
-const Profile = (props) => {
-
+const IndividualPost = (props) => {
+    
     const [cookie, setCookie] = useCookies(['token']);
     const [auth, setAuth] = useState(null);
     const [display, setDisplay] = useState();
-    const {profileId} = useParams();
+    const {postId} = useParams();
     const userId = useRef();
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const Profile = (props) => {
         (async () => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
-                const validToken = await props.checkToken(`${props.serverURL}/profile/${profileId}`, cookie.token);
+                const validToken = await props.checkToken(`${props.serverURL}/posts/${postId}`, cookie.token);
                 userId.current = validToken.userToken.sub;
                 setAuth(validToken.auth)
             }
@@ -40,7 +40,7 @@ const Profile = (props) => {
             setDisplay(
                 <div>
                     <Navbar userId={userId.current} serverURL={props.serverURL}/>
-                    <h1>Profile {profileId}</h1>
+                    <h1>Individual Post</h1>
                 </div>
             )
         }
@@ -49,11 +49,11 @@ const Profile = (props) => {
             navigate('/login')
         }
     }, [auth])
-
+    
     return(
         <div className="Page">
             {display}
         </div>
     )
 }
-export default Profile;
+export default IndividualPost;

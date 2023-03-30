@@ -11,6 +11,8 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const profileRouter = require('./routes/profile');
+const friendsRouter = require('./routes/friends');
+const jwtUtils = require('./utils/jwtUtils');
 
 var app = express();
 
@@ -61,41 +63,23 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// TODO: MAYBE MAKE THIS THE SAME AS THE ONE IN INDEX.JS?
+// JWT Authorization Middleware
 const jwtAuth = [
-  
-  (req, res, next) => {
-
-    // If there is a token
-    if(req.cookies.token) {
-      // Set auth header to token
-      req.headers.authorization = req.cookies.token;
-      next();
-    }
-    // If there is not a token
-    else {
-      res.status(401).json({auth: req.isAuthenticated()});
-    }
-  },
   passport.authenticate('jwt', {session: false}), 
   (req, res) => {
-    return res.status(200).json({auth: req.isAuthenticated()});
+    const token = req.headers.authorization;
+    const userToken = jwtUtils.jwtVerify(token);
+    return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
+  },
+  (err, req, res) => {
+    return res.status(401).json({err, auth: req.isAuthenticated()});
   }
 ]
 
 app.use('/', indexRouter);
 app.use('/posts', jwtAuth, postsRouter);
 app.use('/profile', jwtAuth, profileRouter);
-
-// Function to check if user is logged in
-// REPLACED BY JWTAUTH
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json('Not Authorized')
-}
+app.use('/friends', jwtAuth, friendsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

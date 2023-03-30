@@ -95,7 +95,7 @@ const Login = (props) => {
             // If login credentials were CORRECT set cookie
             if (data.success === true) {
                 // Get the cookie from the backend and set it in the browser
-                setCookie('token', data.token)
+                setCookie('token', data.token, {path: '/'})
             }
         })
     }

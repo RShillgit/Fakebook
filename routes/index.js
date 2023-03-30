@@ -17,7 +17,7 @@ router.get('/',
   },
   (err, req, res) => {
     return res.status(401).json({err, auth: req.isAuthenticated()});
-}
+  }
 );
 
 /*
@@ -64,11 +64,6 @@ router.post('/register', (req, res, next) => {
 
 /*
 * ------------------ LOGIN ------------------ 
-*/
-/*
-router.get('/login', (req, res, next) => {
-  res.render('login')
-})
 */
 
 router.get('/login', 

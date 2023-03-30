@@ -4,11 +4,11 @@ import '../styles/navbar.css';
 const Navbar = (props) => {
 
     const [cookie, setCookie, removeCookie] = useCookies(['token']);
-    const friendsUrl = `profile/${props.userId}/friends`
 
     // Log user out by fetching backend logout function and removing token cookie
-    const userLogout = () => {
-        fetch(`${props.serverUrl}/logout`)
+    const userLogout = (e) => {
+        e.preventDefault();
+        fetch(`${props.serverURL}/logout`)
             .then(() => {
                 removeCookie('token');
             })
@@ -21,7 +21,7 @@ const Navbar = (props) => {
             <a href="/">
                 <button>Home</button>
             </a>
-            <a href={friendsUrl}>
+            <a href='/friends'>
                 <button>Friends</button>
             </a>
 

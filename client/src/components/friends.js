@@ -4,12 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 
-const Profile = (props) => {
-
+const Friends = (props) => {
+        
     const [cookie, setCookie] = useCookies(['token']);
     const [auth, setAuth] = useState(null);
     const [display, setDisplay] = useState();
-    const {profileId} = useParams();
     const userId = useRef();
     const navigate = useNavigate();
 
@@ -19,7 +18,7 @@ const Profile = (props) => {
         (async () => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
-                const validToken = await props.checkToken(`${props.serverURL}/profile/${profileId}`, cookie.token);
+                const validToken = await props.checkToken(`${props.serverURL}/friends`, cookie.token);
                 userId.current = validToken.userToken.sub;
                 setAuth(validToken.auth)
             }
@@ -39,8 +38,8 @@ const Profile = (props) => {
         else if (auth === true) {
             setDisplay(
                 <div>
-                    <Navbar userId={userId.current} serverURL={props.serverURL}/>
-                    <h1>Profile {profileId}</h1>
+                    <Navbar userId={userId.current} serverURL={props.serverURL} />
+                    <h1>Friends List</h1>
                 </div>
             )
         }
@@ -50,10 +49,10 @@ const Profile = (props) => {
         }
     }, [auth])
 
-    return(
+    return (
         <div className="Page">
             {display}
         </div>
     )
 }
-export default Profile;
+export default Friends;

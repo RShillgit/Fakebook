@@ -22,13 +22,7 @@ router.delete('/', (req, res, next) => {
 */
 // Get Profile Page
 router.get('/:id', (req, res, next) => {
-    /*
-    if (req.user._id.toString() === req.params.id) {
-        return res.json(req.user)
-    }
     res.json(`User ${req.params.id}'s Profile`);
-    */
-    res.json(req.user)
 });
 // TODO POST
 router.post('/:id', (req, res, next) => {
@@ -41,25 +35,6 @@ router.put('/:id', (req, res, next) => {
 // Delte Profile
 router.delete('/:id', (req, res, next) => {
     res.send(`Delete User ${req.params.id}`);
-});
-
-/*
-* ------------------ /profile/:id/friends ------------------ 
-*/
-router.get('/:id/friends', (req, res, next) => {
-    res.send(`User ${req.params.id}'s Friends List`);
-});
-// Friend Request
-router.post('/:id/friends', (req, res, next) => {
-    res.send(`Friend Request Sent`);
-});
-// Accept Friend Request
-router.put('/:id/friends', (req, res, next) => {
-    res.send(`Accepted Friend Request`);
-});
-// Delte Friend
-router.delete('/:id/friends', (req, res, next) => {
-    res.send(`Delete User From Friends List`);
 });
 
 module.exports = router;
