@@ -10,7 +10,7 @@ const Navbar = (props) => {
         e.preventDefault();
         fetch(`${props.serverURL}/logout`)
             .then(() => {
-                removeCookie('token');
+                removeCookie('token', {path: '/'});
             })
     } 
 
