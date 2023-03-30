@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Loading from './components/loading';
 import {useCookies} from 'react-cookie';
 import './styles/App.css';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './components/navbar';
 
 function App(props) {
 
   const [cookie, setCookie] = useCookies(['token']);
   const [auth, setAuth] = useState(null);
   const [display, setDisplay] = useState();
+  const userId = useRef();
   const navigate = useNavigate();
 
   // Anytime the cookie changes, set auth
@@ -17,8 +19,9 @@ function App(props) {
     (async () => {
       // If there is a token present, run checkToken function to see if its valid
       if(cookie.token) {
-          const validToken = await props.checkToken(`${props.serverURL}/login`, cookie.token);
-          setAuth(validToken)
+          const validToken = await props.checkToken(`${props.serverURL}`, cookie.token);
+          userId.current = validToken.userToken.sub; // TODO: validToken Also includes iat & exp values
+          setAuth(validToken.auth)
       }
       else setAuth(false);
     })()
@@ -26,7 +29,6 @@ function App(props) {
   }, [cookie])
 
   useEffect(() => {
-    console.log(auth)
 
     // Loading
     if (auth === null) {
@@ -36,7 +38,8 @@ function App(props) {
     else if (auth === true) {
       setDisplay(
         <div>
-          <h1>Logged in... Render home page</h1>
+          <Navbar userId={userId.current}/>
+          <h1>Logged in... Render home page & display feed</h1>
         </div>
       )
     }
@@ -47,7 +50,7 @@ function App(props) {
   }, [auth])
 
   return (
-    <div>
+    <div className='Page'>
       {display}
     </div>
   );

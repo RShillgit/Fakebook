@@ -62,7 +62,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// TODO: JWT authorization middleware
+// TODO: MAYBE MAKE THIS THE SAME AS THE ONE IN INDEX.JS?
 const jwtAuth = [
   
   (req, res, next) => {

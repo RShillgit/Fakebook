@@ -21,7 +21,7 @@ const Login = (props) => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
                 const validToken = await props.checkToken(`${props.serverURL}/login`, cookie.token);
-                setAuth(validToken)
+                setAuth(validToken.auth)
             }
             else setAuth(false);
         })()
@@ -101,7 +101,7 @@ const Login = (props) => {
     }
 
     return (
-        <div>
+        <div className="Page">
             {display}
         </div>
     )

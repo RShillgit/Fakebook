@@ -11,7 +11,9 @@ const jwtUtils = require('../utils/jwtUtils');
 router.get('/', 
   passport.authenticate('jwt', {session: false}), 
   (req, res) => {
-    return res.status(200).json({auth: req.isAuthenticated()});
+    const token = req.headers.authorization;
+    const userToken = jwtUtils.jwtVerify(token);
+    return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
   },
   (err, req, res) => {
     return res.status(401).json({err, auth: req.isAuthenticated()});
@@ -148,7 +150,7 @@ router.get('/logout', (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
     res.clearCookie("token"); // Delete token from cookies
-    res.redirect('/login');
+    res.status(200).json('User Logged Out');
   });
 })
 
