@@ -8,9 +8,15 @@ const jwtUtils = require('../utils/jwtUtils');
 /*
 * ------------------ HOME ------------------ 
 */
-router.get('/', isLoggedIn, (req, res, next) => {
-  res.render('index', { title: 'Express' });
-});
+router.get('/', 
+  passport.authenticate('jwt', {session: false}), 
+  (req, res) => {
+    return res.status(200).json({auth: req.isAuthenticated()});
+  },
+  (err, req, res) => {
+    return res.status(401).json({err, auth: req.isAuthenticated()});
+}
+);
 
 /*
 * ------------------ REGISTER ------------------ 
@@ -57,9 +63,21 @@ router.post('/register', (req, res, next) => {
 /*
 * ------------------ LOGIN ------------------ 
 */
+/*
 router.get('/login', (req, res, next) => {
   res.render('login')
 })
+*/
+
+router.get('/login', 
+  passport.authenticate('jwt', {session: false}), 
+  (req, res) => {
+    return res.status(200).json({auth: req.isAuthenticated()});
+  },
+  (err, req, res) => {
+    return res.status(401).json({err, auth: req.isAuthenticated()});
+  }
+)
 
 /* LOCAL STRATEGY LOGIN
 router.post('/login', passport.authenticate('local', 
