@@ -5,6 +5,8 @@ import Loading from "./loading";
 
 const Login = (props) => {
 
+    const fbURL = `${props.serverURL}/auth/facebook`
+
     const [cookie, setCookie] = useCookies(['token']);
     const u = useRef();
     const p = useRef();
@@ -55,7 +57,10 @@ const Login = (props) => {
                         <button>Login</button>
                     </form>
 
-                    <button onClick={loginWithFacebook}>Login With Facebook</button>
+                    <a href={fbURL}>
+                        <button>Login With Facebook</button>
+                    </a>
+
 
                     {errorMessage}
                 </div>
@@ -100,30 +105,6 @@ const Login = (props) => {
                 setCookie('token', data.token, {path: '/'})
             }
         })
-    }
-
-    const loginWithFacebook = (e) => {
-        e.preventDefault();
-
-        fetch(`${props.serverURL}/auth/facebook/callback`, {
-            headers: { "Content-Type": "application/json" },
-            mode: 'cors'
-        })
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
-
-        // TODO: SETUP OAUTH 
-        /*
-        fetch(`${props.serverURL}/auth/facebook`, {
-            headers: { "Content-Type": "application/json" },
-            mode: 'no-cors'
-        })
-            .then( (res) => {
-                console.log(res)
-
-            })
-        */
     }
 
     return (

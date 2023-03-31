@@ -17,8 +17,6 @@ const RouteSwitch = () => {
         .then(res => {
             const data = res.json()
             return (res.status, data);
-            //if(res.status === 200) return true
-            //else return false
         })  
         .catch(err => {return false})
     }

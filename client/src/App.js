@@ -20,8 +20,13 @@ function App(props) {
       // If there is a token present, run checkToken function to see if its valid
       if(cookie.token) {
           const validToken = await props.checkToken(`${props.serverURL}`, cookie.token);
-          userId.current = validToken.userToken.sub; // TODO: validToken Also includes iat & exp values
-          setAuth(validToken.auth)
+          if (validToken) {
+            userId.current = validToken.userToken.sub; // TODO: validToken Also includes iat & exp values
+            setAuth(validToken.auth)
+          }
+          else {
+            setAuth(false);
+          }
       }
       else setAuth(false);
     })()

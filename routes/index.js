@@ -75,24 +75,6 @@ router.get('/login',
     return res.status(401).json({err, auth: req.isAuthenticated()});
   }
 )
-
-/* LOCAL STRATEGY LOGIN
-router.post('/login', passport.authenticate('local', 
-  {
-    failWithError: true,
-    passReqToCallback: true
-  }), 
-  (req, res) => {
-    return res.status(200).json({auth: req.isAuthenticated()});
-  },
-  (err, req, res, next) => {
-    return res.status(401).json({
-      auth: req.isAuthenticated(),
-    });
-  }
-)
-*/
-
 // JWT Login
 router.post('/login', (req, res, next) => {
     // Look for user in DB
@@ -124,34 +106,27 @@ router.post('/login', (req, res, next) => {
 /*
 * ------------------ FACEBOOK ------------------ 
 */
-/*
-router.get('/auth/facebook', passport.authenticate('facebook-token'), 
-  (req, res, next) => {
-    console.log(req.user)
-  }
-);
-*/
 router.get('/auth/facebook', passport.authenticate('facebook' , { session: false, scope : ['email'] }));
 router.get("/auth/facebook/callback", passport.authenticate("facebook", {
   session: false,
 }), 
   (req, res, next) => {
-
-    // Find the user with this facebook id and get the jwtoken to set as a cookie
+    // Look for user in DB
     User.findOne({ fbID: req.user.id })
-      .then (user => {
-        if (user) {
-          const token = user.jwtoken;
-          res.cookie('token', token);
-          return res.status(200).json({success: true, token: token});
-        }
-        else {
-          return res.status(401).json("User Does Not Exist");
-        }
-      })
-      .catch(err => {
-        res.json(err);
-      })
+    .then((user) => {
+      // If no user redirect back to the front end which will not authenticate the user
+      if (!user) {
+        return res.redirect(process.env.client_url); 
+      }
+      // Create token
+      const tokenObject = jwtUtils.issueJWT(user);
+
+      // Send token as cookie for the front end to use
+      res.cookie('token', tokenObject.token); 
+
+      // Redirect to front end home page
+      res.redirect(process.env.client_url); 
+    })
   }
 );
 
