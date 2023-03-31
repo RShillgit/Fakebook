@@ -5,6 +5,7 @@ import IndividualPost from "./components/individualPost";
 import Login from "./components/login";
 import NotFound from "./components/notFound";
 import Profile from "./components/profile";
+import Register from "./components/register";
 
 const RouteSwitch = () => {
 
@@ -27,6 +28,7 @@ const RouteSwitch = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App serverURL={serverURL} checkToken={checkToken}/>} />
+                <Route path="/register" element={<Register serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/login" element={<Login serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/friends" element={<Friends serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/profile/:profileId" element={<Profile serverURL={serverURL} checkToken={checkToken} />} />

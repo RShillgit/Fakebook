@@ -28,18 +28,13 @@ router.get('/register', (req, res, next) => {
 })
 router.post('/register', (req, res, next) => {
 
-  // Check if passwords match
-  if (req.body.password !== req.body.confirmPassword) {
-    return res.json('Passwords Do Not Match')
-  }
-
   // Check if username already exists
   User.findOne({ username: req.body.username })
     .then((user) => {
 
       // Username already exists
       if (user) {
-        return res.json('Username already exists')
+        return res.status(401).json({success: false, message:'Username already exists'});
       }
 
       const saltHash = genPassword(req.body.password);
@@ -55,11 +50,12 @@ router.post('/register', (req, res, next) => {
           salt: salt,
       })
       newUser.save()
-        .then(result => res.json(result))
-        .catch(err => res.json(err))
-
+        .then(result => {
+          return res.status(200).json({success: true, result: result})
+        })
+        .catch(err => res.status(401).json({success: false, error: err}))
     })
-    .catch(err => res.json(err))
+    .catch(err => res.status(401).json({success: false, error: err}))
 })
 
 /*

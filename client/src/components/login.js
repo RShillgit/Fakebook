@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import {useCookies} from 'react-cookie';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./loading";
 
 const Login = (props) => {
 
     const fbURL = `${props.serverURL}/auth/facebook`
-
+    const {state} = useLocation();
     const [cookie, setCookie] = useCookies(['token']);
     const u = useRef();
     const p = useRef();
     const [errorMessage, setErrorMessage] = useState('');
+    const [registeredSuccessfullyMessage, setRegisteredSuccessfullyMessage] = useState();
     const [display, setDisplay] = useState();
     const navigate = useNavigate();
-
     const [auth, setAuth] = useState(null);
 
     // Anytime the cookie changes, set auth
@@ -43,8 +43,15 @@ const Login = (props) => {
         }
         // Not Logged In, set display to login form
         else {
+            // If sent from register route with registered successfully message
+            if (state) {
+                if (state.registeredMessage) {
+                    setRegisteredSuccessfullyMessage(state.registeredMessage);
+                }
+            }
             setDisplay(
                 <div>
+                    {registeredSuccessfullyMessage}
                     <form onSubmit={loginFormSubmit}>
                         <label>
                             Username
@@ -57,10 +64,13 @@ const Login = (props) => {
                         <button>Login</button>
                     </form>
 
+                    <a href='/register'>
+                        <button>Register</button>
+                    </a>
+
                     <a href={fbURL}>
                         <button>Login With Facebook</button>
                     </a>
-
 
                     {errorMessage}
                 </div>
