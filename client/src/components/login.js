@@ -64,13 +64,17 @@ const Login = (props) => {
                         <button>Login</button>
                     </form>
 
-                    <a href='/register'>
-                        <button>Register</button>
-                    </a>
+                    <div className="login-buttons">
+                        <a href='/register'>
+                            <button>Register</button>
+                        </a>
 
-                    <a href={fbURL}>
-                        <button>Login With Facebook</button>
-                    </a>
+                        <a href={fbURL}>
+                            <button>Login With Facebook</button>
+                        </a>
+
+                        <button onClick={guestLogin}>Login As A Guest</button>
+                    </div>
 
                     {errorMessage}
                 </div>
@@ -78,6 +82,7 @@ const Login = (props) => {
         }
     }, [auth])
 
+    // Handles login form submition
     const loginFormSubmit = (e) => {
         e.preventDefault();
 
@@ -91,6 +96,39 @@ const Login = (props) => {
         const password = p.current;
         
         const login_information = {username, password};
+
+        // Use this login info to send post request
+        loginRequest(login_information);
+    }
+
+    // Creates a random account and logs it in
+    const guestLogin = (e) => {
+        e.preventDefault();
+
+        fetch(`${props.serverURL}/guest`)
+            .then(res => res.json())
+            .then(data => {
+
+                // If it was successfull, run loginRequest with this information
+                if(data.success === true) {
+                    const username = data.result.username;
+                    const password = data.result.username;
+                    const login_info = {username, password}
+                    loginRequest(login_info);
+                }
+                // Otherwise render error message
+                else {
+                    setErrorMessage(
+                        <div className="errorMessage">
+                            <p>An Error Occurred Please Try Again</p>
+                        </div>
+                    )
+                }
+            })
+    }
+
+    // POST request to login route
+    const loginRequest = (login_information) => {
 
         fetch(`${props.serverURL}/login`, {
             method: 'POST',
@@ -122,7 +160,6 @@ const Login = (props) => {
             {display}
         </div>
     )
-
 }
 
 export default Login;

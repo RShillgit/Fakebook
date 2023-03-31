@@ -4,6 +4,7 @@ const passport = require('passport');
 const User = require('../models/user');
 const { genPassword, validatePassword } = require('../utils/passwordUtils');
 const jwtUtils = require('../utils/jwtUtils');
+const crypto = require('crypto');
 
 /*
 * ------------------ HOME ------------------ 
@@ -127,6 +128,38 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
 );
 
 /*
+* ------------------ GUEST ------------------ 
+*/
+router.get('/guest', (req, res, next) => {
+
+  // Run function that gets and tests random strings for valid credentials
+  testRandomString()
+
+    // Use valid string to register new user
+    .then(validString => {
+
+      // Salt and hash
+      const saltHash = genPassword(validString);
+
+      const salt = saltHash.salt;
+      const hash = saltHash.hash;
+
+      // Create user with these credentials
+      const newUser = new User({
+          username: validString,
+          name: 'Guest User',
+          hash: hash,
+          salt: salt,
+      })
+      newUser.save()
+        .then(result => {
+          return res.status(200).json({success: true, result: result})
+        })
+        .catch(err => res.status(401).json({success: false, error: err}))
+    })
+})
+
+/*
 * ------------------ ERROR ------------------ 
 */
 router.get('/error', isLoggedIn, (req,res) => {
@@ -144,6 +177,32 @@ router.get('/logout', (req, res, next) => {
   });
 })
 
+/*
+* ------------------ UTILITY FUNCTIONS ------------------ 
+*/
+// Function that returns a random string
+function randomString() {
+  const randomString = crypto.randomBytes(20).toString('hex');
+  return randomString;
+}
+// Tests if the random string is an available username or not
+async function testRandomString() {
+
+  const randomCredentials = randomString();
+
+  return await User.findOne({ username: randomCredentials })
+  .then(user => {
+
+    // If a user with these credentials exists rerun the function
+    if (user) {
+      return testRandomString();
+    }
+    // If there is no user with these credentials, return the random string
+    else {
+      return randomCredentials;
+    }
+  })
+}
 // Function to check if user is logged in
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
