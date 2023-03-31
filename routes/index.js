@@ -124,11 +124,35 @@ router.post('/login', (req, res, next) => {
 /*
 * ------------------ FACEBOOK ------------------ 
 */
-router.get('/auth/facebook', passport.authenticate('facebook' , { scope : ['email'] } ) );
-router.get("/auth/facebook/callback",passport.authenticate("facebook", {
-  successRedirect: "/profile",
-  failureRedirect: "/error",
-  })
+/*
+router.get('/auth/facebook', passport.authenticate('facebook-token'), 
+  (req, res, next) => {
+    console.log(req.user)
+  }
+);
+*/
+router.get('/auth/facebook', passport.authenticate('facebook' , { session: false, scope : ['email'] }));
+router.get("/auth/facebook/callback", passport.authenticate("facebook", {
+  session: false,
+}), 
+  (req, res, next) => {
+
+    // Find the user with this facebook id and get the jwtoken to set as a cookie
+    User.findOne({ fbID: req.user.id })
+      .then (user => {
+        if (user) {
+          const token = user.jwtoken;
+          res.cookie('token', token);
+          return res.status(200).json({success: true, token: token});
+        }
+        else {
+          return res.status(401).json("User Does Not Exist");
+        }
+      })
+      .catch(err => {
+        res.json(err);
+      })
+  }
 );
 
 /*

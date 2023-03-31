@@ -40,7 +40,9 @@ function App(props) {
       setDisplay(
         <div>
           <Navbar userId={userId.current} serverURL={props.serverURL} />
-          <h1>Logged in... Render home page & display feed</h1>
+          <div className='non-navbar-content'>
+            <h1>Logged in... Render home page & display feed</h1>
+          </div>
         </div>
       )
     }

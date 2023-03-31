@@ -66,7 +66,7 @@ passport.deserializeUser((userId, done) => {
 passport.use(new FacebookStrategy({
     clientID: process.env.fb_id,
     clientSecret: process.env.fb_secret,
-    callbackURL: process.env.fb_callback_url, 
+    callbackURL: process.env.fb_callback_url, // TODO: CHANGE IN DEPLOYMENT
     profileFields: ['id', 'displayName', 'name', 'gender', 'picture.type(large)', 'email']
     },
 
@@ -84,7 +84,8 @@ passport.use(new FacebookStrategy({
                     const user = new User({
                         fbID : id , 
                         name, 
-                        email
+                        email,
+                        jwtoken: `Bearer ${accessToken}`
                     });
                     user.save()
                         .then(console.log('Facebook profile data stored in database'))
@@ -92,7 +93,6 @@ passport.use(new FacebookStrategy({
                 }
             })
             .catch(err => console.log(err))
-
-        done(null, profile);
+            done(null, profile);
     }
 ));

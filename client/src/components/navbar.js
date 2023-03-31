@@ -5,6 +5,12 @@ const Navbar = (props) => {
 
     const [cookie, setCookie, removeCookie] = useCookies(['token']);
 
+    // Srolls to the top of the page
+    const scrollToTop = (e) => {
+        e.preventDefault();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
     // Log user out by fetching backend logout function and removing token cookie
     const userLogout = (e) => {
         e.preventDefault();
@@ -16,7 +22,7 @@ const Navbar = (props) => {
 
     return (
         <div className="navbar">
-            <button>Scroll To Top</button>
+            <button onClick={scrollToTop}>Scroll To Top</button>
 
             <a href="/">
                 <button>Home</button>

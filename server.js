@@ -59,9 +59,27 @@ app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
+/*
+app.use(
+  cors({
+    origin: "http://localhost:3000", // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true // allow session cookie from browser to pass through
+  })
+);
+*/
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Prevent CORS Errors 
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Change to http://localhost:3000 in development
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', '*'); 
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 // JWT Authorization Middleware
 const jwtAuth = [

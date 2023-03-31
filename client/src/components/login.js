@@ -55,6 +55,8 @@ const Login = (props) => {
                         <button>Login</button>
                     </form>
 
+                    <button onClick={loginWithFacebook}>Login With Facebook</button>
+
                     {errorMessage}
                 </div>
             )
@@ -98,6 +100,30 @@ const Login = (props) => {
                 setCookie('token', data.token, {path: '/'})
             }
         })
+    }
+
+    const loginWithFacebook = (e) => {
+        e.preventDefault();
+
+        fetch(`${props.serverURL}/auth/facebook/callback`, {
+            headers: { "Content-Type": "application/json" },
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+
+        // TODO: SETUP OAUTH 
+        /*
+        fetch(`${props.serverURL}/auth/facebook`, {
+            headers: { "Content-Type": "application/json" },
+            mode: 'no-cors'
+        })
+            .then( (res) => {
+                console.log(res)
+
+            })
+        */
     }
 
     return (
