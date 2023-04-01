@@ -59,15 +59,6 @@ app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
-/*
-app.use(
-  cors({
-    origin: "http://localhost:3000", // allow to server to accept request from different origin
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true // allow session cookie from browser to pass through
-  })
-);
-*/
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -80,6 +71,10 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
+
+// TODO: This is great for get requests, but for POST request, might
+// Have to make a middleware that checks if the cookie is valid, 
+// If it is, next(), if it isnt, send a 401.
 
 // JWT Authorization Middleware
 const jwtAuth = [
@@ -95,7 +90,7 @@ const jwtAuth = [
 ]
 
 app.use('/', indexRouter);
-app.use('/posts', jwtAuth, postsRouter);
+app.use('/posts', postsRouter);
 app.use('/profile', jwtAuth, profileRouter);
 app.use('/friends', jwtAuth, friendsRouter);
 

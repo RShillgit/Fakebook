@@ -14,6 +14,8 @@ router.get('/',
   (req, res) => {
     const token = req.headers.authorization;
     const userToken = jwtUtils.jwtVerify(token);
+    // TODO: Use userToken.sub to get the user from the database and send info
+    // To the front end for name display and other things
     return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
   },
   (err, req, res) => {

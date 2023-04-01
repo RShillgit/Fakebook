@@ -10,7 +10,9 @@ function App(props) {
   const [cookie, setCookie] = useCookies(['token']);
   const [auth, setAuth] = useState(null);
   const [display, setDisplay] = useState();
+  const [createPostErrorMessage, setCreatePostErrorMessage] = useState();
   const userId = useRef();
+  const newPostText = useRef();
   const navigate = useNavigate();
 
   // Anytime the cookie changes, set auth
@@ -47,6 +49,14 @@ function App(props) {
           <Navbar userId={userId.current} serverURL={props.serverURL} />
           <div className='non-navbar-content'>
             <h1>Logged in... Render home page & display feed</h1>
+
+            <div className='create-post'>
+              <form onSubmit={createPostFormSubmit}>
+                <input type="text" placeholder='Whats on your mind?' id='newPostTextInput'/>
+                <button>Post</button>
+                {createPostErrorMessage}
+              </form>
+            </div>
           </div>
         </div>
       )
@@ -56,6 +66,46 @@ function App(props) {
       navigate('/login')
     }
   }, [auth])
+
+  // Create Post
+  const createPostFormSubmit = (e) => {
+    e.preventDefault();
+
+    const newPostTextInput = document.getElementById('newPostTextInput');
+    newPostText.current = newPostTextInput.value;
+
+    const newPostInfo = {
+      text: newPostText.current
+    }
+
+    // Post request with new post info
+    fetch(`${props.serverURL}/posts`, {
+      method: 'POST',
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: cookie.token,
+      },
+      body: JSON.stringify(newPostInfo),
+      mode: 'cors'
+    })
+    .then(res => res.json())
+    .then(data => {
+
+      // If it worked, refresh page
+      if (data.success === true) {
+        navigate(0)
+      }
+      // If it didnt, render error message
+      else {
+        console.log(data.err)
+        setCreatePostErrorMessage(
+          <div className='error-message'>
+            <p>An Error Occurred</p>
+          </div> 
+        )
+      }
+    })
+  }
 
   return (
     <div className='Page'>
