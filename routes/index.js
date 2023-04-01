@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
+const Post = require('../models/post');
 const { genPassword, validatePassword } = require('../utils/passwordUtils');
 const jwtUtils = require('../utils/jwtUtils');
 const crypto = require('crypto');
@@ -14,9 +15,21 @@ router.get('/',
   (req, res) => {
     const token = req.headers.authorization;
     const userToken = jwtUtils.jwtVerify(token);
-    // TODO: Use userToken.sub to get the user from the database and send info
-    // To the front end for name display and other things
-    return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
+    
+    // Get all the posts in descending chronological order
+    Post.find({})
+      .sort({ timestamp: -1 })
+      .populate('author')
+      // TODO: May have to populate comments and likes, but its giving me a 401 error somehow
+     
+      // Successfully got all posts
+      .then(allPosts => {
+        return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken, allPosts: allPosts});
+      })
+      // Unsuccessfully got all posts
+      .catch(err => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+      })
   },
   (err, req, res) => {
     return res.status(401).json({err, auth: req.isAuthenticated()});

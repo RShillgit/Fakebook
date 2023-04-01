@@ -11,6 +11,7 @@ function App(props) {
   const [auth, setAuth] = useState(null);
   const [display, setDisplay] = useState();
   const [createPostErrorMessage, setCreatePostErrorMessage] = useState();
+  const [allPosts, setAllPosts] = useState();
   const userId = useRef();
   const newPostText = useRef();
   const navigate = useNavigate();
@@ -21,10 +22,11 @@ function App(props) {
     (async () => {
       // If there is a token present, run checkToken function to see if its valid
       if(cookie.token) {
-          const validToken = await props.checkToken(`${props.serverURL}`, cookie.token);
-          if (validToken) {
-            userId.current = validToken.userToken.sub; // TODO: validToken Also includes iat & exp values
-            setAuth(validToken.auth)
+          const successfulResponse = await props.checkToken(`${props.serverURL}`, cookie.token);
+          if (successfulResponse) {
+            userId.current = successfulResponse.userToken.sub; // TODO: successfulResponse Also includes iat & exp values
+            setAllPosts(successfulResponse.allPosts)
+            setAuth(successfulResponse.auth)
           }
           else {
             setAuth(false);
@@ -57,6 +59,29 @@ function App(props) {
                 {createPostErrorMessage}
               </form>
             </div>
+
+            <div className='allPosts'>
+              {allPosts.map(post => {
+                return(
+                  <div className='individualPost' key={post._id}> 
+                    <a className='individualPost-clickableArea' href={`/posts/${post._id}`}>
+                      <p>{post.author.name}</p>
+                      <p>{post.text}</p>
+                      <p>{post.timestamp}</p>
+                      <div className='individualPost-stats'>
+                          <p>40k likes</p>
+                          <p>10 comments</p>
+                      </div>
+                    </a>
+                    <div className='individualPost-buttons'>
+                      <button>Like</button>
+                      <button>Comment</button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
           </div>
         </div>
       )

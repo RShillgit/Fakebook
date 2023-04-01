@@ -1,3 +1,46 @@
 body {
     margin: 0;
 }
+
+.create-post {
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid green;
+}
+.create-post form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* POSTS SECTION */
+.allPosts {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid red;
+}
+.individualPost {
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid blue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.individualPost-clickableArea {
+    text-decoration: none;
+    color: black;
+    text-align: center;
+}
+.individualPost-stats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.individualPost-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
