@@ -1,0 +1,8 @@
+.individualPost {
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid purple;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

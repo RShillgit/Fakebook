@@ -3,6 +3,7 @@ var router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
 const Post = require('../models/post');
+const jwtutils = require('../utils/jwtUtils');
 
 /* -------------- /posts -------------- */
 // GET POSTS
@@ -54,9 +55,37 @@ router.post('/', passport.authenticate('jwt', {session: false}),
 
 /* -------------- /posts/:id -------------- */
 // GET INDIVIDUAL POST
-router.get('/:id', (req, res, next) => {
-    res.json(`Get Post ${req.params.id}`)
-})
+router.get('/:id', passport.authenticate('jwt', {session: false}),
+
+    // Successful Authentication
+    (req, res, next) => {
+
+        // Get the selected post 
+        Post.findOne({ _id: req.params.id })
+            .populate('author')
+            // TODO: Populate comments
+
+            // Successfully found post
+            .then(selectedPost => {
+
+                // Get and verify token
+                const token = req.headers.authorization;
+                const userToken = jwtutils.jwtVerify(token);
+
+                // Send response
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, selectedPost: selectedPost});
+            })
+
+            // Unsuccessfully found post
+            .catch(err => {
+                return res.status(401).json({success: false, err: err});
+            })
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
 // COMMENT ON POST
 router.post('/:id', (req, res, next) => {
     res.json(`Comment on post ${req.params.id}`)

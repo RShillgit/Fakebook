@@ -22,14 +22,19 @@ function App(props) {
     (async () => {
       // If there is a token present, run checkToken function to see if its valid
       if(cookie.token) {
-          const successfulResponse = await props.checkToken(`${props.serverURL}`, cookie.token);
-          if (successfulResponse) {
-            userId.current = successfulResponse.userToken.sub; // TODO: successfulResponse Also includes iat & exp values
-            setAllPosts(successfulResponse.allPosts)
-            setAuth(successfulResponse.auth)
+          const checkTokenResponse = await props.checkToken(`${props.serverURL}`, cookie.token);
+
+          // If the resposne is successful
+          if (checkTokenResponse.success === true) {
+            userId.current = checkTokenResponse.userToken.sub; // TODO: checkTokenResponse Also includes iat & exp values
+            setAllPosts(checkTokenResponse.allPosts)
+            setAuth(checkTokenResponse.auth)
           }
+
+          // If the response is unsuccessful
           else {
-            setAuth(false);
+            // TODO: set error message or render error page
+            console.log(checkTokenResponse);
           }
       }
       else setAuth(false);

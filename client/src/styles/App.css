@@ -21,7 +21,7 @@ body {
     align-items: center;
     border: 1px solid red;
 }
-.individualPost {
+.allPosts .individualPost {
     margin: 1rem;
     padding: 1rem;
     border: 1px solid blue;
@@ -29,17 +29,17 @@ body {
     flex-direction: column;
     align-items: center;
 }
-.individualPost-clickableArea {
+.allPosts .individualPost-clickableArea {
     text-decoration: none;
     color: black;
     text-align: center;
 }
-.individualPost-stats {
+.allPosts .individualPost-stats {
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
-.individualPost-buttons {
+.allPosts .individualPost-buttons {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
