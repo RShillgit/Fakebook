@@ -6,7 +6,8 @@ const PostSchema = new Schema({
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     text: { type: String, required: true },
     likes: [{type: Schema.Types.ObjectId, ref: "User"}],
-    comments: [{type: Schema.Types.ObjectId, ref: "Comment"}]
+    comments: [{type: Schema.Types.ObjectId, ref: "Comment"}],
+    timestamp: { type: Date, required: true }
 })
 
 // Export model

@@ -18,7 +18,8 @@ router.post('/', passport.authenticate('jwt', {session: false}),
         // Create new post
         const newPost = new Post({
             author: req.user._id,
-            text: req.body.text
+            text: req.body.text,
+            timestamp: req.body.timestamp
         })
         newPost.save()
             // Successfully created post
@@ -71,18 +72,6 @@ router.delete('/:id', (req, res, next) => {
 
 
 const getAuth = [
-    passport.authenticate('jwt', {session: false}), 
-    (req, res) => {
-      const token = req.headers.authorization;
-      const userToken = jwtUtils.jwtVerify(token);
-      res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
-    },
-    (err, req, res) => {
-      return res.status(401).json({err, auth: req.isAuthenticated()});
-    }
-]
-
-const postAuth = [
     passport.authenticate('jwt', {session: false}), 
     (req, res) => {
       const token = req.headers.authorization;

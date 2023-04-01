@@ -75,7 +75,8 @@ function App(props) {
     newPostText.current = newPostTextInput.value;
 
     const newPostInfo = {
-      text: newPostText.current
+      text: newPostText.current,
+      timestamp: Date.now()
     }
 
     // Post request with new post info
