@@ -34,6 +34,7 @@ function App(props) {
           // If the response is unsuccessful
           else {
             // TODO: set error message or render error page
+            // To view this error reload page when server isnt running
             console.log(checkTokenResponse);
           }
       }
@@ -79,7 +80,7 @@ function App(props) {
                       </div>
                     </a>
                     <div className='individualPost-buttons'>
-                      <button>Like</button>
+                      <button onClick={() => likePost(post)}>Like</button>
                       <button>Comment</button>
                     </div>
                   </div>
@@ -136,6 +137,33 @@ function App(props) {
         )
       }
     })
+  }
+
+  // Like A Post
+  const likePost = (clickedPost) => {
+    console.log(clickedPost)
+
+    // Send a requestType which will let the middleware know to like or update post
+    const requestInfo = {
+      requestType: 'like',
+      selectedPost: clickedPost
+    }
+
+    fetch(`${props.serverURL}/posts/${clickedPost.id}`, {
+      method: 'PUT',
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: cookie.token,
+      },
+      body: JSON.stringify(requestInfo),
+      mode: 'cors'
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .then(navigate(0))
+    .catch(err => console.log(err))
+
+    // TODO: Edit likes state to show increased/decreased number
   }
 
   return (

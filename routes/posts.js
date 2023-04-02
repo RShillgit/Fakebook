@@ -90,10 +90,59 @@ router.get('/:id', passport.authenticate('jwt', {session: false}),
 router.post('/:id', (req, res, next) => {
     res.json(`Comment on post ${req.params.id}`)
 })
-// UPDATE INDIVIDUAL POST
-router.put('/:id', (req, res, next) => {
-    res.json(`Update Post ${req.params.id}`)
-})
+// LIKE/UPDATE INDIVIDUAL POST
+router.put('/:id', passport.authenticate('jwt', {session: false}),
+
+    // Successful Authentication
+    (req, res, next) => {
+
+        // req.body.requestType is either 'like' or 'update'
+        console.log(req.body.requestType);
+
+        // If it is a like request
+        if (req.body.requestType === 'like') {
+
+            let likesArray = req.body.selectedPost.likes
+
+            // If the user is already in the array, remomve them
+            if (likesArray.includes(req.user._id.toString())) {
+                
+                likesArray = likesArray.filter(like => {
+                    return like !== req.user._id.toString();
+                })
+            }
+            // If the user is not in the array, add them
+            else {
+                likesArray.push(req.user._id)
+            }
+
+            // Update the posts likes array
+            Post.findOneAndUpdate ({_id: req.body.selectedPost._id}, {
+                likes: likesArray
+            })
+            // Successfully added the user to the likes array
+            .then(() => {
+                return res.status(401).json({success: true, newLikesArray: likesArray });
+            })
+            // Unsuccessfully added the user to the likes array
+            .catch(err => {
+                return res.status(401).json({success: false, err: err});
+            })
+        }
+        // Else If it is an update request
+        else if (req.body.requestType === 'update') {
+
+        }
+        // Else send error
+        else {
+            return res.status(401).json({success: false, err: 'No requestType specified'});
+        }
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
 // DELETE INDIVIDUAL POST
 router.delete('/:id', (req, res, next) => {
     res.json(`Delete Post ${req.params.id}`)

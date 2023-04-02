@@ -28,7 +28,6 @@ const IndividualPost = (props) => {
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
                     setSelectedPost(
-        
                         <div className="individualPost">
                             <p>{checkTokenResponse.selectedPost.author.name}</p>
                             <p>{checkTokenResponse.selectedPost.text}</p>
@@ -45,7 +44,6 @@ const IndividualPost = (props) => {
                             </div>
 
                             <p>Map Comments so they all display here</p>
-
                         </div>
                     );
                     setAuth(checkTokenResponse.auth);
