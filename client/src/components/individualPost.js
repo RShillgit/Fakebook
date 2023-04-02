@@ -34,7 +34,10 @@ const IndividualPost = (props) => {
                             <p>{checkTokenResponse.selectedPost.timestamp}</p>
 
                             <div className='individualPost-stats'>
-                                <p>47 likes</p>
+                                {checkTokenResponse.selectedPost.likes.includes(userId.current) 
+                                    ? <p className='liked' id={`likes-${checkTokenResponse.selectedPost._id}`}>{checkTokenResponse.selectedPost.likes.length}</p> 
+                                    : <p id={`likes-${checkTokenResponse.selectedPost._id}`}>{checkTokenResponse.selectedPost.likes.length}</p>
+                                }
                                 <p>9 comments</p>
                             </div>
                  
