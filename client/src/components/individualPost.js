@@ -27,29 +27,8 @@ const IndividualPost = (props) => {
                 // Successful response
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
-                    setSelectedPost(
-                        <div className="individualPost">
-                            <p>{checkTokenResponse.selectedPost.author.name}</p>
-                            <p>{checkTokenResponse.selectedPost.text}</p>
-                            <p>{checkTokenResponse.selectedPost.timestamp}</p>
-
-                            <div className='individualPost-stats'>
-                                {checkTokenResponse.selectedPost.likes.includes(userId.current) 
-                                    ? <p className='liked' id={`likes-${checkTokenResponse.selectedPost._id}`}>{checkTokenResponse.selectedPost.likes.length}</p> 
-                                    : <p id={`likes-${checkTokenResponse.selectedPost._id}`}>{checkTokenResponse.selectedPost.likes.length}</p>
-                                }
-                                <p>9 comments</p>
-                            </div>
-                 
-                            <div className='individualPost-buttons'>
-                                <button>Like</button>
-                                <button>Comment</button>
-                            </div>
-
-                            <p>Map Comments so they all display here</p>
-                        </div>
-                    );
                     setAuth(checkTokenResponse.auth);
+                    setSelectedPost(checkTokenResponse.selectedPost)
                 }
 
                 // Unsuccessful response
@@ -70,26 +49,86 @@ const IndividualPost = (props) => {
 
     // Anytime auth changes, set display
     useEffect(() => {
-
         // Loading
         if (auth === null) {
             setDisplay(<Loading />)
         }
-        // If the user is authorized render page
-        else if (auth === true) {
+        // Not Logged In redirect to login
+        else if (auth === false) {
+            navigate('/login')
+        }
+    }, [auth])
+
+    // Anytime the selectedPost changes, set the display
+    useEffect(() => {
+        if (selectedPost) {
             setDisplay(
                 <div>
                     <Navbar userId={userId.current} serverURL={props.serverURL}/>
                     {errorMessage}
-                    {selectedPost}
+                    <div className="individualPost">
+                        <p>{selectedPost.author.name}</p>
+                        <p>{selectedPost.text}</p>
+                        <p>{selectedPost.timestamp}</p>
+
+                        <div className='individualPost-stats'>
+                            {selectedPost.likes.includes(userId.current) 
+                                ? <p className='liked' id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p> 
+                                : <p id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p>
+                            }
+                            <p>9 comments</p>
+                        </div>
+            
+                        <div className='individualPost-buttons'>
+                            <button onClick={likePost}>Like</button>
+                            <button>Comment</button>
+                        </div>
+
+                        <p>Map Comments so they all display here</p>
+                    </div>
                 </div>
             )
         }
-        // Not Logged In redirect to login
-        else {
-            navigate('/login')
+    }, [selectedPost])
+
+      // Like A Post
+    const likePost = () => {
+
+        // Get the associated likes 
+        const selectedPostsLikes = document.getElementById(`likes-${selectedPost._id}`)
+
+        // Toggle the "liked" class
+        selectedPostsLikes.classList.toggle("liked");
+
+        // Send a requestType which will let the middleware know to like or update post
+        const requestInfo = {
+            requestType: 'like',
+            selectedPost: selectedPost
         }
-    }, [auth])
+
+        fetch(`${props.serverURL}/posts/${selectedPost._id}`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify(requestInfo),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            
+            // Update post state with new post likes array
+            let newSelectedPost = {
+                ...selectedPost
+            };
+            newSelectedPost.likes = data.newLikesArray;
+
+            setSelectedPost(newSelectedPost)
+        })
+        // TODO: Error Page/Message
+        .catch(err => console.log(err))
+    }
     
     return(
         <div className="Page">
