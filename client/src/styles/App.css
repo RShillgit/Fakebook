@@ -45,5 +45,6 @@ body {
     width: 100%;
 }
 .liked {
-    color: red;
+    font-weight: 600;
+    color: blue;
 }

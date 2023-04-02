@@ -86,8 +86,11 @@ function App(props) {
                       <p>{post.text}</p>
                       <p>{post.timestamp}</p>
                       <div className='individualPost-stats'>
-                          <p id={`likes-${post._id}`}>{post.likes.length}</p>
-                          <p>10 comments</p>
+                        {post.likes.includes(userId.current) 
+                          ? <p className='liked' id={`likes-${post._id}`}>{post.likes.length}</p> 
+                          : <p id={`likes-${post._id}`}>{post.likes.length}</p>
+                        }
+                        <p>10 comments</p>
                       </div>
                     </a>
                     <div className='individualPost-buttons'>
@@ -154,10 +157,12 @@ function App(props) {
     // Get the associated likes 
     const selectedPostsLikes = document.getElementById(`likes-${clickedPost._id}`)
 
-    // Find out whether the user has liked the post or not
-    // If they have, add "liked" to the class
-    // If they haven't remove "liked" from the class
-    //selectedPostsLikes.classList.toggle("liked");
+    // Toggle the "liked" class
+    selectedPostsLikes.classList.toggle("liked");
+
+    // If the user has already liked the post
+    if (clickedPost.likes.includes(userId.current)) {
+    }
 
     // Send a requestType which will let the middleware know to like or update post
     const requestInfo = {
@@ -189,6 +194,7 @@ function App(props) {
         else return post;
       }))
     })
+    // TODO: Error Page/Message
     .catch(err => console.log(err))
   }
 
