@@ -90,13 +90,13 @@ router.get('/:id', passport.authenticate('jwt', {session: false}),
 router.post('/:id', (req, res, next) => {
     res.json(`Comment on post ${req.params.id}`)
 })
-// LIKE/UPDATE INDIVIDUAL POST
+// LIKE/UNLIKE/UPDATE INDIVIDUAL POST
 router.put('/:id', passport.authenticate('jwt', {session: false}),
 
     // Successful Authentication
     (req, res, next) => {
 
-        // req.body.requestType is either 'like' or 'update'
+        // req.body.requestType is either 'like', or 'update'
         console.log(req.body.requestType);
 
         // If it is a like request
@@ -122,7 +122,7 @@ router.put('/:id', passport.authenticate('jwt', {session: false}),
             })
             // Successfully added the user to the likes array
             .then(() => {
-                return res.status(401).json({success: true, newLikesArray: likesArray });
+                return res.status(200).json({success: true, newLikesArray: likesArray });
             })
             // Unsuccessfully added the user to the likes array
             .catch(err => {

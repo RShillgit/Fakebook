@@ -44,3 +44,6 @@ body {
     justify-content: space-evenly;
     width: 100%;
 }
+.liked {
+    color: red;
+}

@@ -52,12 +52,23 @@ function App(props) {
     }
     // If the user is authorized render page
     else if (auth === true) {
+
+    }
+    // Not Logged In redirect to login
+    else {
+      navigate('/login')
+    }
+  }, [auth])
+
+  // Anytime allPosts changes set the display
+  useEffect(() => {
+    if(allPosts) {
       setDisplay(
         <div>
           <Navbar userId={userId.current} serverURL={props.serverURL} />
           <div className='non-navbar-content'>
             <h1>Logged in... Render home page & display feed</h1>
-
+  
             <div className='create-post'>
               <form onSubmit={createPostFormSubmit}>
                 <input type="text" placeholder='Whats on your mind?' id='newPostTextInput'/>
@@ -65,7 +76,7 @@ function App(props) {
                 {createPostErrorMessage}
               </form>
             </div>
-
+  
             <div className='allPosts'>
               {allPosts.map(post => {
                 return(
@@ -75,7 +86,7 @@ function App(props) {
                       <p>{post.text}</p>
                       <p>{post.timestamp}</p>
                       <div className='individualPost-stats'>
-                          <p>40k likes</p>
+                          <p id={`likes-${post._id}`}>{post.likes.length}</p>
                           <p>10 comments</p>
                       </div>
                     </a>
@@ -87,16 +98,13 @@ function App(props) {
                 )
               })}
             </div>
-
+  
           </div>
         </div>
       )
     }
-    // Not Logged In redirect to login
-    else {
-      navigate('/login')
-    }
-  }, [auth])
+
+  }, [allPosts])
 
   // Create Post
   const createPostFormSubmit = (e) => {
@@ -143,13 +151,21 @@ function App(props) {
   const likePost = (clickedPost) => {
     console.log(clickedPost)
 
+    // Get the associated likes 
+    const selectedPostsLikes = document.getElementById(`likes-${clickedPost._id}`)
+
+    // Find out whether the user has liked the post or not
+    // If they have, add "liked" to the class
+    // If they haven't remove "liked" from the class
+    //selectedPostsLikes.classList.toggle("liked");
+
     // Send a requestType which will let the middleware know to like or update post
     const requestInfo = {
       requestType: 'like',
       selectedPost: clickedPost
     }
 
-    fetch(`${props.serverURL}/posts/${clickedPost.id}`, {
+    fetch(`${props.serverURL}/posts/${clickedPost._id}`, {
       method: 'PUT',
       headers: { 
         "Content-Type": "application/json",
@@ -159,11 +175,21 @@ function App(props) {
       mode: 'cors'
     })
     .then(res => res.json())
-    .then(data => console.log(data))
-    .then(navigate(0))
-    .catch(err => console.log(err))
+    .then(data => {
+      console.log("Data", data)
 
-    // TODO: Edit likes state to show increased/decreased number
+      // Update allPosts state to include new likes array
+      setAllPosts([...allPosts].map(post => {
+        if(post._id === clickedPost._id) {
+          return {
+            ...post,
+            likes: data.newLikesArray
+          }
+        }
+        else return post;
+      }))
+    })
+    .catch(err => console.log(err))
   }
 
   return (
