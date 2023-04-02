@@ -35,7 +35,7 @@ router.post('/', passport.authenticate('jwt', {session: false}),
                 })
                 // Successfully updated user's posts array
                 .then(() => {
-                    return res.status(200).json({ success: true, msg: 'Post Created Successfully' });
+                    return res.status(200).json({ success: true, msg: 'Post Created Successfully', newPost: post });
                 })
                 // Unsuccessfully updated user's posts array
                 .catch(err => {

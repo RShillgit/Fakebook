@@ -50,12 +50,9 @@ function App(props) {
     if (auth === null) {
         setDisplay(<Loading />)
     }
-    // If the user is authorized render page
-    else if (auth === true) {
 
-    }
     // Not Logged In redirect to login
-    else {
+    else if (auth === false) {
       navigate('/login')
     }
   }, [auth])
@@ -134,9 +131,15 @@ function App(props) {
     .then(res => res.json())
     .then(data => {
 
-      // If it worked, refresh page
+      // If it worked, render new post
       if (data.success === true) {
-        navigate(0)
+        
+        // Add new post to the beginning of the allPosts array
+        let newAllPostsArray = [...allPosts]
+        newAllPostsArray.unshift(data.newPost);
+
+        // Update allPosts state to include this new post
+        setAllPosts(newAllPostsArray);
       }
       // If it didnt, render error message
       else {
@@ -152,17 +155,12 @@ function App(props) {
 
   // Like A Post
   const likePost = (clickedPost) => {
-    console.log(clickedPost)
 
     // Get the associated likes 
     const selectedPostsLikes = document.getElementById(`likes-${clickedPost._id}`)
 
     // Toggle the "liked" class
     selectedPostsLikes.classList.toggle("liked");
-
-    // If the user has already liked the post
-    if (clickedPost.likes.includes(userId.current)) {
-    }
 
     // Send a requestType which will let the middleware know to like or update post
     const requestInfo = {
@@ -181,7 +179,6 @@ function App(props) {
     })
     .then(res => res.json())
     .then(data => {
-      console.log("Data", data)
 
       // Update allPosts state to include new likes array
       setAllPosts([...allPosts].map(post => {
