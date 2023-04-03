@@ -77,7 +77,7 @@ const IndividualPost = (props) => {
                                 ? <p className='liked' id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p> 
                                 : <p id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p>
                             }
-                            <p>9 comments</p>
+                            <p>{selectedPost.comments.length} comments</p>
                         </div>
             
                         <div className='individualPost-buttons'>

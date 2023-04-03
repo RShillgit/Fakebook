@@ -87,12 +87,14 @@ function App(props) {
                           ? <p className='liked' id={`likes-${post._id}`}>{post.likes.length}</p> 
                           : <p id={`likes-${post._id}`}>{post.likes.length}</p>
                         }
-                        <p>10 comments</p>
+                        <p>{post.comments.length} comments</p>
                       </div>
                     </a>
                     <div className='individualPost-buttons'>
                       <button onClick={() => likePost(post)}>Like</button>
-                      <button>Comment</button>
+                      <a href={`/posts/${post._id}`}>
+                        <button>Comment</button>
+                      </a>
                     </div>
                   </div>
                 )
