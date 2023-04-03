@@ -72,27 +72,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-// TODO: This is great for get requests, but for POST request, might
-// Have to make a middleware that checks if the cookie is valid, 
-// If it is, next(), if it isnt, send a 401.
-
-// JWT Authorization Middleware
-const jwtAuth = [
-  passport.authenticate('jwt', {session: false}), 
-  (req, res) => {
-    const token = req.headers.authorization;
-    const userToken = jwtUtils.jwtVerify(token);
-    return res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
-  },
-  (err, req, res) => {
-    return res.status(401).json({err, auth: req.isAuthenticated()});
-  }
-]
-
 app.use('/', indexRouter);
-app.use('/posts', postsRouter);
-app.use('/profile', jwtAuth, profileRouter);
-app.use('/friends', jwtAuth, friendsRouter);
+app.use('/posts', passport.authenticate('jwt', {session: false}), postsRouter);
+app.use('/profile', passport.authenticate('jwt', {session: false}), profileRouter);
+app.use('/friends', passport.authenticate('jwt', {session: false}), friendsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

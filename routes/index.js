@@ -175,13 +175,6 @@ router.get('/guest', (req, res, next) => {
 })
 
 /*
-* ------------------ ERROR ------------------ 
-*/
-router.get('/error', isLoggedIn, (req,res) => {
-  res.send("Error");
-});
-
-/*
 * ------------------ LOGOUT ------------------ 
 */
 router.get('/logout', (req, res, next) => {
@@ -217,13 +210,6 @@ async function testRandomString() {
       return randomCredentials;
     }
   })
-}
-// Function to check if user is logged in
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json('Unauthenticated')
 }
 
 module.exports = router;

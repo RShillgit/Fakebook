@@ -11,8 +11,7 @@ router.get('/', (req, res, next) => {
     res.json('redirect to home')
 })
 // CREATE POST
-router.post('/', passport.authenticate('jwt', {session: false}),
-
+router.post('/', 
     // Successful Authentication
     (req, res, next) => {
 
@@ -55,8 +54,7 @@ router.post('/', passport.authenticate('jwt', {session: false}),
 
 /* -------------- /posts/:id -------------- */
 // GET INDIVIDUAL POST
-router.get('/:id', passport.authenticate('jwt', {session: false}),
-
+router.get('/:id', 
     // Successful Authentication
     (req, res, next) => {
 
@@ -91,8 +89,7 @@ router.post('/:id', (req, res, next) => {
     res.json(`Comment on post ${req.params.id}`)
 })
 // LIKE/UNLIKE/UPDATE INDIVIDUAL POST
-router.put('/:id', passport.authenticate('jwt', {session: false}),
-
+router.put('/:id', 
     // Successful Authentication
     (req, res, next) => {
 
@@ -147,18 +144,5 @@ router.put('/:id', passport.authenticate('jwt', {session: false}),
 router.delete('/:id', (req, res, next) => {
     res.json(`Delete Post ${req.params.id}`)
 })
-
-
-const getAuth = [
-    passport.authenticate('jwt', {session: false}), 
-    (req, res) => {
-      const token = req.headers.authorization;
-      const userToken = jwtUtils.jwtVerify(token);
-      res.status(200).json({auth: req.isAuthenticated(), userToken: userToken});
-    },
-    (err, req, res) => {
-      return res.status(401).json({err, auth: req.isAuthenticated()});
-    }
-]
 
 module.exports = router;
