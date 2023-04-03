@@ -31,7 +31,9 @@ const Navbar = (props) => {
                 <button>Friends</button>
             </a>
 
-            <p>Logged in as user {props.userId}</p>
+            <a href={`/profile/${props.userId}`}>
+                <p>Logged in as user {props.userId}</p>
+            </a>
             <button onClick={userLogout}>Logout</button>
         </div>
     )

@@ -64,7 +64,6 @@ function App(props) {
         <div>
           <Navbar userId={userId.current} serverURL={props.serverURL} />
           <div className='non-navbar-content'>
-            <h1>Logged in... Render home page & display feed</h1>
   
             <div className='create-post'>
               <form onSubmit={createPostFormSubmit}>

@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const User = require('../models/user');
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+const jwtutils = require('../utils/jwtUtils');
 
 /*
 * ------------------ /profile redirects to user's profile page ------------------ 
@@ -21,9 +25,32 @@ router.delete('/', (req, res, next) => {
 * ------------------ /profile/:id ------------------ 
 */
 // Get Profile Page
-router.get('/:id', (req, res, next) => {
-    res.json(`User ${req.params.id}'s Profile`);
-});
+router.get('/:id', 
+    // Successful Authentication
+    (req, res, next) => {
+
+        const token = req.headers.authorization;
+        const userToken = jwtutils.jwtVerify(token);
+
+        // Get user information
+        User.findOne({ _id: req.params.id })
+
+        // Successfully found user information
+        .then(userProfile => {
+            res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, userProfile})
+        })
+
+        // Unsuccessfully found user information
+        .catch(err => {
+            return res.status(500).json({err, auth: req.isAuthenticated(), msg: 'User not found'});
+        })
+        
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+);
 // TODO POST
 router.post('/:id', (req, res, next) => {
     res.send(`POST request on User ${req.params.id}`);

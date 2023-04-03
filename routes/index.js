@@ -20,7 +20,6 @@ router.get('/',
     Post.find({})
       .sort({ timestamp: -1 })
       .populate('author')
-      // TODO: May have to populate comments and likes, but its giving me a 401 error somehow
      
       // Successfully got all posts
       .then(allPosts => {
