@@ -11,6 +11,7 @@ const IndividualPost = (props) => {
     const [auth, setAuth] = useState(null);
     const [selectedPost, setSelectedPost] = useState();
     const [display, setDisplay] = useState();
+    const commentText = useRef();
     const [errorMessage, setErrorMessage] = useState();
     const {postId} = useParams();
     const userId = useRef();
@@ -28,7 +29,7 @@ const IndividualPost = (props) => {
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
                     setAuth(checkTokenResponse.auth);
-                    setSelectedPost(checkTokenResponse.selectedPost)
+                    setSelectedPost(checkTokenResponse.selectedPost);
                 }
 
                 // Unsuccessful response
@@ -59,7 +60,7 @@ const IndividualPost = (props) => {
         }
     }, [auth])
 
-    // Anytime the selectedPost changes, set the display
+    // Anytime the selectedPost or its Comments change, set the display
     useEffect(() => {
         if (selectedPost) {
             setDisplay(
@@ -83,15 +84,30 @@ const IndividualPost = (props) => {
                             <button onClick={likePost}>Like</button>
                             <button>Comment</button>
                         </div>
-
-                        <p>Map Comments so they all display here</p>
+                    </div>
+                    <div className="commentSection">
+                        {selectedPost.comments.map(comment => {
+                            return (
+                                <div className="individualComment" key={comment._id}>
+                                    <p>{comment.text}</p>
+                                    <p>{comment.author.name}</p>
+                                    <p>{comment.timestamp}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className="postCommentSection">
+                        <form onSubmit={postComment}>
+                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
+                            <button>Post</button>
+                        </form>
                     </div>
                 </div>
             )
         }
     }, [selectedPost])
 
-      // Like A Post
+    // Like A Post
     const likePost = () => {
 
         // Get the associated likes 
@@ -128,6 +144,48 @@ const IndividualPost = (props) => {
         })
         // TODO: Error Page/Message
         .catch(err => console.log(err))
+    }
+
+    // Comment on a post
+    const postComment = (e) => {
+        e.preventDefault();
+        
+        const commentTextInput = document.getElementById('commentTextInput');
+        commentText.current = commentTextInput.value;
+        
+
+        const commentInfo = {
+            parentPost: selectedPost,
+            commentText: commentText.current,
+            commentTime: Date.now()
+        }
+
+        // POST request with comment information
+        fetch(`${props.serverURL}/posts/${selectedPost._id}`, {
+            method: 'POST',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify(commentInfo),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+
+            // Update Posts state with new comments array
+            let newSelectedPost = {
+                ...selectedPost
+            };
+            newSelectedPost.comments = data.newCommentsArray;
+            setSelectedPost(newSelectedPost);
+            e.target.reset();
+        })
+
+        // TODO: Rendering Erros
+        .catch(err => console.log(err))
+      
     }
     
     return(

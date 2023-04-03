@@ -3,12 +3,13 @@ var router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 const jwtutils = require('../utils/jwtUtils');
 
 /* -------------- /posts -------------- */
 // GET POSTS
 router.get('/', (req, res, next) => {
-    res.json('redirect to home')
+    res.json('redirect to home');
 })
 // CREATE POST
 router.post('/', 
@@ -61,8 +62,13 @@ router.get('/:id',
         // Get the selected post 
         Post.findOne({ _id: req.params.id })
             .populate('author')
-            // TODO: Populate comments
-
+            .populate({
+                path: 'comments', 
+                populate: {
+                    path: 'author',
+                    model: 'User'
+                }
+            })
             // Successfully found post
             .then(selectedPost => {
 
@@ -85,9 +91,50 @@ router.get('/:id',
     }
 )
 // COMMENT ON POST
-router.post('/:id', (req, res, next) => {
-    res.json(`Comment on post ${req.params.id}`)
-})
+router.post('/:id', 
+
+    // Successful Authentication
+    (req, res, next) => {
+
+        // Create new comment with the request info
+        const newComment = new Comment({
+            parentPost: req.body.parentPost._id,
+            author: req.user._id,
+            text: req.body.commentText,
+            timestamp: req.body.commentTime
+        })
+        newComment.save()
+
+        // Successfully Saved Comment
+        .then((comment) => {
+
+            // Update post's comments array
+            let updatedCommentsArray = [...req.body.parentPost.comments];
+            updatedCommentsArray.push(comment)
+
+            Post.findByIdAndUpdate(req.body.parentPost._id, {
+                'comments': updatedCommentsArray
+            })
+            // Successfully updated post's comments array
+            .then(() => {
+                return res.status(200).json({ success: true, msg: 'Comment Created Successfully', newCommentsArray: updatedCommentsArray });
+            })
+            // Unsuccessfully updated post's comments array
+            .catch(err => {
+                return res.status(401).json({success: false, err});
+            }) 
+        })
+
+        // Unsuccessfully Saved Comment
+        .catch(err => {
+            return res.status(401).json({success: false, err: err});
+        })
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
 // LIKE/UNLIKE/UPDATE INDIVIDUAL POST
 router.put('/:id', 
     // Successful Authentication

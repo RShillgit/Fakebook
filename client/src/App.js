@@ -140,6 +140,7 @@ function App(props) {
 
         // Update allPosts state to include this new post
         setAllPosts(newAllPostsArray);
+        e.target.reset();
       }
       // If it didnt, render error message
       else {

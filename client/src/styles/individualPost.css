@@ -6,3 +6,20 @@
     flex-direction: column;
     align-items: center;
 }
+
+/* COMMENT SECTION */
+.commentSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+    border: 1px solid black;
+}
+.commentSection .individualComment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid palegreen;
+    padding: 1rem;
+    margin: 1rem;
+}
