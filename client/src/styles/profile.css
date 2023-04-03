@@ -35,3 +35,32 @@
     color: blue;
     border-bottom: 2px solid blue;
 }
+
+/* Profile Posts Tab */
+.profileContent-posts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.profileContent-individualPost {
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid black;
+    text-decoration: none;
+    color: black;
+}
+.profileContent-individualPost-stats {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.profileContent-individualPost-stats p {
+    border-bottom: 1px solid white;
+}
+.profileContent-individualPost-stats p:hover {
+    border-bottom: 1px solid black;
+}

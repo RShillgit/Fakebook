@@ -34,6 +34,8 @@ router.get('/:id',
 
         // Get user information
         User.findOne({ _id: req.params.id })
+        .populate('friends')
+        .populate('posts')
 
         // Successfully found user information
         .then(userProfile => {

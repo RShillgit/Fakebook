@@ -12,6 +12,7 @@ const Profile = (props) => {
     const [currentProfile, setCurrentProfile] = useState();
     const [selectedTab, setSelectedTab] = useState();
     const [display, setDisplay] = useState();
+    const [tabDisplay, setTabDisplay] = useState();
     const {profileId} = useParams();
     const userId = useRef();
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ const Profile = (props) => {
             if(cookie.token) {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/profile/${profileId}`, cookie.token);
                 userId.current = checkTokenResponse.userToken.sub;
+                console.log(checkTokenResponse)
                 setCurrentProfile(checkTokenResponse.userProfile);
                 setAuth(checkTokenResponse.auth)
             }
@@ -51,8 +53,6 @@ const Profile = (props) => {
         // If there is a profile
         if(currentProfile) {
 
-            console.log(currentProfile)
-
             setDisplay(
                 <div>
                     <Navbar userId={userId.current} serverURL={props.serverURL}/>
@@ -71,7 +71,6 @@ const Profile = (props) => {
                                 <li id="profileHeader-navigation-list-friends" onClick={navigationTabClick}>Friends</li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             )
@@ -86,24 +85,92 @@ const Profile = (props) => {
     // Selected tab changes
     useEffect(() => {
 
-        // Get all the tabs
-        const postsTab = document.getElementById("profileHeader-navigation-list-posts");
-        const aboutTab = document.getElementById("profileHeader-navigation-list-about");
-        const friendsTab = document.getElementById("profileHeader-navigation-list-friends");
+        if (selectedTab) {
 
-        // Remove "active" class from all tabs and add it to the selected tab
-        const navigationTabs = [postsTab, aboutTab, friendsTab];
-        navigationTabs.forEach(tab => {
-            if(tab.classList.contains('active')) {
-                tab.classList.remove('active');
+            // Get all the tabs
+            const postsTab = document.getElementById("profileHeader-navigation-list-posts");
+            const aboutTab = document.getElementById("profileHeader-navigation-list-about");
+            const friendsTab = document.getElementById("profileHeader-navigation-list-friends");
+
+            // Remove "active" class from all tabs and add it to the selected tab
+            const navigationTabs = [postsTab, aboutTab, friendsTab];
+            navigationTabs.forEach(tab => {
+                if(tab.classList.contains('active')) {
+                    tab.classList.remove('active');
+                }
+                if (tab === selectedTab) {
+                    tab.classList.toggle('active');
+                }
+            })
+
+            // Posts Tab
+            if (selectedTab === postsTab) {
+                setTabDisplay(
+                    <div className="profileContent">
+                        <h1>Posts Page</h1>
+                        {(currentProfile.posts.length > 0)
+                            ?
+                            <div className="profileContent-posts">
+                                {currentProfile.posts.map(post => {
+                                    return (
+                                        <a href={`/posts/${post._id}`} className="profileContent-individualPost" key={post._id}>
+                                            <p>{post.text}</p>
+                                            <div className="profileContent-individualPost-stats">
+                                                <p>{post.likes.length} likes</p>
+                                                <p>{post.comments.length} comments</p>
+                                            </div>
+                                        </a>
+                                    )
+                                })}
+                            </div>
+                            :
+                            <div className="profileContent-posts">
+                                <p>No Posts</p>
+                            </div>
+                        }
+                    </div>
+                )
             }
-            if (tab === selectedTab) {
-                tab.classList.toggle('active');
+
+            // About Tab
+            else if (selectedTab === aboutTab) {
+                setTabDisplay(
+                    <div className="profileContent">
+                        <h1>About Page</h1>
+                        <div className="profileContent-about">
+                            <p>Name: {currentProfile.name}</p>
+                            <p>Email: </p>
+                            <p>...</p>
+                        </div>
+                    </div> 
+                )
             }
-        })
 
-        // Render tab specific info
-
+            // Friends Tab
+            else if (selectedTab === friendsTab) {
+                setTabDisplay(
+                    <div className="profileContent">
+                        <h1>Friends Page</h1>
+                        {(currentProfile.friends.length > 0)
+                            ? 
+                            <div className="profileConent-friends">
+                                {currentProfile.friends.map(friend => {
+                                    return (
+                                        <div className="profileContent-individualFriend">
+                                            <p>{friend.name}</p>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            :
+                            <div className="profileConent-friends">
+                                <p>No Friends</p>
+                            </div>
+                        }
+                    </div>
+                )
+            }
+        }
     }, [selectedTab])
 
     // Sets selected tab to the clicked tab
@@ -114,6 +181,7 @@ const Profile = (props) => {
     return(
         <div className="Page">
             {display}
+            {tabDisplay}
         </div>
     )
 }
