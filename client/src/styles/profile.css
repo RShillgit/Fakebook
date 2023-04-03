@@ -1,0 +1,37 @@
+.profileHeader {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+.profileHeader-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid black;
+}
+.profileHeader-navigation {
+    display: flex;
+    border-bottom: 1px solid black;
+}
+.profileHeader-navigation-list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    justify-content: space-evenly;
+    list-style: none;
+    width: 100%;
+}
+.profileHeader-navigation-list li {
+    padding: 1rem;
+    margin: 0.5rem;
+}
+.profileHeader-navigation-list li:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+.profileHeader-navigation-list li.active {
+    color: blue;
+    border-bottom: 2px solid blue;
+}

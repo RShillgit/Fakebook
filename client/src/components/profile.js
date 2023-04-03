@@ -3,32 +3,18 @@ import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
+import '../styles/profile.css';
 
 const Profile = (props) => {
 
     const [cookie, setCookie] = useCookies(['token']);
     const [auth, setAuth] = useState(null);
     const [currentProfile, setCurrentProfile] = useState();
+    const [selectedTab, setSelectedTab] = useState();
     const [display, setDisplay] = useState();
     const {profileId} = useParams();
     const userId = useRef();
     const navigate = useNavigate();
-
-    // Logged in user profile page
-    const authedUserProfilePage = (
-        <div>
-            <Navbar userId={userId.current} serverURL={props.serverURL}/>
-            <h1>My Profile {profileId}</h1>
-        </div>
-    )
-
-    // Other user profile page
-    const otherUserProfilePage = (
-        <div>
-            <Navbar userId={userId.current} serverURL={props.serverURL}/>
-            <h1>Other User's Profile {profileId}</h1>
-        </div>
-    )
 
     // Anytime the cookie changes, set auth
     useEffect(() => {
@@ -65,18 +51,65 @@ const Profile = (props) => {
         // If there is a profile
         if(currentProfile) {
 
-            // If it is the logged in users profile page
-            if (currentProfile._id === userId.current) {
-                setDisplay(authedUserProfilePage)
-            }
-            
-            // If it is some other users profile page
-            else {
-                setDisplay(otherUserProfilePage)
-            }
+            console.log(currentProfile)
+
+            setDisplay(
+                <div>
+                    <Navbar userId={userId.current} serverURL={props.serverURL}/>
+                    <div className="profileHeader">
+                        <div className="profileHeader-actions">
+                            <h1>{currentProfile.name}</h1>
+                            {(currentProfile._id === userId.current) 
+                                ? <button>Edit Profile</button>
+                                : <button>Add Friend</button>
+                            }
+                        </div>
+                        <div className="profileHeader-navigation">
+                            <ul className="profileHeader-navigation-list">
+                                <li id="profileHeader-navigation-list-posts" onClick={navigationTabClick}>Posts</li>
+                                <li id="profileHeader-navigation-list-about" onClick={navigationTabClick}>About</li>
+                                <li id="profileHeader-navigation-list-friends" onClick={navigationTabClick}>Friends</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            )
+
+            // Get posts tab to set initial tab
+            const postsTab = document.getElementById("profileHeader-navigation-list-posts");
+            setSelectedTab(postsTab)
         }
 
     }, [currentProfile])
+
+    // Selected tab changes
+    useEffect(() => {
+
+        // Get all the tabs
+        const postsTab = document.getElementById("profileHeader-navigation-list-posts");
+        const aboutTab = document.getElementById("profileHeader-navigation-list-about");
+        const friendsTab = document.getElementById("profileHeader-navigation-list-friends");
+
+        // Remove "active" class from all tabs and add it to the selected tab
+        const navigationTabs = [postsTab, aboutTab, friendsTab];
+        navigationTabs.forEach(tab => {
+            if(tab.classList.contains('active')) {
+                tab.classList.remove('active');
+            }
+            if (tab === selectedTab) {
+                tab.classList.toggle('active');
+            }
+        })
+
+        // Render tab specific info
+
+    }, [selectedTab])
+
+    // Sets selected tab to the clicked tab
+    const navigationTabClick = (e) => {
+        setSelectedTab(e.target);
+    }
 
     return(
         <div className="Page">
