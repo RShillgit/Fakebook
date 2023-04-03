@@ -15,11 +15,34 @@
     margin: 1rem;
     border: 1px solid black;
 }
-.commentSection .individualComment {
+.individualComment {
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid palegreen;
     padding: 1rem;
     margin: 1rem;
+    width: 80%;
+}
+.individualComment-bottomRow {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.individualComment-bottomRow-left {
+    display: flex;
+    gap: 1rem;
+}
+.individualComment-bottomRow-left .commentLike {
+    border-bottom: 1px solid white;
+}
+.individualComment-bottomRow-left .commentLike:hover {
+    cursor: pointer;
+    border-bottom: 1px solid black;
+}
+.individualComment-bottomRow-left .commentLike.liked {
+    color: blue;
+}
+.individualComment-bottomRow-left .commentLike.liked:hover {
+    border-bottom: 1px solid blue;
 }

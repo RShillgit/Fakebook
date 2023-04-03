@@ -63,6 +63,7 @@ const IndividualPost = (props) => {
     // Anytime the selectedPost or its Comments change, set the display
     useEffect(() => {
         if (selectedPost) {
+            console.log(selectedPost)
             setDisplay(
                 <div>
                     <Navbar userId={userId.current} serverURL={props.serverURL}/>
@@ -88,10 +89,22 @@ const IndividualPost = (props) => {
                     <div className="commentSection">
                         {selectedPost.comments.map(comment => {
                             return (
-                                <div className="individualComment" key={comment._id}>
-                                    <p>{comment.text}</p>
+                                <div className="individualComment" key={comment._id} id={comment._id}>
                                     <p>{comment.author.name}</p>
-                                    <p>{comment.timestamp}</p>
+                                    <p>{comment.text}</p>
+
+                                    <div className="individualComment-bottomRow">
+                                        <div className="individualComment-bottomRow-left">
+                                            {comment.likes.includes(userId.current) 
+                                                ? <p className='commentLike liked' onClick={likeComment}>Like</p> 
+                                                : <p className="commentLike" onClick={likeComment}>Like</p>
+                                            }
+                                            <p>{comment.timestamp}</p>
+                                        </div>
+                                        <div className="individualComment-bottomRow-right">
+                                            <p>{comment.likes.length}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             )
                         })}
@@ -161,7 +174,7 @@ const IndividualPost = (props) => {
         }
 
         // POST request with comment information
-        fetch(`${props.serverURL}/posts/${selectedPost._id}`, {
+        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments`, {
             method: 'POST',
             headers: { 
                 "Content-Type": "application/json",
@@ -172,20 +185,51 @@ const IndividualPost = (props) => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-
-            // Update Posts state with new comments array
-            let newSelectedPost = {
-                ...selectedPost
-            };
-            newSelectedPost.comments = data.newCommentsArray;
-            setSelectedPost(newSelectedPost);
+            setSelectedPost(data.updatedPost);
             e.target.reset();
         })
 
         // TODO: Rendering Erros
         .catch(err => console.log(err))
       
+    }
+
+    // Like a comment
+    const likeComment = (e) => {
+
+        // Get the selected comment
+        const selectedCommentId = e.target.parentElement.parentElement.parentElement.id;
+
+        // PUT request to comment route
+        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${selectedCommentId}`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            // Update selected post's comments array with comment that has updated likes array
+            const newCommentsArray = selectedPost.comments.map(com => {
+                if(com._id.toString() === selectedCommentId) {
+                    return com = data.newComment;
+                }
+                else return com;
+            })
+
+            // Update Selected Post
+            const newSelectedPost = {
+                ...selectedPost
+            }
+            newSelectedPost.comments = newCommentsArray
+
+            // Set state to updated post
+            setSelectedPost(newSelectedPost);
+        })
+        .catch(err => console.log(err))
     }
     
     return(

@@ -44,7 +44,8 @@ body {
     justify-content: space-evenly;
     width: 100%;
 }
-.liked {
+/* This also affects likes on individual post page */
+.individualPost-stats p.liked {
     font-weight: 600;
     color: blue;
 }
