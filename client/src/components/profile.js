@@ -13,6 +13,7 @@ const Profile = (props) => {
     const [selectedTab, setSelectedTab] = useState();
     const [display, setDisplay] = useState();
     const [tabDisplay, setTabDisplay] = useState();
+    const [editing, setEditing] = useState(false);
     const {profileId} = useParams();
     const userId = useRef();
     const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Profile = (props) => {
                         <div className="profileHeader-actions">
                             <h1>{currentProfile.name}</h1>
                             {(currentProfile._id === userId.current) 
-                                ? <button>Edit Profile</button>
+                                ? <button onClick={editProfile}>Edit Profile</button>
                                 : <button>Add Friend</button>
                             }
                         </div>
@@ -105,6 +106,8 @@ const Profile = (props) => {
 
             // Posts Tab
             if (selectedTab === postsTab) {
+                // Set editing to false
+                setEditing(false); 
                 setTabDisplay(
                     <div className="profileContent">
                         <h1>Posts Page</h1>
@@ -134,20 +137,69 @@ const Profile = (props) => {
 
             // About Tab
             else if (selectedTab === aboutTab) {
+
+                // Normal Profile
+                if (!editing) {
+                    setTabDisplay(
+                        <div className="profileContent">
+                            <h1>Profile</h1>
+                            <div className="profileContent-about">
+                                <p>Name: {currentProfile.name}</p>
+                                <p>Bio: </p>
+                                <p>Email: </p>
+                                <p>Phone: </p>
+                                <p>Employment: </p>
+                                <p>Education: </p>
+                            </div>
+                        </div> 
+                    )
+                }
+
+                /*
                 setTabDisplay(
                     <div className="profileContent">
-                        <h1>About Page</h1>
-                        <div className="profileContent-about">
-                            <p>Name: {currentProfile.name}</p>
-                            <p>Email: </p>
-                            <p>...</p>
-                        </div>
+                        <h1>Profile</h1>
+                        {(editing)
+                            ? 
+                            <div className="profileContent-about">
+                                <form id="editProfileForm">
+                                    <label> Name:
+                                        <input onChange={editProfileInputChange} type="text" value={currentProfile.name} required={true} id='editProfile-name' />
+                                    </label>
+                                    <label> Bio:
+                                        <input type="text" id='editProfile-bio' />
+                                    </label>
+                                    <label> Email:
+                                        <input type="text" id='editProfile-email' />
+                                    </label>
+                                    <label> Phone:
+                                        <input type="text" id='editProfile-phone' />
+                                    </label>
+                                </form>
+                                <div className="editProfileForm-buttons">
+                                    <button onClick={cancelEditProfile}>Cancel</button>
+                                    <button form="editProfileForm">Submit</button>
+                                </div>
+                            </div>
+                            : 
+                            <div className="profileContent-about">
+                                <p>Name: {currentProfile.name}</p>
+                                <p>Bio: </p>
+                                <p>Email: </p>
+                                <p>Phone: </p>
+                                <p>Employment: </p>
+                                <p>Education: </p>
+                            </div>
+                        }
                     </div> 
-                )
+                ) 
+                */
             }
 
             // Friends Tab
             else if (selectedTab === friendsTab) {
+                // Set editing to false
+                setEditing(false);
                 setTabDisplay(
                     <div className="profileContent">
                         <h1>Friends Page</h1>
@@ -173,9 +225,77 @@ const Profile = (props) => {
         }
     }, [selectedTab])
 
+    useEffect(() => {
+        if (editing) {
+            setTabDisplay(
+                <div className="profileContent">
+                    <h1>Profile</h1>
+                    <div className="profileContent-about">
+                        <form id="editProfileForm">
+                            <label> Name:
+                                <input onChange={editProfileInputChange} type="text" value={currentProfile.name} required={true} id='editProfile-name' />
+                            </label>
+                            <label> Bio:
+                                <input type="text" id='editProfile-bio' />
+                            </label>
+                            <label> Email:
+                                <input type="text" id='editProfile-email' />
+                            </label>
+                            <label> Phone:
+                                <input type="text" id='editProfile-phone' />
+                            </label>
+                        </form>
+                        <div className="editProfileForm-buttons">
+                            <button onClick={cancelEditProfile}>Cancel</button>
+                            <button form="editProfileForm">Submit</button>
+                        </div>
+                    </div>
+                </div> 
+            )
+        }
+        else if (!editing && currentProfile) {
+            setTabDisplay(
+                <div className="profileContent">
+                    <h1>Profile</h1>
+                    <div className="profileContent-about">
+                        <p>Name: {currentProfile.name}</p>
+                        <p>Bio: </p>
+                        <p>Email: </p>
+                        <p>Phone: </p>
+                        <p>Employment: </p>
+                        <p>Education: </p>
+                    </div>
+                </div> 
+            )
+        }
+    }, [editing])
+
     // Sets selected tab to the clicked tab
     const navigationTabClick = (e) => {
         setSelectedTab(e.target);
+    }
+
+    // Sets about section to properly display edit profile form
+    const editProfile = () => {
+
+        // Set editing to true so about tab knows what to render
+        setEditing(!editing);
+
+        // About tab
+        const aboutTab = document.getElementById("profileHeader-navigation-list-about");
+
+        // Set selected tab to about
+        setSelectedTab(aboutTab);
+    }
+
+    // Handles edit profile form input changes
+    const editProfileInputChange = (e) => {
+        console.log(e.target.value)
+    }
+
+    // Cancels Editing Profile
+    const cancelEditProfile = () => {
+        setEditing(false);
     }
 
     return(
