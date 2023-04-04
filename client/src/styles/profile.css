@@ -36,7 +36,7 @@
     border-bottom: 2px solid blue;
 }
 
-/* Profile Posts Tab */
+/* Posts Tab */
 .profileContent-posts {
     display: flex;
     flex-direction: column;
@@ -63,4 +63,29 @@
 }
 .profileContent-individualPost-stats p:hover {
     border-bottom: 1px solid black;
+}
+
+/* About Tab */
+.profileContent-about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.aboutInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+}
+#editProfileForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
+}
+#editProfileForm label {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
 }

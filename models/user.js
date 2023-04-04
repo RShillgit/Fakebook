@@ -9,6 +9,8 @@ const UserSchema = new Schema({
     name: {type: String},
     fbID: {type: String},
     email: {type: String},
+    bio: {type: String},
+    phone: {type: String},
     jwtoken: {type: String},
     friends : [{type: Schema.Types.ObjectId, ref: "User"}],
     friend_requests : [{type: Schema.Types.ObjectId, ref: "User"}],

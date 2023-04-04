@@ -58,9 +58,37 @@ router.post('/:id', (req, res, next) => {
     res.send(`POST request on User ${req.params.id}`);
 });
 // Update Profile Info
-router.put('/:id', (req, res, next) => {
-    res.send(`Update Profile Info`);
-});
+router.put('/:id', 
+    // Successful Authentication
+    (req, res, next) => {
+
+        // Find and update user data
+        User.findByIdAndUpdate(req.user._id, 
+            {
+                'name': req.body.name,
+                'bio': req.body.bio,
+                'email': req.body.email,
+                'phone': req.body.phone
+            },
+            {new: true}
+        )
+        .populate('friends')
+        .populate('posts')
+        // Successfully updated user
+        .then((newUser) => {
+            return res.status(200).json({success: true, auth: req.isAuthenticated(), newUser: newUser});
+        })
+        // Unsuccessfully updated user
+        .catch(err => {
+            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+        })
+        
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+);
 // Delte Profile
 router.delete('/:id', (req, res, next) => {
     res.send(`Delete User ${req.params.id}`);
