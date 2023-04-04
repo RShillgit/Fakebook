@@ -20,6 +20,7 @@ const Profile = (props) => {
     const [editedBio, setEditedBio] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
     const [editedPhone, setEditedPhone] = useState('');
+    const [friendRequestButtonText, setFriendRequestButtonText] = useState('Add Friend');
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -30,6 +31,8 @@ const Profile = (props) => {
             if(cookie.token) {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/profile/${profileId}`, cookie.token);
                 userId.current = checkTokenResponse.userToken.sub;
+                
+                // Set State Variables
                 setCurrentProfile(checkTokenResponse.userProfile);
                 setEditedName(checkTokenResponse.userProfile.name);
                 setEditedBio(checkTokenResponse.userProfile.bio);
@@ -68,7 +71,12 @@ const Profile = (props) => {
                             <h1>{currentProfile.name}</h1>
                             {(currentProfile._id === userId.current) 
                                 ? <button onClick={editProfile}>Edit Profile</button>
-                                : <button>Add Friend</button>
+                                : <button onClick={handleFriendRequest}>
+                                    {(currentProfile.friend_requests.includes(userId.current))
+                                        ? 'Unsend Friend Request'
+                                        : 'Send Friend Request'
+                                    }
+                                </button>
                             }
                         </div>
                         <div className="profileHeader-navigation">
@@ -84,7 +92,10 @@ const Profile = (props) => {
             // Get posts tab to set initial tab
             const postsTab = document.getElementById("profileHeader-navigation-list-posts");
             if(postsTab) {
-                postsTab.classList.toggle('active');
+                // If the posts tab is NOT active, set it to active
+                if (!postsTab.classList.contains('active')) {
+                    postsTab.classList.toggle('active');
+                }
                 setTabDisplay(postsTabDisplay);
             }
         }
@@ -93,7 +104,9 @@ const Profile = (props) => {
     // Anytime the editing profile inputs change, set tab display so they rerender properly
     // TODO: This is a workaround for the form not working properly
     useEffect(() => {
-        setTabDisplay(editingAboutTabDisplay);
+        if (auth) {
+            setTabDisplay(editingAboutTabDisplay);
+        } 
     }, [editedName, editedBio, editedEmail, editedPhone])
 
     const navigationTabClick = (e) => {
@@ -188,6 +201,40 @@ const Profile = (props) => {
                 setCurrentProfile(data.newUser);
 
                 // TODO: Maybe find a way to just rerender about tab
+            }
+        })
+        .catch(err => console.log(err))
+    }
+
+    const handleFriendRequest = () => {
+
+        let friendRequestsArray = currentProfile.friend_requests;
+
+        // If the user is in the friend requests array already then remove them
+        if (friendRequestsArray.includes(userId.current)) {
+            friendRequestsArray = friendRequestsArray.filter(friend => {
+                return friend !== userId.current;
+            })
+        }
+        // Else, add them to the array
+        else {
+            friendRequestsArray.unshift(userId.current);
+        }
+
+        fetch(`${props.serverURL}/friends`, {
+            method: 'POST',
+            headers: { 
+              "Content-Type": "application/json",
+              Authorization: cookie.token,
+            },
+            body: JSON.stringify({profileId: profileId, friendRequestsArray: friendRequestsArray}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Update currentProfile state
+            if(data.auth && data.success) {
+                setCurrentProfile(data.updatedUser);
             }
         })
         .catch(err => console.log(err))
