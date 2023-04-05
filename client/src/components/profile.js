@@ -245,31 +245,28 @@ const Profile = (props) => {
 
         const senderProfile = currentProfile.friend_requests.find(profile => profile._id === senderId);
 
-        // Get the current user and sender's friend_requests and friends arrays
-        let currentUserFriendRequestsArray = currentProfile.friend_requests;
-        let currentUserFriendsArray = currentProfile.friends;
-        let senderFriendRequestsArray = senderProfile.friend_requests;
-        let senderFriendsArray = senderProfile.friends;
-
-        console.log("Sender Requests Before", senderFriendRequestsArray);
-        console.log("Sender Friends Before", senderFriendsArray);
-        console.log("User Requests Before", currentUserFriendRequestsArray);
-        console.log("User Friends Before", currentUserFriendsArray);
+        // Map the arrays so they only include the object Id's
+        // This prevents infinite nesting inside the arrays
+        let currentUserFriendRequestsArray = currentProfile.friend_requests.map(obj => {
+                return obj._id
+            }
+        )
+        let currentUserFriendsArray = currentProfile.friends.map(obj => {
+                return obj._id
+            }
+        )
+        let senderFriendsArray = senderProfile.friends.map(obj => {
+                return obj._id
+            }
+        )
 
         // Remove sender from friend_requests array 
-        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request._id !== senderId);
-        // Remove current user from senders friend_requests array
-        senderFriendRequestsArray = senderFriendRequestsArray.filter(request => request._id !== currentProfile._id);
+        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request !== senderId);
         
         // Add sender to current user's friends array
-        currentUserFriendsArray.unshift(senderProfile);
+        currentUserFriendsArray.unshift(senderProfile._id);
         // Add User to senders friends array
-        senderFriendsArray.unshift(currentProfile);
-
-        console.log("Sender Requests After", senderFriendRequestsArray);
-        console.log("Sender Friends After", senderFriendsArray);
-        console.log("User Requests After", currentUserFriendRequestsArray);
-        console.log("User Friends After", currentUserFriendsArray);
+        senderFriendsArray.unshift(currentProfile._id);
 
         // Send these arrays to the backend
         fetch(`${props.serverURL}/friends`, {
@@ -281,16 +278,18 @@ const Profile = (props) => {
             body: JSON.stringify({
                 currentUserFriendRequestsArray: currentUserFriendRequestsArray, 
                 currentUserFriendsArray: currentUserFriendsArray, 
-                senderFriendRequestsArray: senderFriendRequestsArray,
                 senderFriendsArray: senderFriendsArray,
                 senderId: senderId
             }),
             mode: 'cors'
         })
         .then(res => res.json())
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data)
+            // Set currentProfile to the updated profile
+            setCurrentProfile(data.updatedUser);
+        })
         .catch(err => console.log(err))
-
     }
 
     // Decline friend request
@@ -387,7 +386,7 @@ const Profile = (props) => {
                 <div className="profileContent-friends">
                     {currentProfile.friends.map(friend => {
                         return (
-                            <div className="profileContent-individualFriend">
+                            <div key={friend._id} className="profileContent-individualFriend">
                                 <p>{friend.name}</p>
                             </div>
                         )
@@ -398,7 +397,7 @@ const Profile = (props) => {
                     <p>No Friends</p>
                 </div>
             }
-            {(currentProfile && currentProfile.friend_requests.length > 0)
+            {(currentProfile && currentProfile._id === userId.current && currentProfile.friend_requests.length > 0)
                 ?
                 <div className="profileContent-friendRequests">
                     {currentProfile.friend_requests.map(friendRequest => {
@@ -414,9 +413,7 @@ const Profile = (props) => {
                     })}
                 </div>
                 :
-                <div className="profileContent-friendRequests">
-                    <p>No Friend Requests</p>
-                </div>
+                <></>
             }
         </div>
     )

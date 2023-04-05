@@ -48,8 +48,8 @@ router.put('/',
         // Update user
         User.findByIdAndUpdate(req.user._id, 
             {
-                "friend_requests": req.body.newFriendRequestsArray,
-                "friends": req.body.newFriendsArray
+                "friend_requests": req.body.currentUserFriendRequestsArray,
+                "friends": req.body.currentUserFriendsArray
             },
             {new: true}
         )
@@ -59,13 +59,12 @@ router.put('/',
 
         // Successfully updated user
         .then(updatedUser => {
-
+   
             // Update the sender's information
             User.updateOne(
                 {_id: req.body.senderId},
                 { $set: 
                     {
-                        friend_requests: req.body.senderFriendRequestsArray,
                         friends: req.body.senderFriendsArray
                     }
                 }
