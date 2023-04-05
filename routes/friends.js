@@ -1,6 +1,7 @@
 var express = require('express');
 const User = require('../models/user');
 var router = express.Router();
+const async = require('async');
 
 /*
 * ------------------ /friends ------------------ 
@@ -115,8 +116,75 @@ router.put('/',
     }
 );
 // Delte Friend
-router.delete('/', (req, res, next) => {
-    res.json(`Delete User From Friends List`);
-});
+router.delete('/', 
+
+    // Successful Authentication
+    (req, res, next) => {
+        
+        async.parallel(
+            {
+                updateUser(callback) {
+                    User.findById(req.user._id)
+                    .then(currentUser => {
+
+                        let friendsArray = currentUser.friends;
+
+                        // Remove friend from array
+                        friendsArray = friendsArray.filter(friend => friend.toString() !== req.body.friendId);
+
+                        User.findByIdAndUpdate(req.user._id, 
+                            {
+                                "friends": friendsArray
+                            },
+                            {new: true}
+                        )
+                        .populate('friends')
+                        .populate('posts')
+                        .populate('friend_requests')
+                        .then(updatedUser => {
+                            callback(null, updatedUser);
+                        }) 
+                    })
+                },
+                updateFriend(callback) {
+                    User.findById(req.body.friendId)
+                    .then(otherUser => {
+
+                        let friendsArray = otherUser.friends;
+
+                        // Remove friend from array
+                        friendsArray = friendsArray.filter(friend => friend.toString() !== req.user._id.toString());
+
+                        // Update this user
+                        User.findByIdAndUpdate(req.body.friendId, 
+                            {
+                                "friends": friendsArray
+                            },
+                            {new: true}
+                        )
+                        .populate('friends')
+                        .populate('posts')
+                        .populate('friend_requests')
+                        .then(updatedFriend => {
+                            callback(null, updatedFriend);
+                        }) 
+                    })
+                }
+            },(err, results) => {
+                // Unsuccessful
+                if(err) {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                }
+                // Successful
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), currentUserUpdated: results.updateUser, friendUpdated: results.updateUser});
+            }
+        )
+
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+);
 
 module.exports = router;

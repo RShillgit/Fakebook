@@ -341,6 +341,25 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Remove friend from friends list
+    const removeFriend = (friendId) => {
+        fetch(`${props.serverURL}/friends`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({friendId: friendId}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Set current profile state to updated user
+            setCurrentProfile(data.currentUserUpdated)
+        })
+        .catch(err => console.log(err))
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
@@ -424,6 +443,7 @@ const Profile = (props) => {
                         return (
                             <div key={friend._id} className="profileContent-individualFriend">
                                 <p>{friend.name}</p>
+                                <button onClick={() => removeFriend(friend._id)}>Remove Friend</button>
                             </div>
                         )
                     })}

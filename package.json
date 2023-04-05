@@ -8,6 +8,7 @@
     "serverstart": "DEBUG=odin-book:* npm run devstart"
   },
   "dependencies": {
+    "async": "^3.2.4",
     "bcrypt": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "cookie-session": "^2.0.0",
