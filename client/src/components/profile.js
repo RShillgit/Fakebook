@@ -262,7 +262,6 @@ const Profile = (props) => {
 
         // Remove sender from friend_requests array 
         currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request !== senderId);
-        
         // Add sender to current user's friends array
         currentUserFriendsArray.unshift(senderProfile._id);
         // Add User to senders friends array
@@ -285,9 +284,10 @@ const Profile = (props) => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            // Set currentProfile to the updated profile
-            setCurrentProfile(data.updatedUser);
+            // If it was successful set currentProfile to the updated profile
+            if (data.success) {
+                setCurrentProfile(data.updatedUser);
+            }
         })
         .catch(err => console.log(err))
     }
@@ -295,14 +295,36 @@ const Profile = (props) => {
     // Decline friend request
     const declineFriendRequest = (senderId) => {
 
-        let currentUserFriendRequestsArray = currentProfile.friend_requests;
-        let currentUserFriendsArray = currentProfile.friends;
-
+        // Map the arrays so they only include the object Id's
+        // This prevents infinite nesting inside the arrays
+        let currentUserFriendRequestsArray = currentProfile.friend_requests.map(obj => {
+                return obj._id
+            }
+        )   
         // Remove sender from friend_requests array
-        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request._id !== senderId);
+        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request !== senderId);
         
-        // send these arrays to the backend
-
+        // send the array to the backend
+        // Send these arrays to the backend
+        fetch(`${props.serverURL}/friends`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({
+                currentUserFriendRequestsArray: currentUserFriendRequestsArray, 
+            }),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            // If it was successful set currentProfile to the updated profile
+            if(data.success) {
+                setCurrentProfile(data.updatedUser);
+            }
+        })
+        .catch(err => console.log(err))
     }
 
     // Displays for each tab

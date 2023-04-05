@@ -45,43 +45,69 @@ router.put('/',
     // Successful Authentication
     (req, res, next) => {
 
-        // Update user
-        User.findByIdAndUpdate(req.user._id, 
-            {
-                "friend_requests": req.body.currentUserFriendRequestsArray,
-                "friends": req.body.currentUserFriendsArray
-            },
-            {new: true}
-        )
-        .populate('friends')
-        .populate('posts')
-        .populate('friend_requests')
+        // Accpeting friend request
+        if (req.body.currentUserFriendRequestsArray && req.body.currentUserFriendsArray 
+                && req.body.senderFriendsArray && req.body.senderId) {
 
-        // Successfully updated user
-        .then(updatedUser => {
-   
-            // Update the sender's information
-            User.updateOne(
-                {_id: req.body.senderId},
-                { $set: 
-                    {
-                        friends: req.body.senderFriendsArray
-                    }
-                }
+            // Update user
+            User.findByIdAndUpdate(req.user._id, 
+                {
+                    "friend_requests": req.body.currentUserFriendRequestsArray,
+                    "friends": req.body.currentUserFriendsArray
+                },
+                {new: true}
             )
-            // Successfully updated sender's information
-            .then(() => {
-                return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: updatedUser});
+            .populate('friends')
+            .populate('posts')
+            .populate('friend_requests')
+
+            // Successfully updated user
+            .then(updatedUser => {
+    
+                // Update the sender's information
+                User.updateOne(
+                    {_id: req.body.senderId},
+                    { $set: 
+                        {
+                            friends: req.body.senderFriendsArray
+                        }
+                    }
+                )
+                // Successfully updated sender's information
+                .then(() => {
+                    return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: updatedUser});
+                })
+                // Unsuccessfully updated sender's information
+                .catch(err => {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                })
             })
-            // Unsuccessfully updated sender's information
+            // Unsuccessfully updated user
             .catch(err => {
                 return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
             })
-        })
-        // Unsuccessfully updated user
-        .catch(err => {
-            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
-        })
+        }
+        // Declining Friend Request
+        else {
+            // Update user
+            User.findByIdAndUpdate(req.user._id, 
+                {
+                    "friend_requests": req.body.currentUserFriendRequestsArray,
+                },
+                {new: true}
+            )
+            .populate('friends')
+            .populate('posts')
+            .populate('friend_requests')
+            // Successfully updated user
+            .then(updatedUser => {
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: updatedUser});
+            })
+            // Unsuccessfully updated user
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
+        }
     },
     // Unsuccessful Authentication
     (err, req, res) => {
