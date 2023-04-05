@@ -72,7 +72,7 @@ const Profile = (props) => {
                             {(currentProfile._id === userId.current) 
                                 ? <button onClick={editProfile}>Edit Profile</button>
                                 : <button onClick={handleFriendRequest}>
-                                    {(currentProfile.friend_requests.includes(userId.current))
+                                    {(currentProfile.friend_requests.some(req => req._id === userId.current))
                                         ? 'Unsend Friend Request'
                                         : 'Send Friend Request'
                                     }
@@ -89,14 +89,28 @@ const Profile = (props) => {
                     </div>
                 </div>
             )
-            // Get posts tab to set initial tab
+
+            // Get the tabs
             const postsTab = document.getElementById("profileHeader-navigation-list-posts");
-            if(postsTab) {
-                // If the posts tab is NOT active, set it to active
-                if (!postsTab.classList.contains('active')) {
-                    postsTab.classList.toggle('active');
+            const aboutTab = document.getElementById("profileHeader-navigation-list-about");
+            const friendsTab = document.getElementById("profileHeader-navigation-list-friends");
+
+            // If a tab is already active then set the appropriate display
+            if(postsTab && aboutTab && friendsTab) {
+                if (postsTab.classList.contains('active')) {
+                    setTabDisplay(postsTabDisplay);
                 }
-                setTabDisplay(postsTabDisplay);
+                else if (aboutTab.classList.contains('active')) {
+                    setTabDisplay(aboutTabDisplay);
+                }
+                else if (friendsTab.classList.contains('active')) {
+                    setTabDisplay(friendsTabDisplay);
+                }
+                // No tab is currently active, so set it to posts
+                else {
+                    postsTab.classList.toggle('active');
+                    setTabDisplay(postsTabDisplay);
+                }
             }
         }
     }, [currentProfile])
@@ -105,7 +119,9 @@ const Profile = (props) => {
     // TODO: This is a workaround for the form not working properly
     useEffect(() => {
         if (auth) {
-            setTabDisplay(editingAboutTabDisplay);
+            if (tabDisplay) {
+                setTabDisplay(editingAboutTabDisplay);
+            }
         } 
     }, [editedName, editedBio, editedEmail, editedPhone])
 
@@ -211,9 +227,9 @@ const Profile = (props) => {
         let friendRequestsArray = currentProfile.friend_requests;
 
         // If the user is in the friend requests array already then remove them
-        if (friendRequestsArray.includes(userId.current)) {
+        if (friendRequestsArray.some(req => req._id === userId.current)) {
             friendRequestsArray = friendRequestsArray.filter(friend => {
-                return friend !== userId.current;
+                return friend._id !== userId.current;
             })
         }
         // Else, add them to the array
@@ -435,7 +451,12 @@ const Profile = (props) => {
                     })}
                 </div>
                 :
-                <></>
+                <>
+                    {(currentProfile && currentProfile._id === userId.current)
+                        ? <p>No Friend Requests</p>
+                        : <></>
+                    }
+                </>
             }
         </div>
     )
