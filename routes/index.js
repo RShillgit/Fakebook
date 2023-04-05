@@ -23,11 +23,11 @@ router.get('/',
      
       // Successfully got all posts
       .then(allPosts => {
-        return res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, allPosts: allPosts});
+        return res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, allPosts: allPosts, currentUser: req.user});
       })
       // Unsuccessfully got all posts
       .catch(err => {
-        return res.status(401).json({success: false, err, auth: req.isAuthenticated()});
+        return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
       })
   },
   (err, req, res) => {

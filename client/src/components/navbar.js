@@ -27,12 +27,12 @@ const Navbar = (props) => {
             <a href="/">
                 <button>Home</button>
             </a>
-            <a href='/friends'>
-                <button>Friends</button>
+            <a href='/messages'>
+                <button>Messages</button>
             </a>
 
-            <a href={`/profile/${props.userId}`}>
-                <p>Logged in as user {props.userId}</p>
+            <a href={`/profile/${props.currentUser._id}`}>
+                <p>Logged in as {props.currentUser.name}</p>
             </a>
             <button onClick={userLogout}>Logout</button>
         </div>

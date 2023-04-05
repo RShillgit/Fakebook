@@ -16,6 +16,7 @@ const Profile = (props) => {
     const [tabDisplay, setTabDisplay] = useState();
     const {profileId} = useParams();
     const userId = useRef();
+    const authedUser = useRef();
     const [editedName, setEditedName] = useState('');
     const [editedBio, setEditedBio] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
@@ -30,6 +31,7 @@ const Profile = (props) => {
             if(cookie.token) {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/profile/${profileId}`, cookie.token);
                 userId.current = checkTokenResponse.userToken.sub;
+                authedUser.current = checkTokenResponse.authedUser;
                 
                 // Set State Variables
                 setCurrentProfile(checkTokenResponse.userProfile);
@@ -64,7 +66,7 @@ const Profile = (props) => {
         if(currentProfile) {
             setDisplay(
                 <div>
-                    <Navbar userId={userId.current} serverURL={props.serverURL}/>
+                    <Navbar currentUser={authedUser.current} serverURL={props.serverURL}/>
                     <div className="profileHeader">
                         <div className="profileHeader-actions">
                             <h1>{currentProfile.name}</h1>

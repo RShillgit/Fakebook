@@ -13,6 +13,7 @@ function App(props) {
   const [createPostErrorMessage, setCreatePostErrorMessage] = useState();
   const [allPosts, setAllPosts] = useState();
   const userId = useRef();
+  const currentUser = useRef();
   const newPostText = useRef();
   const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ function App(props) {
           // If the resposne is successful
           if (checkTokenResponse.success === true) {
             userId.current = checkTokenResponse.userToken.sub; // TODO: checkTokenResponse Also includes iat & exp values
+            currentUser.current = checkTokenResponse.currentUser
             setAllPosts(checkTokenResponse.allPosts)
             setAuth(checkTokenResponse.auth)
           }
@@ -62,7 +64,7 @@ function App(props) {
     if(allPosts) {
       setDisplay(
         <div>
-          <Navbar userId={userId.current} serverURL={props.serverURL} />
+          <Navbar currentUser={currentUser.current} serverURL={props.serverURL} />
           <div className='non-navbar-content'>
   
             <div className='create-post'>

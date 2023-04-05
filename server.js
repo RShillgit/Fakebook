@@ -12,6 +12,7 @@ var indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const profileRouter = require('./routes/profile');
 const friendsRouter = require('./routes/friends');
+const messagesRouter = require('./routes/messages');
 const jwtUtils = require('./utils/jwtUtils');
 
 var app = express();
@@ -76,6 +77,7 @@ app.use('/', indexRouter);
 app.use('/posts', passport.authenticate('jwt', {session: false}), postsRouter);
 app.use('/profile', passport.authenticate('jwt', {session: false}), profileRouter);
 app.use('/friends', passport.authenticate('jwt', {session: false}), friendsRouter);
+app.use('/messages', passport.authenticate('jwt', {session: false}), messagesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

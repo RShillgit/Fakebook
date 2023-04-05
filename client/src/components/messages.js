@@ -4,12 +4,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 
-const Friends = (props) => {
-        
+const Messages = (props) => {
+
     const [cookie, setCookie] = useCookies(['token']);
     const [auth, setAuth] = useState(null);
     const [display, setDisplay] = useState();
     const userId = useRef();
+    const currentUser = useRef();
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -18,9 +19,10 @@ const Friends = (props) => {
         (async () => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
-                const validToken = await props.checkToken(`${props.serverURL}/friends`, cookie.token);
-                userId.current = validToken.userToken.sub;
-                setAuth(validToken.auth)
+                const checkTokenResponse = await props.checkToken(`${props.serverURL}/messages`, cookie.token);
+                userId.current = checkTokenResponse.userToken.sub;
+                currentUser.current = checkTokenResponse.currentUser;
+                setAuth(checkTokenResponse.auth)
             }
             else setAuth(false);
         })()
@@ -38,8 +40,8 @@ const Friends = (props) => {
         else if (auth === true) {
             setDisplay(
                 <div>
-                    <Navbar userId={userId.current} serverURL={props.serverURL} />
-                    <h1>Friends List</h1>
+                    <Navbar currentUser={currentUser.current} serverURL={props.serverURL} />
+                    <h1>Messages</h1>
                 </div>
             )
         }
@@ -55,4 +57,4 @@ const Friends = (props) => {
         </div>
     )
 }
-export default Friends;
+export default Messages;

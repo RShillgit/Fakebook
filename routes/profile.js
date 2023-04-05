@@ -40,7 +40,7 @@ router.get('/:id',
 
         // Successfully found user information
         .then(userProfile => {
-            res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, userProfile})
+            res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, userProfile, authedUser: req.user})
         })
 
         // Unsuccessfully found user information
