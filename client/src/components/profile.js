@@ -20,7 +20,6 @@ const Profile = (props) => {
     const [editedBio, setEditedBio] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
     const [editedPhone, setEditedPhone] = useState('');
-    const [friendRequestButtonText, setFriendRequestButtonText] = useState('Add Friend');
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -116,7 +115,6 @@ const Profile = (props) => {
     }, [currentProfile])
 
     // Anytime the editing profile inputs change, set tab display so they rerender properly
-    // TODO: This is a workaround for the form not working properly
     useEffect(() => {
         if (auth) {
             if (tabDisplay) {

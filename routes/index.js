@@ -63,6 +63,9 @@ router.post('/register', (req, res, next) => {
           name: `${req.body.firstName} ${req.body.lastName}`,
           hash: hash,
           salt: salt,
+          email: '',
+          bio: '',
+          phone: ''
       })
       newUser.save()
         .then(result => {

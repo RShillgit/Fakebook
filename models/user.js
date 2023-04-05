@@ -6,7 +6,7 @@ const UserSchema = new Schema({
     username: {type: String, maxLength: 50},
     hash: {type: String},
     salt: {type: String},
-    name: {type: String},
+    name: {type: String, required: true},
     fbID: {type: String},
     email: {type: String},
     bio: {type: String},

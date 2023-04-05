@@ -85,7 +85,9 @@ passport.use(new FacebookStrategy({
                         fbID : id , 
                         name, 
                         email,
-                        jwtoken: `Bearer ${accessToken}`
+                        jwtoken: `Bearer ${accessToken}`,
+                        bio: '',
+                        phone: ''
                     });
                     user.save()
                         .then(console.log('Facebook profile data stored in database'))
