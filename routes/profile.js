@@ -36,6 +36,7 @@ router.get('/:id',
         User.findOne({ _id: req.params.id })
         .populate('friends')
         .populate('posts')
+        .populate('friend_requests')
 
         // Successfully found user information
         .then(userProfile => {
@@ -74,6 +75,7 @@ router.put('/:id',
         )
         .populate('friends')
         .populate('posts')
+        .populate('friend_requests')
         // Successfully updated user
         .then((newUser) => {
             return res.status(200).json({success: true, auth: req.isAuthenticated(), newUser: newUser});

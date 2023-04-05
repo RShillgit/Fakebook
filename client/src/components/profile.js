@@ -240,6 +240,72 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Accept friend request
+    const acceptFriendRequest = (senderId) => {
+
+        const senderProfile = currentProfile.friend_requests.find(profile => profile._id === senderId);
+
+        // Get the current user and sender's friend_requests and friends arrays
+        let currentUserFriendRequestsArray = currentProfile.friend_requests;
+        let currentUserFriendsArray = currentProfile.friends;
+        let senderFriendRequestsArray = senderProfile.friend_requests;
+        let senderFriendsArray = senderProfile.friends;
+
+        console.log("Sender Requests Before", senderFriendRequestsArray);
+        console.log("Sender Friends Before", senderFriendsArray);
+        console.log("User Requests Before", currentUserFriendRequestsArray);
+        console.log("User Friends Before", currentUserFriendsArray);
+
+        // Remove sender from friend_requests array 
+        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request._id !== senderId);
+        // Remove current user from senders friend_requests array
+        senderFriendRequestsArray = senderFriendRequestsArray.filter(request => request._id !== currentProfile._id);
+        
+        // Add sender to current user's friends array
+        currentUserFriendsArray.unshift(senderProfile);
+        // Add User to senders friends array
+        senderFriendsArray.unshift(currentProfile);
+
+        console.log("Sender Requests After", senderFriendRequestsArray);
+        console.log("Sender Friends After", senderFriendsArray);
+        console.log("User Requests After", currentUserFriendRequestsArray);
+        console.log("User Friends After", currentUserFriendsArray);
+
+        // Send these arrays to the backend
+        fetch(`${props.serverURL}/friends`, {
+            method: 'PUT',
+            headers: { 
+              "Content-Type": "application/json",
+              Authorization: cookie.token,
+            },
+            body: JSON.stringify({
+                currentUserFriendRequestsArray: currentUserFriendRequestsArray, 
+                currentUserFriendsArray: currentUserFriendsArray, 
+                senderFriendRequestsArray: senderFriendRequestsArray,
+                senderFriendsArray: senderFriendsArray,
+                senderId: senderId
+            }),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.log(err))
+
+    }
+
+    // Decline friend request
+    const declineFriendRequest = (senderId) => {
+
+        let currentUserFriendRequestsArray = currentProfile.friend_requests;
+        let currentUserFriendsArray = currentProfile.friends;
+
+        // Remove sender from friend_requests array
+        currentUserFriendRequestsArray = currentUserFriendRequestsArray.filter(request => request._id !== senderId);
+        
+        // send these arrays to the backend
+
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
@@ -318,7 +384,7 @@ const Profile = (props) => {
             <h1>Friends Page</h1>
             {(currentProfile && currentProfile.friends.length > 0)
                 ? 
-                <div className="profileConent-friends">
+                <div className="profileContent-friends">
                     {currentProfile.friends.map(friend => {
                         return (
                             <div className="profileContent-individualFriend">
@@ -328,8 +394,28 @@ const Profile = (props) => {
                     })}
                 </div>
                 :
-                <div className="profileConent-friends">
+                <div className="profileContent-friends">
                     <p>No Friends</p>
+                </div>
+            }
+            {(currentProfile && currentProfile.friend_requests.length > 0)
+                ?
+                <div className="profileContent-friendRequests">
+                    {currentProfile.friend_requests.map(friendRequest => {
+                        return (
+                            <div className="profileContent-individualFriendRequest" key={friendRequest._id}>
+                                <a href={`/profile/${friendRequest._id}`}>
+                                    {friendRequest.name} sent you a friend request
+                                </a>
+                                <button onClick={() => acceptFriendRequest(friendRequest._id)}>Accept</button>
+                                <button onClick={() => declineFriendRequest(friendRequest._id)}>Decline</button>
+                            </div>
+                        )
+                    })}
+                </div>
+                :
+                <div className="profileContent-friendRequests">
+                    <p>No Friend Requests</p>
                 </div>
             }
         </div>
