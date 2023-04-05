@@ -70,12 +70,19 @@ const Profile = (props) => {
                             <h1>{currentProfile.name}</h1>
                             {(currentProfile._id === userId.current) 
                                 ? <button onClick={editProfile}>Edit Profile</button>
-                                : <button onClick={handleFriendRequest}>
+                                : 
+                                <>
                                     {(currentProfile.friend_requests.some(req => req._id === userId.current))
-                                        ? 'Unsend Friend Request'
-                                        : 'Send Friend Request'
+                                        ? <button onClick={handleFriendRequest}>Unsend Friend Request</button>
+                                        : 
+                                        <>
+                                            {(currentProfile.friends.some(friend => friend._id === userId.current))
+                                                ?<button onClick={() => removeFriend(currentProfile._id)}>Remove Friend</button>
+                                                :<button onClick={handleFriendRequest}>Send Friend Request</button>
+                                            }
+                                        </>
                                     }
-                                </button>
+                                </>
                             }
                         </div>
                         <div className="profileHeader-navigation">
@@ -354,8 +361,13 @@ const Profile = (props) => {
         })
         .then(res => res.json())
         .then(data => {
-            // Set current profile state to updated user
-            setCurrentProfile(data.currentUserUpdated)
+            // Set current profile to the proper user
+            if(currentProfile._id === userId.current) {
+                setCurrentProfile(data.currentUserUpdated);
+            }
+            else {
+                setCurrentProfile(data.friendUpdated);
+            }
         })
         .catch(err => console.log(err))
     }
@@ -437,17 +449,20 @@ const Profile = (props) => {
         <div className="profileContent">
             <h1>Friends Page</h1>
             {(currentProfile && currentProfile.friends.length > 0)
-                ? 
+                ?                 
                 <div className="profileContent-friends">
                     {currentProfile.friends.map(friend => {
                         return (
                             <div key={friend._id} className="profileContent-individualFriend">
                                 <p>{friend.name}</p>
-                                <button onClick={() => removeFriend(friend._id)}>Remove Friend</button>
+                                {(currentProfile && currentProfile._id === userId.current)
+                                    ?<button onClick={() => removeFriend(friend._id)}>Remove Friend</button>
+                                    :<></>
+                                }
                             </div>
                         )
                     })}
-                </div>
+                </div>   
                 :
                 <div className="profileContent-friends">
                     <p>No Friends</p>

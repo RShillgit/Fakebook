@@ -176,7 +176,7 @@ router.delete('/',
                     return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
                 }
                 // Successful
-                return res.status(200).json({success: true, auth: req.isAuthenticated(), currentUserUpdated: results.updateUser, friendUpdated: results.updateUser});
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), currentUserUpdated: results.updateUser, friendUpdated: results.updateFriend});
             }
         )
 
