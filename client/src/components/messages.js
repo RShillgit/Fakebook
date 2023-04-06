@@ -11,6 +11,7 @@ const Messages = (props) => {
     const [display, setDisplay] = useState();
     const userId = useRef();
     const currentUser = useRef();
+    const [allUsers, setAllUsers] = useState();
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -22,6 +23,7 @@ const Messages = (props) => {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/messages`, cookie.token);
                 userId.current = checkTokenResponse.userToken.sub;
                 currentUser.current = checkTokenResponse.currentUser;
+                setAllUsers(checkTokenResponse.allUsers);
                 setAuth(checkTokenResponse.auth)
             }
             else setAuth(false);
@@ -36,8 +38,19 @@ const Messages = (props) => {
         if (auth === null) {
             setDisplay(<Loading />)
         }
-        // If the user is authorized render page
-        else if (auth === true) {
+        // Not Logged In redirect to login
+        else if (auth === false) {
+            navigate('/login')
+        }
+    }, [auth])
+
+    // Anytime all users changes set the display
+    useEffect(() => {
+
+        // If the user is authorized and all users exist render page
+        if (auth === true && allUsers) {
+            console.log(allUsers)
+            
             setDisplay(
                 <div>
                     <Navbar currentUser={currentUser.current} serverURL={props.serverURL} />
@@ -45,11 +58,8 @@ const Messages = (props) => {
                 </div>
             )
         }
-        // Not Logged In redirect to login
-        else {
-            navigate('/login')
-        }
-    }, [auth])
+
+    }, [allUsers])
 
     return (
         <div className="Page">

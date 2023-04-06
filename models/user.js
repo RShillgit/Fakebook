@@ -15,6 +15,7 @@ const UserSchema = new Schema({
     friends : [{type: Schema.Types.ObjectId, ref: "User"}],
     friend_requests : [{type: Schema.Types.ObjectId, ref: "User"}],
     posts: [{type: Schema.Types.ObjectId, ref: "Post"}],
+    chats: [{type: Schema.Types.ObjectId, ref: "Chat"}]
 })
 
 // Export model
