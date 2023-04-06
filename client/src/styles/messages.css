@@ -15,9 +15,16 @@
 }
 .messages-searchbar-suggestions {
     position: absolute;
-    border: 1px solid black;
     background-color: lavender;
+}
+.messages-searchbar-suggestions-individualSuggestion {
     padding: 1rem;
+    border: 1px solid black;
+    margin: 0.5rem;
+}
+.messages-searchbar-suggestions-individualSuggestion:hover {
+    cursor: pointer;
+    background-color: antiquewhite;
 }
 .chat-container {
     display: flex;
