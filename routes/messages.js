@@ -18,7 +18,13 @@ router.get('/',
                 // Get current user
                 currentUser(callback) {
                     User.findOne({_id: req.user._id})
-                    .populate('chats')
+                    .populate({
+                        path: 'chats', 
+                        populate: {
+                            path: 'members',
+                            model: 'User'
+                        }
+                    })
 
                     // Successfully found user
                     .then(currentUser => {
@@ -83,6 +89,13 @@ router.post('/',
                             },
                             {new: true}
                         )
+                        .populate({
+                            path: 'chats', 
+                            populate: {
+                                path: 'messages',
+                                model: 'Message'
+                            }
+                        })
                         // Successfully updated user
                         .then(updatedUser => {
                             callback(null, updatedUser)
@@ -100,6 +113,13 @@ router.post('/',
                             },
                             {new: true}
                         )
+                        .populate({
+                            path: 'chats', 
+                            populate: {
+                                path: 'messages',
+                                model: 'Message'
+                            }
+                        })
                         // Successfully updated recipient
                         .then(updatedRecipient => {
                             callback(null, updatedRecipient);
@@ -124,6 +144,7 @@ router.post('/',
     }
 )
 
+// Create a message
 router.put('/', 
     (req, res) => {
 
@@ -160,7 +181,24 @@ router.put('/',
                 })
                 // Successfully found message receiver
                 .then(receiver => {
-                    return res.status(200).json({success: true, auth: req.isAuthenticated(), newMessageReceiver: receiver})
+
+                    // Get all users 
+                    User.find({})
+                    .populate({
+                        path: 'chats', 
+                        populate: {
+                            path: 'messages',
+                            model: 'Message'
+                        }
+                    })
+                    // Successfully got all users
+                    .then(newAllUsers => {
+                        return res.status(200).json({success: true, auth: req.isAuthenticated(), newMessageReceiver: receiver, newAllUsers: newAllUsers})
+                    })
+                    // Unsuccessfully got all users
+                    .catch(err => {
+                        return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                    })
                 })
                 // Unsuccessfully found message receiver
                 .catch(err => {
@@ -176,6 +214,14 @@ router.put('/',
     // Unsuccessful Authentication
     (err, req, res) => {
         return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
+
+router.delete('/',
+    (req, res) => {
+    },
+    (err, req, res) => {
+
     }
 )
 

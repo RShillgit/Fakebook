@@ -56,25 +56,28 @@ const Messages = (props) => {
 
             // Displaying each user the current user has chats with
             // Dont forget onclick that sets the messageReceiver
-            /* 
-            currentUser.chats.forEach(chat => {
+
+            /*
+            {(currentUser.chats.forEach(chat => {
                 chat.members.map(member => {
-                    if(member._id !== currentUser._id) {
-                        <div className="sidebar-currentChats-individualChat" onClick={userSelect(member)} key={member._id}>
-                            <p>{member.name}</p>
-                        </div>
+                    if (member._id !== currentUser._id.toString()) {
+                        return (
+                            <div className="sidebar-currentChats-individualChat" onClick={() => userSelect(member)} key={member._id}>
+                                <p>{member.name}</p>
+                            </div>
+                        )
                     }
+                    return null
                 })
-            })
+            }))}
             */
 
+            
             setDisplay(
                 <div>
                     <div className="sidebar-currentChats">
                         <h1>Chats</h1>
-                        <p>John Doe</p>
-                        <p>Bob the Builder</p>
-                        <p>etc..</p>
+
                     </div>
                 </div>
             )
@@ -85,7 +88,7 @@ const Messages = (props) => {
     // Anytime all users changes
     useEffect(() => {
         if(auth && allUsers) {
-            console.log(allUsers)
+            //console.log(allUsers)
         }
     }, [allUsers])
 
@@ -102,10 +105,13 @@ const Messages = (props) => {
             })
             const currentChat = chats[0];
 
+            // Reverse the messages array to get messages in chronological order
+            const messagesArrayReversed = [...currentChat.messages].reverse();
+
             setMessagesDisplay(
                 <div className="chat-container">
                     <div className="chat-allMessages">
-                        {currentChat.messages.reverse().map(message => {
+                        {messagesArrayReversed.map(message => {
 
                             if(message.sender === currentUser._id.toString()) {
                                 return (
@@ -145,11 +151,12 @@ const Messages = (props) => {
 
         // Find the chat ID
         const chat = currentUser.chats.filter(chat => {
-            if (chat.members.some(member => member === messageReceiver._id.toString())) {
+            if (chat.members.some(member => member._id === messageReceiver._id)) {
                 return chat
             }
             return false
         })
+        console.log(chat)
 
         // Send message info to the backend
         fetch(`${props.serverURL}/messages`, {
@@ -169,9 +176,9 @@ const Messages = (props) => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
             sendMessageForm.reset();
             setMessageReceiver(data.newMessageReceiver);
+            setAllUsers(data.newAllUsers);
         })
         .catch(err => console.log(err)) 
     }
@@ -181,8 +188,11 @@ const Messages = (props) => {
 
         // Check for chats with this user
         const checkForRecipient = currentUser.chats.filter(chat => {
-            if (chat.members.some(member => member === selectedUser._id.toString())) {
-                return chat
+            if (chat.members) {
+                if (chat.members.some(member => member._id === selectedUser._id.toString())) {
+                    return chat
+                } 
+                return false
             }
             return false
         })
@@ -202,7 +212,7 @@ const Messages = (props) => {
             .then(res => res.json())
             .then(data => {
                 setCurrentUser(data.updatedUser);
-                setMessageReceiver(selectedUser);
+                setMessageReceiver(data.updatedRecipient);
                 setSearchQuery(""); // Clear the input
                 // Also have data.updatedRecipient which is the updated version of selectedUser
             })
@@ -238,7 +248,7 @@ const Messages = (props) => {
                                     allUsers.filter(user => {
                                         if (searchQuery === '') {
                                             return null;
-                                        } else if (user.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+                                        } else if (user.name.toLowerCase().includes(searchQuery.toLowerCase()) && user._id !== currentUser._id ) {
                                             return user;
                                         } else {
                                             return null;
