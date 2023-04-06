@@ -1,0 +1,28 @@
+.messages-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+.messages-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+.messages-main {
+    display: flex;
+    flex-direction: column;
+}
+.messages-searchbar {
+    border: 2px solid green;
+}
+.messages-searchbar-suggestions {
+    position: absolute;
+    border: 1px solid black;
+    background-color: lavender;
+    padding: 1rem;
+}
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    width: 100%;
+}
