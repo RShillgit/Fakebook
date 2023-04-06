@@ -3,6 +3,7 @@ var router = express.Router();
 const jwtUtils = require('../utils/jwtUtils');
 const User = require('../models/user');
 const Chat = require('../models/chat');
+const Message = require('../models/message');
 const async = require('async');
 
 router.get('/', 
@@ -28,7 +29,13 @@ router.get('/',
                 // Get all users
                 allUsers(callback) {
                     User.find({})
-                    .populate('chats')
+                    .populate({
+                        path: 'chats', 
+                        populate: {
+                            path: 'messages',
+                            model: 'Message'
+                        }
+                    })
 
                     // Successfully found all users
                     .then(allUsers => {
@@ -109,6 +116,61 @@ router.post('/',
         )
         .catch(err => {
             return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+        })
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
+
+router.put('/', 
+    (req, res) => {
+
+        // Create a new message
+        const newMessage = new Message({
+            sender: req.body.sender._id,
+            receiver: req.body.receiver._id,
+            content: req.body.content,
+            timestamp: req.body.timestamp,
+            chat_id: req.body.chat._id
+        })
+        newMessage.save()
+        // Successfully saved message
+        .then(message => {
+
+            let messagesArray = req.body.chat.messages;
+            messagesArray.unshift(message);
+
+            // Add this message to the chats array
+            Chat.findByIdAndUpdate(req.body.chat._id, 
+                {"messages": messagesArray}
+            )
+            // Successfully updated chat
+            .then(
+
+                // Find the message receiver
+                User.findOne({_id: req.body.receiver._id})
+                .populate({
+                    path: 'chats', 
+                    populate: {
+                        path: 'messages',
+                        model: 'Message'
+                    }
+                })
+                // Successfully found message receiver
+                .then(receiver => {
+                    return res.status(200).json({success: true, auth: req.isAuthenticated(), newMessageReceiver: receiver})
+                })
+                // Unsuccessfully found message receiver
+                .catch(err => {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                })
+            )
+            // Unsuccessfully updated chat
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
         })
     },
     // Unsuccessful Authentication

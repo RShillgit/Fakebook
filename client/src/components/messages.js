@@ -82,7 +82,7 @@ const Messages = (props) => {
 
     }, [currentUser])
 
-    // Anytime all users changes set messages display
+    // Anytime all users changes
     useEffect(() => {
         if(auth && allUsers) {
             console.log(allUsers)
@@ -92,10 +92,37 @@ const Messages = (props) => {
     useEffect(() => {
 
         if(messageReceiver) {
+
+            // Get the current chat to display messages
+            const chats = messageReceiver.chats.filter(chat => {
+                if (chat.members.some(member => member === currentUser._id.toString())) {
+                    return chat
+                }
+                return false
+            })
+            const currentChat = chats[0];
+
             setMessagesDisplay(
                 <div className="chat-container">
-                    <div className="chat-messages">
-                        <p>Display messages with {messageReceiver.name}</p>
+                    <div className="chat-allMessages">
+                        {currentChat.messages.reverse().map(message => {
+
+                            if(message.sender === currentUser._id.toString()) {
+                                return (
+                                    <div className="chat-allMessages-individualMessage currentUser" key={message._id} >
+                                        <p>{message.content}</p>
+                                        <p>{message.timestamp}</p>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div className="chat-allMessages-individualMessage recipientUser" key={message._id} >
+                                        <p>{message.content}</p>
+                                        <p>{message.timestamp}</p>
+                                    </div>
+                                )
+                            }
+                        })}
                     </div>
                     <div className="chat-writeMessage">
                         <form onSubmit={sendMessage} id="sendMessageForm">
@@ -116,11 +143,37 @@ const Messages = (props) => {
         const messageTextInput = document.getElementById('messageTextInput');
         const sendMessageForm = document.getElementById('sendMessageForm');
 
-        console.log(messageTextInput.value);
+        // Find the chat ID
+        const chat = currentUser.chats.filter(chat => {
+            if (chat.members.some(member => member === messageReceiver._id.toString())) {
+                return chat
+            }
+            return false
+        })
 
-        // Send message to backend
-
-        sendMessageForm.reset();
+        // Send message info to the backend
+        fetch(`${props.serverURL}/messages`, {
+            method: 'PUT',
+            headers: { 
+              "Content-Type": "application/json",
+              Authorization: cookie.token,
+            },
+            body: JSON.stringify({
+                sender: currentUser,
+                receiver: messageReceiver,
+                chat: chat[0],
+                content: messageTextInput.value,
+                timestamp: Date.now()
+            }),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            sendMessageForm.reset();
+            setMessageReceiver(data.newMessageReceiver);
+        })
+        .catch(err => console.log(err)) 
     }
 
     // Onclick that selects message receiver user

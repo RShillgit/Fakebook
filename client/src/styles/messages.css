@@ -26,10 +26,30 @@
     cursor: pointer;
     background-color: antiquewhite;
 }
+
 .chat-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid black;
     width: 100%;
+}
+.chat-allMessages {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.chat-allMessages-individualMessage {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    padding: 0.5rem;
+}
+.chat-allMessages-individualMessage.currentUser {
+    border: 1px solid blue;
+    align-self: flex-end;
+}
+.chat-allMessages-individualMessage.recipientUser {
+    align-self: flex-start;
+    border: 1px solid red;
 }
