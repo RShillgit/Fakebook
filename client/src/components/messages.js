@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 import '../styles/messages.css';
