@@ -5,6 +5,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 const jwtutils = require('../utils/jwtUtils');
+const async = require('async');
 
 /* -------------- /posts -------------- */
 // GET POSTS
@@ -59,31 +60,45 @@ router.get('/:id',
     // Successful Authentication
     (req, res, next) => {
 
-        // Get the selected post 
-        Post.findOne({ _id: req.params.id })
-            .populate('author')
-            .populate({
-                path: 'comments', 
-                populate: {
-                    path: 'author',
-                    model: 'User'
+        async.parallel(
+            {
+                currentUser(callback) {
+                    User.findById(req.user._id)
+                    .then(currentUser => {
+                        callback(null, currentUser);
+                    })
+                },
+                selectedPost(callback) {
+                    Post.findOne({ _id: req.params.id })
+                    .populate('author')
+                    .populate({
+                        path: 'comments', 
+                        populate: {
+                            path: 'author',
+                            model: 'User'
+                        }
+                    })
+                    // Successfully found post
+                    .then(selectedPost => {
+
+                        // Get and verify token
+                        const token = req.headers.authorization;
+                        const userToken = jwtutils.jwtVerify(token);
+
+                        const results = {
+                            selectedPost: selectedPost,
+                            userToken: userToken
+                        }
+                        callback(null, results);
+                    })
                 }
-            })
-            // Successfully found post
-            .then(selectedPost => {
-
-                // Get and verify token
-                const token = req.headers.authorization;
-                const userToken = jwtutils.jwtVerify(token);
-
-                // Send response
-                return res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: userToken, selectedPost: selectedPost});
-            })
-
-            // Unsuccessfully found post
-            .catch(err => {
-                return res.status(401).json({success: false, err: err});
-            })
+            }, (err, results) => {
+                if (err) {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                }
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), userToken: results.selectedPost.userToken, selectedPost: results.selectedPost.selectedPost, currentUser: results.currentUser});
+            }
+        )
     },
     // Unsuccessful Authentication
     (err, req, res) => {

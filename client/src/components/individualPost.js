@@ -15,6 +15,7 @@ const IndividualPost = (props) => {
     const [errorMessage, setErrorMessage] = useState();
     const {postId} = useParams();
     const userId = useRef();
+    const currentUser = useRef();
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -25,9 +26,11 @@ const IndividualPost = (props) => {
             if(cookie.token) {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/posts/${postId}`, cookie.token);
                
+                console.log(checkTokenResponse)
                 // Successful response
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
+                    currentUser.current = checkTokenResponse.currentUser;
                     setAuth(checkTokenResponse.auth);
                     setSelectedPost(checkTokenResponse.selectedPost);
                 }
@@ -66,7 +69,7 @@ const IndividualPost = (props) => {
             console.log(selectedPost)
             setDisplay(
                 <div>
-                    <Navbar userId={userId.current} serverURL={props.serverURL}/>
+                    <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
                     {errorMessage}
                     <div className="individualPost">
                         <p>{selectedPost.author.name}</p>
