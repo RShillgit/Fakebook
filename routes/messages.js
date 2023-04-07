@@ -75,25 +75,33 @@ router.get('/',
 router.post('/',
     // Successful Authentication
     (req, res) => {
-
-        // Create new chat
-        const newChat = new Chat({
-            members: [req.user, req.body.selectedUser]
+        
+        // Check the selected user's chats array for a chat with the current user
+        const checkForCurrentUser = req.body.selectedUser.chats.filter(chat => {
+            if (chat.members) {
+                if (chat.members.some(member => member._id === req.user._id.toString())) {
+                    return chat
+                } 
+                return false
+            }
+            return false
         })
-        newChat.save()
-        // Successfully created new chat
-        .then(
+
+        // If there is a chat with the current user
+        if(checkForCurrentUser.length > 0) {
+
+            // Add that chat back to the user's chats array
+            const existingChat = checkForCurrentUser[0];
+            
+            let currentUserChats = req.body.currentUser.chats;
+            currentUserChats.unshift(existingChat);
+
             async.parallel(
                 {
-                    // Add Chat to user's chats array
-                    updateUser(callback) {
-
-                        let chatsArray = req.user.chats;
-                        chatsArray.unshift(newChat);
-
+                    updateCurrentUser(callback) {
                         User.findByIdAndUpdate(req.user._id, 
                             {
-                                "chats": chatsArray
+                                "chats": currentUserChats
                             },
                             {new: true}
                         )
@@ -108,23 +116,12 @@ router.post('/',
                                 model: 'Message'
                             }]
                         })
-                        // Successfully updated user
-                        .then(updatedUser => {
-                            callback(null, updatedUser)
+                        .then(updatedCurrentUser => {
+                            callback(null, updatedCurrentUser);
                         })
                     },
-                    // Add chat to recipient's chats array
-                    updateRecipient(callback) {
-
-                        let chatsArray = req.body.selectedUser.chats;
-                        chatsArray.unshift(newChat);
-
-                        User.findByIdAndUpdate(req.body.selectedUser._id, 
-                            {
-                                "chats": chatsArray
-                            },
-                            {new: true}
-                        )
+                    findRecipient(callback) {
+                        User.findById(req.body.selectedUser._id)
                         .populate({
                             path: 'chats', 
                             populate: [{
@@ -136,23 +133,138 @@ router.post('/',
                                 model: 'Message'
                             }]
                         })
-                        // Successfully updated recipient
-                        .then(updatedRecipient => {
-                            callback(null, updatedRecipient);
+                        .then(recipient => {
+                            callback(null, recipient);
                         })
                     }
-
                 }, (err, results) => {
                     if(err) {
-                        return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                        return res.status(500).json({success: false, auth: req.isAuthenticated(), err});
                     }
-                    return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: results.updateUser, updatedRecipient: results.updateRecipient})
+                    // Get and repopulate all users
+                    User.find({})
+                    .populate({
+                        path: 'chats', 
+                        populate: [{
+                            path: 'members',
+                            model: 'User',
+                        },
+                        {
+                            path: 'messages',
+                            model: 'Message'
+                        }]
+                    })
+                    // Successfully got all users
+                    .then(allUsers => {
+                        return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: results.updateCurrentUser, updatedRecipient: results.findRecipient, updatedAllUsers: allUsers})
+                    })
+                    // Unsuccessfully got all users
+                    .catch(err => {
+                        return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                    }) 
                 }
             )
-        )
-        .catch(err => {
-            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
-        })
+        }
+        // Else, create a new chat
+        else {
+            // Create new chat
+            const newChat = new Chat({
+                members: [req.user, req.body.selectedUser]
+            })
+            newChat.save()
+            // Successfully created new chat
+            .then(
+                async.parallel(
+                    {
+                        // Add Chat to user's chats array
+                        updateUser(callback) {
+
+                            let chatsArray = req.user.chats;
+                            chatsArray.unshift(newChat);
+
+                            User.findByIdAndUpdate(req.user._id, 
+                                {
+                                    "chats": chatsArray
+                                },
+                                {new: true}
+                            )
+                            .populate({
+                                path: 'chats', 
+                                populate: [{
+                                    path: 'members',
+                                    model: 'User',
+                                },
+                                {
+                                    path: 'messages',
+                                    model: 'Message'
+                                }]
+                            })
+                            // Successfully updated user
+                            .then(updatedUser => {
+                                callback(null, updatedUser)
+                            })
+                        },
+                        // Add chat to recipient's chats array
+                        updateRecipient(callback) {
+
+                            let chatsArray = req.body.selectedUser.chats;
+                            chatsArray.unshift(newChat);
+
+                            User.findByIdAndUpdate(req.body.selectedUser._id, 
+                                {
+                                    "chats": chatsArray
+                                },
+                                {new: true}
+                            )
+                            .populate({
+                                path: 'chats', 
+                                populate: [{
+                                    path: 'members',
+                                    model: 'User',
+                                },
+                                {
+                                    path: 'messages',
+                                    model: 'Message'
+                                }]
+                            })
+                            // Successfully updated recipient
+                            .then(updatedRecipient => {
+                                callback(null, updatedRecipient);
+                            })
+                        }
+
+                    }, (err, results) => {
+                        if(err) {
+                            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                        }
+                        // Get and repopulate all users
+                        User.find({})
+                        .populate({
+                            path: 'chats', 
+                            populate: [{
+                                path: 'members',
+                                model: 'User',
+                            },
+                            {
+                                path: 'messages',
+                                model: 'Message'
+                            }]
+                        })
+                        // Successfully got all users
+                        .then(allUsers => {
+                            return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: results.updateUser, updatedRecipient: results.updateRecipient, updatedAllUsers: allUsers})
+                        })
+                        // Unsuccessfully got all users
+                        .catch(err => {
+                            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                        }) 
+                    }
+                )
+            )
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
+        }
     },
     // Unsuccessful Authentication
     (err, req, res) => {
@@ -245,6 +357,78 @@ router.put('/',
             })
         })
         // Unsuccessfully found the chat
+        .catch(err => {
+            return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+        })
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
+// Delete a chat
+router.delete('/',
+    // Successful Authentication
+    (req, res) => {
+
+        // Remove this chat from the users chats array
+        let chatsArray = req.user.chats;
+        chatsArray = chatsArray.filter(chat => {
+            return chat.toString() !== req.body.deletionChat._id
+        })
+
+        /*
+            User.updateOne(
+                {_id: req.user._id},
+                { $set: 
+                    {chats: chatsArray}
+                }
+            )
+        */
+
+        // Update the user
+        User.findByIdAndUpdate(req.user._id, 
+            {
+                "chats": chatsArray
+            },
+            {new: true}
+        )
+        .populate({
+            path: 'chats', 
+            populate: [{
+                path: 'members',
+                model: 'User',
+            },
+            {
+                path: 'messages',
+                model: 'Message'
+            }]
+        })
+        // Successfully updated user
+        .then(updatedUser => {
+            // Get and repopulate all users 
+            User.find({})
+            .populate({
+                path: 'chats', 
+                populate: [{
+                    path: 'members',
+                    model: 'User',
+                },
+                {
+                    path: 'messages',
+                    model: 'Message'
+                }]
+            })
+            // Successfully found all users
+            .then(updatedAllUsers => {
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedUser: updatedUser, updatedAllUsers: updatedAllUsers})
+            })
+            // Unsuccessfully found all users
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
+        })
+        // Unsuccessfully updated user
         .catch(err => {
             return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
         })

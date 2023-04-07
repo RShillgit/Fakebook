@@ -55,23 +55,24 @@ const Messages = (props) => {
                 <div>
                     <div className="sidebar-currentChats">
                         <h1>Chats</h1>
-
                         {currentUser.chats.map(chat => {
                             return (  
                                 <div key={chat._id}>
                                     {chat.members.map(member => {
                                         if(member._id !== currentUser._id) {
                                             return (
-                                                <div className="sidebar-currentChats-individualChat" 
-                                                    onClick={() => {
+                                                <div className="sidebar-currentChats-individualChat"  key={member._id}>
+                                                    <div className="sidebar-currentChats-individualChat-clickable"
+                                                     onClick={() => {
                                                         // FIND USER FROM ALL USERS THAT MATCHES MEMBER._ID
                                                         const selectedUser = allUsers.filter(user => {
                                                             return user._id === member._id
                                                         })
                                                         userSelect(selectedUser[0])}
-                                                    } key={member._id}>
-
+                                                    }>
                                                         <p>{member.name}</p>
+                                                    </div>
+                                                    <button onClick={() => deleteChat(chat)}>Delete</button>
                                                 </div>
                                                 )
                                             }
@@ -133,6 +134,9 @@ const Messages = (props) => {
                     </div>
                 </div>
             )
+        }
+        else {
+            setMessagesDisplay()
         }
         
     }, [messageReceiver])
@@ -200,15 +204,15 @@ const Messages = (props) => {
                   "Content-Type": "application/json",
                   Authorization: cookie.token,
                 },
-                body: JSON.stringify({selectedUser: selectedUser}),
+                body: JSON.stringify({selectedUser: selectedUser, currentUser: currentUser, selectedUserChats: selectedUser.chats}),
                 mode: 'cors'
             })
             .then(res => res.json())
             .then(data => {
                 setCurrentUser(data.updatedUser);
+                setAllUsers(data.updatedAllUsers);
                 setMessageReceiver(data.updatedRecipient);
                 setSearchQuery(""); // Clear the input
-                // Also have data.updatedRecipient which is the updated version of selectedUser
             })
             .catch(err => console.log(err))
         }
@@ -235,6 +239,30 @@ const Messages = (props) => {
         .then(data => {
             setMessageReceiver(data.newMessageReceiver);
             setAllUsers(data.newAllUsers);
+        })
+        .catch(err => console.log(err))
+    }
+
+    // Deletes chat 
+    const deleteChat = (deletionChat) => {
+
+        // Send message info to the backend
+        fetch(`${props.serverURL}/messages`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({deletionChat}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                setCurrentUser(data.updatedUser);
+                setAllUsers(data.updatedAllUsers);
+                setMessageReceiver();
+            }
         })
         .catch(err => console.log(err))
     }

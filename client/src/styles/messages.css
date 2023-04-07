@@ -53,3 +53,13 @@
     align-self: flex-start;
     border: 1px solid red;
 }
+.sidebar-currentChats-individualChat {
+    border: 1px solid black;  
+}
+.sidebar-currentChats-individualChat-clickable {
+    padding: 1rem;
+}
+.sidebar-currentChats-individualChat-clickable:hover {
+    cursor: pointer;
+    background-color: wheat;
+}
