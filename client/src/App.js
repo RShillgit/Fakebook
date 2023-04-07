@@ -80,7 +80,11 @@ function App(props) {
                 return(
                   <div className='individualPost' key={post._id}> 
                     {(post.author._id === currentUser.current._id)
-                      ?<button onClick={() => deletePost(post)}>Delete Post</button>
+                      ?
+                      <div>
+                        <button onClick={() => editPost(post)}>Edit Post</button>
+                        <button onClick={() => deletePost(post)}>Delete Post</button>
+                      </div>
                       :<></>
                     }
                     <a className='individualPost-clickableArea' href={`/posts/${post._id}`}>
@@ -224,6 +228,11 @@ function App(props) {
         }
     })
     .catch(err => console.log(err))
+  }
+
+  // Edit post redirection
+  const editPost = (postForEditing) => {
+    navigate(`/posts/${postForEditing._id}`, {state: {editing: true, originPage: 'home'}})
   }
 
   return (

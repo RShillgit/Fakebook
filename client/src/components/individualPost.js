@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 import '../styles/individualPost.css';
@@ -11,11 +11,15 @@ const IndividualPost = (props) => {
     const [auth, setAuth] = useState(null);
     const [selectedPost, setSelectedPost] = useState();
     const [display, setDisplay] = useState();
+    const [editingDisplay, setEditingDisplay] = useState();
+    const [editPostText, setEditPostText] = useState("");
     const commentText = useRef();
     const [errorMessage, setErrorMessage] = useState();
+    const [editingStatus, setEditingStatus] = useState(false);
     const {postId} = useParams();
     const userId = useRef();
     const currentUser = useRef();
+    const location = useLocation();
     const navigate = useNavigate();
 
     // Anytime the cookie changes, set auth
@@ -30,6 +34,13 @@ const IndividualPost = (props) => {
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
                     currentUser.current = checkTokenResponse.currentUser;
+
+                    // Editing Related States
+                    if (location.state && location.state.editing) {
+                        setEditPostText(checkTokenResponse.selectedPost.text);
+                        setEditingStatus(true);
+                    }
+
                     setAuth(checkTokenResponse.auth);
                     setSelectedPost(checkTokenResponse.selectedPost);
                 }
@@ -69,7 +80,11 @@ const IndividualPost = (props) => {
                     {errorMessage}
                     <div className="individualPost">
                         {(selectedPost.author._id.toString() === currentUser.current._id)
-                            ?<button onClick={() => deletePost()}>Delete Post</button>
+                            ?
+                            <div>
+                                <button onClick={() => renderEditPost()}>Edit Post</button>
+                                <button onClick={() => deletePost()}>Delete Post</button>
+                            </div>
                             :<></>
                         }
                         <p>{selectedPost.author.name}</p>
@@ -126,6 +141,15 @@ const IndividualPost = (props) => {
             )
         }
     }, [selectedPost])
+
+    // Used to see if editing status is true which will change display
+    useEffect(() => {
+
+        if(editingStatus && selectedPost.author._id.toString() === userId.current) {
+            setEditingDisplay(editPostDisplay)
+        }
+
+    }, [editingStatus, editPostText])
 
     // Like A Post
     const likePost = () => {
@@ -199,6 +223,81 @@ const IndividualPost = (props) => {
         // TODO: Rendering Erros
         .catch(err => console.log(err))
       
+    }
+
+    // Renders the edit post form
+    const renderEditPost = () => {
+        setEditPostText(selectedPost.text);
+        setEditingStatus(true);
+    }
+
+    // Cancels the edit post form
+    const cancelEditPost = () => {
+
+        // If the user was sent to this page, send them back
+        if (location.state && location.state.originPage) {
+
+            // If the edit came from the home page
+            if (location.state.originPage === 'home') {
+                navigate('/');
+            }
+
+            // If the edit came from the profile page
+            else if (location.state.originPage === 'profile') {
+                navigate(`/profile/${userId.current}`);
+            }
+        }
+        // Else render normal page
+        else {
+            setEditingStatus(false)
+        }
+    }
+
+    // Edit a post
+    const editPostFormSubmit = (e) => {
+        e.preventDefault();
+
+        // Send a requestType which will let the middleware know to like or update post
+        const requestInfo = {
+            requestType: 'update',
+            selectedPost: selectedPost,
+            editedText: editPostText
+        }
+
+        fetch(`${props.serverURL}/posts/${selectedPost._id}`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify(requestInfo),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+
+                // If location state exists
+                if (location.state && location.state.originPage) {
+
+                    // If the edit came from the home page
+                    if (location.state.originPage === 'home') {
+                        navigate('/');
+                    }
+
+                    // If the edit came from the profile page
+                    else if (location.state.originPage === 'profile') {
+                        navigate(`/profile/${userId.current}`);
+                    }
+                }
+                // Else rerender selected post with updated data
+                else {
+                    setSelectedPost(data.updatedPost);
+                    setEditingStatus(false);
+                }
+            }
+        })
+        .catch(err => console.log(err))
     }
 
     // Delete a post
@@ -278,10 +377,49 @@ const IndividualPost = (props) => {
         })
         .catch(err => console.log(err))
     }
+
+    const editPostDisplay = (
+        <div>
+            {(selectedPost)
+                ?
+                <div>
+                    <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
+                    <div className="individualPost">
+
+                        <h1>Edit Post</h1>
+
+                        <div className="individualPost-editPost">
+
+                            <form onSubmit={editPostFormSubmit} id="individualPost-editForm">
+                                <p>{selectedPost.author.name}</p>
+                                <textarea type="text" value={editPostText} onChange={(e) => setEditPostText(e.target.value)} />
+                                <p>{selectedPost.timestamp}</p>
+                            </form>
+                            <div className="individualPost-editPost-formButtons">
+                                <button onClick={cancelEditPost}>Cancel</button>
+                                <button form="individualPost-editForm">Submit</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                :<></>
+            }
+        </div>
+    )
     
     return(
         <div className="Page">
-            {display}
+            {(editingStatus)
+                ? 
+                <>
+                    {editingDisplay}
+                </>
+                : 
+                <>
+                    {display}
+                </>
+            }
         </div>
     )
 }

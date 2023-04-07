@@ -374,6 +374,7 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Delet a post
     const deletePost = (deletionPost) => {
         console.log(deletionPost)
 
@@ -394,6 +395,11 @@ const Profile = (props) => {
           .catch(err => console.log(err))
     }
 
+    // Edit post redirection
+    const editPost = (postForEditing) => {
+        navigate(`/posts/${postForEditing._id}`, {state: {editing: true, originPage: 'profile'}})
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
@@ -404,6 +410,7 @@ const Profile = (props) => {
                     {currentProfile.posts.map(post => {
                         return (
                             <div className="profileContent-individualPost" key={post._id}>
+                                <button onClick={() => editPost(post)}>Edit Post</button>
                                 <button onClick={() => deletePost(post)}>Delete Post</button>
                                 <a href={`/posts/${post._id}`}>
                                     <p>{post.text}</p>

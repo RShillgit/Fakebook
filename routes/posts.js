@@ -128,9 +128,6 @@ router.put('/:id',
     // Successful Authentication
     (req, res, next) => {
 
-        // req.body.requestType is either 'like', or 'update'
-        console.log(req.body.requestType);
-
         // If it is a like request
         if (req.body.requestType === 'like') {
 
@@ -164,6 +161,29 @@ router.put('/:id',
         // Else If it is an update request
         else if (req.body.requestType === 'update') {
 
+            // Update the post
+            Post.findByIdAndUpdate(req.params.id,
+                {
+                    "text": req.body.editedText
+                },
+                {new: true}
+            )
+            .populate('author')
+            .populate({
+                path: 'comments', 
+                populate: {
+                    path: 'author',
+                    model: 'User'
+                }
+            })
+            // Successfully updated post
+            .then(updatedPost => {
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedPost: updatedPost})
+            })
+            // Unsuccessfully updated post
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
         }
         // Else send error
         else {
