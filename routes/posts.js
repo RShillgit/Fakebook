@@ -276,4 +276,65 @@ router.put('/:id/comments/:commentId',
     }
 )
 
+router.delete('/:id/comments/:commentId',
+
+    // Successful Authenticated
+    (req, res) => {
+
+        async.parallel(
+            {   
+                // Delete the comment
+                deleteComment(callback){
+                    Comment.findByIdAndDelete(req.body.comment._id)
+                    .then(deletedComment => {
+                        callback(null, deletedComment);
+                    })
+                },
+                // Remove the comment from the post's comments array
+                updateComments(callback) {
+
+                    // Get the parent post
+                    Post.findById(req.body.comment.parentPost)
+                    .then(parentPost => {
+
+                        // Remove the comment
+                        let commentsArray = parentPost.comments;
+                        commentsArray = commentsArray.filter(comment => {
+                            return comment._id.toString() !== req.body.comment._id
+                        })
+                        // Update the parent Post
+                        Post.findByIdAndUpdate(req.body.comment.parentPost,
+                            {
+                                "comments": commentsArray
+                            },
+                            {new: true}    
+                        )
+                        .populate('comments')
+                        .populate({
+                            path: 'comments', 
+                            populate: {
+                                path: 'author',
+                                model: 'User',
+                            }
+                        })
+                        // Successfully updated parent post
+                        .then(updatedParentPost => {
+                            callback(null, updatedParentPost);
+                        })
+                    })
+                }
+            }, (err, results) => {
+                if (err) {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                }
+                return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedParentPost: results.updateComments})
+            }
+        )
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
+
 module.exports = router;

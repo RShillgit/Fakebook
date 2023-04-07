@@ -25,8 +25,7 @@ const IndividualPost = (props) => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
                 const checkTokenResponse = await props.checkToken(`${props.serverURL}/posts/${postId}`, cookie.token);
-               
-                console.log(checkTokenResponse)
+
                 // Successful response
                 if(checkTokenResponse.success === true) {
                     userId.current = checkTokenResponse.userToken.sub;
@@ -34,11 +33,9 @@ const IndividualPost = (props) => {
                     setAuth(checkTokenResponse.auth);
                     setSelectedPost(checkTokenResponse.selectedPost);
                 }
-
                 // Unsuccessful response
                 else {
                     // Set error message or render error page
-                    console.log(checkTokenResponse);
                     setErrorMessage(
                         <div className="error-message">
                             <p>An Error Occurred</p>
@@ -66,7 +63,6 @@ const IndividualPost = (props) => {
     // Anytime the selectedPost or its Comments change, set the display
     useEffect(() => {
         if (selectedPost) {
-            console.log(selectedPost)
             setDisplay(
                 <div>
                     <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
@@ -93,6 +89,10 @@ const IndividualPost = (props) => {
                         {selectedPost.comments.map(comment => {
                             return (
                                 <div className="individualComment" key={comment._id} id={comment._id}>
+                                    {(comment.author._id === currentUser.current._id)
+                                        ? <button onClick={() => deleteComment(comment)} >Delete</button>
+                                        : <></>
+                                    }
                                     <p>{comment.author.name}</p>
                                     <p>{comment.text}</p>
 
@@ -231,6 +231,24 @@ const IndividualPost = (props) => {
 
             // Set state to updated post
             setSelectedPost(newSelectedPost);
+        })
+        .catch(err => console.log(err))
+    }
+
+    const deleteComment = (comment) => {
+
+        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${comment._id}`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({comment: comment}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            setSelectedPost(data.updatedParentPost);
         })
         .catch(err => console.log(err))
     }
