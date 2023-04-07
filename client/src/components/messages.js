@@ -48,47 +48,41 @@ const Messages = (props) => {
         }
     }, [auth])
 
-    // Anytime current user changes set the display
+    // Anytime all users changes change the sidebar
     useEffect(() => {
-
-        // If the user is authorized and all users exist render page
-        if (auth && currentUser) {
-
-            // Displaying each user the current user has chats with
-            // Dont forget onclick that sets the messageReceiver
-
-            /*
-            {(currentUser.chats.forEach(chat => {
-                chat.members.map(member => {
-                    if (member._id !== currentUser._id.toString()) {
-                        return (
-                            <div className="sidebar-currentChats-individualChat" onClick={() => userSelect(member)} key={member._id}>
-                                <p>{member.name}</p>
-                            </div>
-                        )
-                    }
-                    return null
-                })
-            }))}
-            */
-
-            
+        if(auth && allUsers) {
             setDisplay(
                 <div>
                     <div className="sidebar-currentChats">
                         <h1>Chats</h1>
 
+                        {currentUser.chats.map(chat => {
+                            return (  
+                                <div key={chat._id}>
+                                    {chat.members.map(member => {
+                                        if(member._id !== currentUser._id) {
+                                            return (
+                                                <div className="sidebar-currentChats-individualChat" 
+                                                    onClick={() => {
+                                                        // FIND USER FROM ALL USERS THAT MATCHES MEMBER._ID
+                                                        const selectedUser = allUsers.filter(user => {
+                                                            return user._id === member._id
+                                                        })
+                                                        userSelect(selectedUser[0])}
+                                                    } key={member._id}>
+
+                                                        <p>{member.name}</p>
+                                                </div>
+                                                )
+                                            }
+                                            return null
+                                    })}
+                                </div>                               
+                            )
+                        })}
                     </div>
                 </div>
             )
-        }
-
-    }, [currentUser])
-
-    // Anytime all users changes
-    useEffect(() => {
-        if(auth && allUsers) {
-            //console.log(allUsers)
         }
     }, [allUsers])
 
@@ -98,7 +92,7 @@ const Messages = (props) => {
 
             // Get the current chat to display messages
             const chats = messageReceiver.chats.filter(chat => {
-                if (chat.members.some(member => member === currentUser._id.toString())) {
+                if (chat.members.some(member => member._id === currentUser._id.toString())) {
                     return chat
                 }
                 return false
@@ -156,7 +150,6 @@ const Messages = (props) => {
             }
             return false
         })
-        console.log(chat)
 
         // Send message info to the backend
         fetch(`${props.serverURL}/messages`, {
@@ -189,7 +182,7 @@ const Messages = (props) => {
         // Check for chats with this user
         const checkForRecipient = currentUser.chats.filter(chat => {
             if (chat.members) {
-                if (chat.members.some(member => member._id === selectedUser._id.toString())) {
+                if (chat.members.some(member => member._id === selectedUser._id)) {
                     return chat
                 } 
                 return false

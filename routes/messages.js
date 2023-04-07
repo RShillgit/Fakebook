@@ -20,10 +20,14 @@ router.get('/',
                     User.findOne({_id: req.user._id})
                     .populate({
                         path: 'chats', 
-                        populate: {
+                        populate: [{
                             path: 'members',
-                            model: 'User'
-                        }
+                            model: 'User',
+                        },
+                        {
+                            path: 'messages',
+                            model: 'Message'
+                        }]
                     })
 
                     // Successfully found user
@@ -37,10 +41,14 @@ router.get('/',
                     User.find({})
                     .populate({
                         path: 'chats', 
-                        populate: {
+                        populate: [{
+                            path: 'members',
+                            model: 'User',
+                        },
+                        {
                             path: 'messages',
                             model: 'Message'
-                        }
+                        }]
                     })
 
                     // Successfully found all users
@@ -91,10 +99,14 @@ router.post('/',
                         )
                         .populate({
                             path: 'chats', 
-                            populate: {
+                            populate: [{
+                                path: 'members',
+                                model: 'User',
+                            },
+                            {
                                 path: 'messages',
                                 model: 'Message'
-                            }
+                            }]
                         })
                         // Successfully updated user
                         .then(updatedUser => {
@@ -115,10 +127,14 @@ router.post('/',
                         )
                         .populate({
                             path: 'chats', 
-                            populate: {
+                            populate: [{
+                                path: 'members',
+                                model: 'User',
+                            },
+                            {
                                 path: 'messages',
                                 model: 'Message'
-                            }
+                            }]
                         })
                         // Successfully updated recipient
                         .then(updatedRecipient => {
@@ -174,10 +190,14 @@ router.put('/',
                 User.findOne({_id: req.body.receiver._id})
                 .populate({
                     path: 'chats', 
-                    populate: {
+                    populate: [{
+                        path: 'members',
+                        model: 'User',
+                    },
+                    {
                         path: 'messages',
                         model: 'Message'
-                    }
+                    }]
                 })
                 // Successfully found message receiver
                 .then(receiver => {
@@ -186,10 +206,14 @@ router.put('/',
                     User.find({})
                     .populate({
                         path: 'chats', 
-                        populate: {
+                        populate: [{
+                            path: 'members',
+                            model: 'User',
+                        },
+                        {
                             path: 'messages',
                             model: 'Message'
-                        }
+                        }]
                     })
                     // Successfully got all users
                     .then(newAllUsers => {
