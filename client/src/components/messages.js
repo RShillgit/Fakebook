@@ -110,13 +110,14 @@ const Messages = (props) => {
                             if(message.sender === currentUser._id.toString()) {
                                 return (
                                     <div className="chat-allMessages-individualMessage currentUser" key={message._id} >
+                                        <button onClick={() => deleteMessage(message)}>Delete</button>
                                         <p>{message.content}</p>
                                         <p>{message.timestamp}</p>
                                     </div>
                                 )
                             } else {
                                 return (
-                                    <div className="chat-allMessages-individualMessage recipientUser" key={message._id} >
+                                    <div className="chat-allMessages-individualMessage recipientUser" key={message._id} > 
                                         <p>{message.content}</p>
                                         <p>{message.timestamp}</p>
                                     </div>
@@ -215,6 +216,27 @@ const Messages = (props) => {
             setMessageReceiver(selectedUser);
             setSearchQuery(""); // Clear the input
         } 
+    }
+
+    // Deletes one of the current user's messages
+    const deleteMessage = (deletionMessage) => {
+
+        // Send message info to the backend
+        fetch(`${props.serverURL}/messages/${deletionMessage._id}`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({deletionMessage}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            setMessageReceiver(data.newMessageReceiver);
+            setAllUsers(data.newAllUsers);
+        })
+        .catch(err => console.log(err))
     }
 
     return (
