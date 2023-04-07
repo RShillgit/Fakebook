@@ -79,6 +79,10 @@ function App(props) {
               {allPosts.map(post => {
                 return(
                   <div className='individualPost' key={post._id}> 
+                    {(post.author._id === currentUser.current._id)
+                      ?<button onClick={() => deletePost(post)}>Delete Post</button>
+                      :<></>
+                    }
                     <a className='individualPost-clickableArea' href={`/posts/${post._id}`}>
                       <p>{post.author.name}</p>
                       <p>{post.text}</p>
@@ -135,14 +139,17 @@ function App(props) {
     .then(data => {
 
       // If it worked, render new post
-      if (data.success === true) {
+      if (data.success) {
         
+        /*
         // Add new post to the beginning of the allPosts array
         let newAllPostsArray = [...allPosts]
         newAllPostsArray.unshift(data.newPost);
 
         // Update allPosts state to include this new post
         setAllPosts(newAllPostsArray);
+        */
+        setAllPosts(data.updatedAllPosts);
         e.target.reset();
       }
       // If it didnt, render error message
@@ -196,6 +203,26 @@ function App(props) {
       }))
     })
     // TODO: Error Page/Message
+    .catch(err => console.log(err))
+  }
+
+  // Delete A Post
+  const deletePost = (deletionPost) => {
+
+    fetch(`${props.serverURL}/posts/${deletionPost._id}`, {
+      method: 'DELETE',
+      headers: { 
+          "Content-Type": "application/json",
+          Authorization: cookie.token,
+      },
+      mode: 'cors'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+          setAllPosts(data.allPosts)
+        }
+    })
     .catch(err => console.log(err))
   }
 

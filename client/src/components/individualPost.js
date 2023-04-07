@@ -68,6 +68,10 @@ const IndividualPost = (props) => {
                     <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
                     {errorMessage}
                     <div className="individualPost">
+                        {(selectedPost.author._id.toString() === currentUser.current._id)
+                            ?<button onClick={() => deletePost()}>Delete Post</button>
+                            :<></>
+                        }
                         <p>{selectedPost.author.name}</p>
                         <p>{selectedPost.text}</p>
                         <p>{selectedPost.timestamp}</p>
@@ -197,6 +201,27 @@ const IndividualPost = (props) => {
       
     }
 
+    // Delete a post
+    const deletePost = () => {
+
+        fetch(`${props.serverURL}/posts/${selectedPost._id}`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                navigate('/');
+            }
+        })
+        .catch(err => console.log(err))
+        
+    }
+
     // Like a comment
     const likeComment = (e) => {
 
@@ -235,6 +260,7 @@ const IndividualPost = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Delete a comment
     const deleteComment = (comment) => {
 
         fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${comment._id}`, {

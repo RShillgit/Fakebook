@@ -374,6 +374,26 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    const deletePost = (deletionPost) => {
+        console.log(deletionPost)
+
+        fetch(`${props.serverURL}/posts/${deletionPost._id}`, {
+            method: 'DELETE',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            mode: 'cors'
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.success) {
+                setCurrentProfile(data.updatedUser)
+              }
+          })
+          .catch(err => console.log(err))
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
@@ -383,13 +403,16 @@ const Profile = (props) => {
                 <div className="profileContent-posts">
                     {currentProfile.posts.map(post => {
                         return (
-                            <a href={`/posts/${post._id}`} className="profileContent-individualPost" key={post._id}>
-                                <p>{post.text}</p>
-                                <div className="profileContent-individualPost-stats">
-                                    <p>{post.likes.length} likes</p>
-                                    <p>{post.comments.length} comments</p>
-                                </div>
-                            </a>
+                            <div className="profileContent-individualPost" key={post._id}>
+                                <button onClick={() => deletePost(post)}>Delete Post</button>
+                                <a href={`/posts/${post._id}`}>
+                                    <p>{post.text}</p>
+                                    <div className="profileContent-individualPost-stats">
+                                        <p>{post.likes.length} likes</p>
+                                        <p>{post.comments.length} comments</p>
+                                    </div>
+                                </a>
+                            </div>    
                         )
                     })}
                 </div>

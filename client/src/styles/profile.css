@@ -50,6 +50,12 @@
     margin: 1rem;
     padding: 1rem;
     border: 1px solid black;
+}
+.profileContent-individualPost a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     text-decoration: none;
     color: black;
 }

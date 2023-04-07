@@ -36,11 +36,23 @@ router.post('/',
                 })
                 // Successfully updated user's posts array
                 .then(() => {
-                    return res.status(200).json({ success: true, msg: 'Post Created Successfully', newPost: post });
+
+                    // Get and repopulate all posts
+                    Post.find({})
+                    .sort({ timestamp: -1 })
+                    .populate('author')
+                    // Successfully got all posts
+                    .then(updatedAllPosts => {
+                        return res.status(200).json({ success: true, newPost: post, updatedAllPosts: updatedAllPosts });
+                    })
+                    // Unsuccessfully got all posts
+                    .catch(err => {
+                        return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                    })
                 })
                 // Unsuccessfully updated user's posts array
                 .catch(err => {
-                    return res.status(401).json({success: false, err});
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
                 })  
             })
             // Unsuccessfully created post
@@ -164,9 +176,67 @@ router.put('/:id',
     }
 )
 // DELETE INDIVIDUAL POST
-router.delete('/:id', (req, res, next) => {s
-    res.json(`Delete Post ${req.params.id}`)
-})
+router.delete('/:id', 
+    // Successful Authentication
+    (req, res) => {
+
+        async.parallel(
+            {
+                // Delete the post
+                deletePost(callback) {
+                    Post.findByIdAndDelete(req.params.id)
+                    .then(deletedPost => {
+                        callback(null, deletedPost);
+                    })
+                },
+                // Remove the post from the user's posts array
+                removePostFromArray(callback) {
+
+                    let postsArray = req.user.posts;
+                    postsArray = postsArray.filter(post => {
+                        return post.toString() !== req.params.id;
+                    })
+                    
+                    // Update User
+                    User.findByIdAndUpdate(req.user._id,
+                        {
+                            "posts": postsArray
+                        },
+                        {new: true}    
+                    )
+                    .populate('friends')
+                    .populate('posts')
+                    .populate('friend_requests')
+
+                    // Successfully updated user
+                    .then(updatedUser => {
+                        callback(null, updatedUser);
+                    })
+                }
+            }, (err, results) => {
+                if (err) {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                }
+                // Get all posts
+                Post.find({})
+                .sort({ timestamp: -1 })
+                .populate('author')
+                // Successfully got all users
+                .then(allPosts => {
+                    return res.status(200).json({success: true, allPosts: allPosts, auth: req.isAuthenticated(), updatedUser: results.removePostFromArray})
+                })
+                // Unsuccessfully got all users
+                .catch(err => {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                }) 
+            }
+        )
+    },
+    // Unsuccessful Authentication
+    (err, req, res) => {
+        return res.status(401).json({err, auth: req.isAuthenticated()});
+    }
+)
 
 /* -------------- /posts/:id/comments -------------- */
 // COMMENT ON POST
