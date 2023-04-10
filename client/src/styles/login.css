@@ -1,0 +1,131 @@
+.loginPageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f0f2f5;
+    padding: 2rem;
+}
+.loginPage-title {
+    color: #1877f2;
+    font-size: 24px;
+}
+.loginPage-title h1 {
+    margin: 1rem;
+}
+.loginForm-container {
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    width: 364px;
+}
+.loginForm-title {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1rem;
+}
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+#loginForm #loginButton {
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: #1877f2;
+    line-height: 48px;
+}
+#loginForm input {
+    font-size: 17px;
+    padding: 14px 16px;
+    border-radius: 6px;
+    border: 1px solid #dddfe2;
+}
+#loginForm input:focus {
+    outline: none;
+}
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+}
+.login-buttons #registerLink {
+    text-decoration: none;
+    color: #1877f2;
+    border-bottom: 1px solid #fff;
+}
+.login-buttons #guestLoginButton {
+    background-color: orange;
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 32px;
+}
+.login-buttons #fbLoginButton {
+    background-color: purple;
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 32px;
+}
+.login-buttons button:hover, #loginButton:hover {
+    cursor: pointer;
+}
+.login-buttons #registerLink:hover {
+    border-bottom: 1px solid #1877f2;
+}
+.login-buttons .login-buttons-topRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.login-buttons .login-buttons-bottomRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginPageContainer .errorMessage {
+    padding-top: 2rem;
+    color: red;
+    font-weight: 600;
+   
+}
+.loginPageContainer .errorMessage p {
+    margin: 0;
+}
+
+.footer {
+    border-top: 2px solid #dddfe2;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 1rem 0;
+}
+.footer #githubImg {
+    filter: invert(39%) sepia(36%) saturate(5799%) hue-rotate(202deg) brightness(96%) contrast(97%);
+}
+.footer #githubImg:hover {
+    animation: rotate 0.4s linear;
+  }
+  @keyframes rotate{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(180deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+  }

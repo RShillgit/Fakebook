@@ -97,7 +97,7 @@ router.post('/login', (req, res, next) => {
 
       // If no user send error
       if (!user) {
-        return res.status(401).json({success: false, error_message: "Could not find user"});
+        return res.status(401).json({success: false, error_message: "Could not find user."});
       }
 
       // Check if password is valid
@@ -112,7 +112,7 @@ router.post('/login', (req, res, next) => {
       } 
       // If password is invalid send error message
       else {
-        return res.status(401).json({success: false, error_message: "Invalid Username/Password Combination"})
+        return res.status(401).json({success: false, error_message: "The password you entered is incorrect."})
       }
     })
 })

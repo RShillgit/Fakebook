@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import {useCookies} from 'react-cookie';
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./loading";
+import '../styles/login.css';
+import githubMark from '../images/GitHubMark.png';
 
 const Login = (props) => {
 
@@ -50,34 +52,33 @@ const Login = (props) => {
                 }
             }
             setDisplay(
-                <div>
-                    {registeredSuccessfullyMessage}
-                    <form onSubmit={loginFormSubmit}>
-                        <label>
-                            Username
-                            <input type="text" name="username" id="usernameInput"/>
-                        </label>
-                        <label>
-                            Password
-                            <input type="password" name="password" id="passwordInput"/>
-                        </label>
-                        <button>Login</button>
-                    </form>
-
-                    <div className="login-buttons">
-                        <a href='/register'>
-                            <button>Register</button>
-                        </a>
-
-                        <a href={fbURL}>
-                            <button>Login With Facebook</button>
-                        </a>
-
-                        <button onClick={guestLogin}>Login As A Guest</button>
+                <>
+                    <div className="loginPage-title">
+                        <h1>fakebook</h1>
                     </div>
+                    <div className="loginForm-container">
+                        <div className="loginForm-title">Log Into Fakebook</div>
+                        {registeredSuccessfullyMessage}
+                        <form id="loginForm" onSubmit={loginFormSubmit}>
+                            <input type="text" name="username" id="usernameInput" placeholder="Username" required={true}/>
+                            <input type="password" name="password" id="passwordInput" placeholder="Password" required={true}/>                       
+                            <button id="loginButton">Log In</button>
+                        </form>
 
-                    {errorMessage}
-                </div>
+                        <div className="login-buttons">
+                            <div className="login-buttons-topRow">
+                                <button id="guestLoginButton" onClick={guestLogin}>Log In As A Guest</button>
+                                <p>·</p>
+                                <a id="registerLink" href='/register'> Sign up for Fakebook</a>
+                            </div>
+                            <div className="login-buttons-bottomRow">
+                                <a href={fbURL}>
+                                    <button id="fbLoginButton">Log In With Facebook</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </>
             )
         }
     }, [auth])
@@ -157,7 +158,15 @@ const Login = (props) => {
 
     return (
         <div className="Page">
-            {display}
+            <div className="loginPageContainer">
+                {display}
+                {errorMessage}
+            </div>
+            <div className="footer">
+                <a href="https://github.com/RShillgit" target="_blank" rel='noreferrer'>
+                    <img id="githubImg" src={githubMark} alt="Github"/>
+                </a>
+            </div>
         </div>
     )
 }
