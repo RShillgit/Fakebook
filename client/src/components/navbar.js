@@ -19,8 +19,31 @@ const Navbar = (props) => {
     }
 
     useEffect(() => {
-        console.log(location.pathname);
-    })
+
+        const homeButtonContainer = document.getElementById('homeButtonContainer'); 
+        const messagesButtonContainer = document.getElementById('messagesButtonContainer'); 
+        const profileButtonContainer = document.getElementById('profileButtonContainer'); 
+
+        const navigationButtons = [homeButtonContainer, messagesButtonContainer, profileButtonContainer];
+        
+        // Remove "currentlyActive" class from all tabs
+        navigationButtons.forEach(button => {
+            if(button.classList.contains('currentlyActive')) {
+                button.classList.remove('currentlyActive')
+            }
+        })
+
+        // Add "currentlyActive" class to the active tab
+        if (location.pathname === '/') {
+            homeButtonContainer.classList.add('currentlyActive');
+        }
+        else if (location.pathname === '/messages') {
+            messagesButtonContainer.classList.add('currentlyActive');
+        }
+        else if (location.pathname.includes("profile")) {
+            profileButtonContainer.classList.add('currentlyActive');
+        }
+    }, [])
 
     // Log user out by fetching backend logout function and removing token cookie
     const userLogout = (e) => {
@@ -35,16 +58,24 @@ const Navbar = (props) => {
         <div className="navbar">
             <img id='scrollToTopButton' onClick={scrollToTop} src={fakebookLogo} alt="Scroll To Top"/>
 
-            <a href="/">
-                <img src={homeImg} alt='Home' />
-            </a>
-            <a href='/messages'>
-                <img src={messengerImg} alt='Messages'/>
-            </a>
+            <div className='buttonContainer' id='homeButtonContainer'>
+                <a href="/">
+                    <img src={homeImg} alt='Home' />
+                </a>
+            </div>
 
-            <a href={`/profile/${props.currentUser._id}`}>
-                <img src={profileImg} alt='Profile'/>
-            </a>
+            <div className='buttonContainer' id='messagesButtonContainer'>
+                <a href='/messages'>
+                    <img src={messengerImg} alt='Messages'/>
+                </a>
+            </div>
+
+            <div className='buttonContainer' id='profileButtonContainer'>
+                <a href={`/profile/${props.currentUser._id}`}>
+                    <img src={profileImg} alt='Profile'/>
+                </a>
+            </div>
+
             <button onClick={userLogout}>Logout</button>
         </div>
     )
