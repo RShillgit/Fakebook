@@ -11,11 +11,16 @@ const IndividualPost = (props) => {
     const [auth, setAuth] = useState(null);
     const [selectedPost, setSelectedPost] = useState();
     const [display, setDisplay] = useState();
+    const [commentsDisplay, setCommentsDisplay] = useState();
     const [editingDisplay, setEditingDisplay] = useState();
     const [editPostText, setEditPostText] = useState("");
     const commentText = useRef();
     const [errorMessage, setErrorMessage] = useState();
     const [editingStatus, setEditingStatus] = useState(false);
+
+    const [editingComment, setEditingComment] = useState();
+    const [editCommentText, setEditCommentText] = useState("");
+
     const {postId} = useParams();
     const userId = useRef();
     const currentUser = useRef();
@@ -104,52 +109,35 @@ const IndividualPost = (props) => {
                             <button>Comment</button>
                         </div>
                     </div>
-                    <div className="commentSection">
-                        {selectedPost.comments.map(comment => {
-                            return (
-                                <div className="individualComment" key={comment._id} id={comment._id}>
-                                    {(comment.author._id === currentUser.current._id)
-                                        ? <button onClick={() => deleteComment(comment)} >Delete</button>
-                                        : <></>
-                                    }
-                                    <p>{comment.author.name}</p>
-                                    <p>{comment.text}</p>
-
-                                    <div className="individualComment-bottomRow">
-                                        <div className="individualComment-bottomRow-left">
-                                            {comment.likes.includes(userId.current) 
-                                                ? <p className='commentLike liked' onClick={likeComment}>Like</p> 
-                                                : <p className="commentLike" onClick={likeComment}>Like</p>
-                                            }
-                                            <p>{comment.timestamp}</p>
-                                        </div>
-                                        <div className="individualComment-bottomRow-right">
-                                            <p>{comment.likes.length}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div className="postCommentSection">
-                        <form onSubmit={postComment}>
-                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
-                            <button>Post</button>
-                        </form>
-                    </div>
                 </div>
             )
+            setCommentsDisplay(commentsSection);
         }
     }, [selectedPost])
 
     // Used to see if editing status is true which will change display
     useEffect(() => {
-
         if(editingStatus && selectedPost.author._id.toString() === userId.current) {
             setEditingDisplay(editPostDisplay)
         }
-
     }, [editingStatus, editPostText])
+
+    // Anytime editingComment changes set the comment section
+    useEffect(() => {
+        if(editingComment) {
+            setCommentsDisplay(commentsSectionWithEditing);
+        }
+        else {
+            setCommentsDisplay(commentsSection);
+        }
+    }, [editingComment])
+
+    // Anytime the exit comment text input changes set the comment section display
+    useEffect(() => {
+        if(editingComment) {
+            setCommentsDisplay(commentsSectionWithEditing);
+        }
+    }, [editCommentText])
 
     // Like A Post
     const likePost = () => {
@@ -300,6 +288,42 @@ const IndividualPost = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Edit comment form submit
+    const editCommentFormSubmit = (e) => {
+        e.preventDefault();
+
+        const editCommentInfo = {
+            requestType: 'edit',
+            text: editCommentText
+        }
+        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${editingComment._id}`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json",
+                Authorization: cookie.token,
+            },
+            body: JSON.stringify({editCommentInfo}),
+            mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+            setSelectedPost(data.updatedParentPost);
+            setEditingComment(null);
+        })
+        .catch(err => console.log(err))
+    }
+
+    // Edit a comment
+    const editComment = (editingComment) => {
+        setEditCommentText(editingComment.text);
+        setEditingComment(editingComment);
+    }
+
+    // Cancels editing a comment
+    const cancelEditComment = () => {
+        setEditingComment(null);
+    }
+
     // Delete a post
     const deletePost = () => {
 
@@ -322,13 +346,10 @@ const IndividualPost = (props) => {
     }
 
     // Like a comment
-    const likeComment = (e) => {
-
-        // Get the selected comment
-        const selectedCommentId = e.target.parentElement.parentElement.parentElement.id;
+    const likeComment = (comment) => {
 
         // PUT request to comment route
-        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${selectedCommentId}`, {
+        fetch(`${props.serverURL}/posts/${selectedPost._id}/comments/${comment._id}`, {
             method: 'PUT',
             headers: { 
                 "Content-Type": "application/json",
@@ -341,7 +362,7 @@ const IndividualPost = (props) => {
 
             // Update selected post's comments array with comment that has updated likes array
             const newCommentsArray = selectedPost.comments.map(com => {
-                if(com._id.toString() === selectedCommentId) {
+                if(com._id.toString() === comment._id) {
                     return com = data.newComment;
                 }
                 else return com;
@@ -407,6 +428,140 @@ const IndividualPost = (props) => {
             }
         </div>
     )
+
+    const commentsSection = (  
+        <>
+            {(selectedPost)
+                ? 
+                <div className="commentSection">
+                    {selectedPost.comments.map(comment => {
+                        return (
+                            <div className="individualComment" key={comment._id} id={comment._id}>
+
+                                {(comment.author._id === currentUser.current._id)
+                                    ? 
+                                    <div>
+                                        <button onClick={() => editComment(comment)} >Edit</button>
+                                        <button onClick={() => deleteComment(comment)} >Delete</button>
+                                    </div>
+                                    : <></>
+                                }
+                                <p>{comment.author.name}</p>
+                                <p>{comment.text}</p>
+
+                                <div className="individualComment-bottomRow">
+                                    <div className="individualComment-bottomRow-left">
+                                        {comment.likes.includes(userId.current) 
+                                            ? <p className='commentLike liked' onClick={() => likeComment(comment)}>Like</p> 
+                                            : <p className="commentLike" onClick={() => likeComment(comment)}>Like</p>
+                                        }
+                                        <p>{comment.timestamp}</p>
+                                    </div>
+                                    <div className="individualComment-bottomRow-right">
+                                        <p>{comment.likes.length}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                    <div className="postCommentSection">
+                        <form onSubmit={postComment}>
+                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
+                            <button>Post</button>
+                        </form>
+                    </div>
+                </div>
+                :
+                <></>
+            }
+    </>
+    )
+
+    const commentsSectionWithEditing = (
+        <>
+            {(selectedPost)
+                ?
+                <div className="commentSection">
+                    {selectedPost.comments.map(comment => {
+                        return (
+                            <div className="individualComment" key={comment._id} id={comment._id}>
+                                {(editingComment && editingComment._id === comment._id)
+                                    ?
+                                    <>
+                                        {(comment.author._id === currentUser.current._id)
+                                            ? 
+                                            <div>
+                                                <p>{comment.author.name}</p>
+                                                <form onSubmit={editCommentFormSubmit} id="editCommentForm">
+                                                    <input type="text" value={editCommentText} placeholder="Aa" required={true}
+                                                        onChange={e => setEditCommentText(e.target.value)}
+                                                    />
+                                                </form>
+                                                <div>
+                                                    <button onClick={() => cancelEditComment()} >Cancel</button>
+                                                    <button form="editCommentForm">Submit</button>
+                                                </div>
+
+
+                                                <div className="individualComment-bottomRow">
+                                                    <div className="individualComment-bottomRow-left">
+                                                        {comment.likes.includes(userId.current) 
+                                                            ? <p className='commentLike liked'>Like</p> 
+                                                            : <p className="commentLike">Like</p>
+                                                        }
+                                                        <p>{comment.timestamp}</p>
+                                                    </div>
+                                                    <div className="individualComment-bottomRow-right">
+                                                        <p>{comment.likes.length}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            : <></>
+                                        }
+                                    </>
+                                    :
+                                    <>
+                                        {(comment.author._id === currentUser.current._id)
+                                            ? 
+                                            <div>
+                                                <button onClick={() => editComment(comment)} >Edit</button>
+                                                <button onClick={() => deleteComment(comment)} >Delete</button>
+                                            </div>
+                                            : <></>
+                                        }
+                                        <p>{comment.author.name}</p>
+                                        <p>{comment.text}</p>
+
+                                        <div className="individualComment-bottomRow">
+                                            <div className="individualComment-bottomRow-left">
+                                                {comment.likes.includes(userId.current) 
+                                                    ? <p className='commentLike liked' onClick={() => likeComment(comment)}>Like</p> 
+                                                    : <p className="commentLike" onClick={() => likeComment(comment)}>Like</p>
+                                                }
+                                                <p>{comment.timestamp}</p>
+                                            </div>
+                                            <div className="individualComment-bottomRow-right">
+                                                <p>{comment.likes.length}</p>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
+                            </div>
+                        )
+                    })}
+                    <div className="postCommentSection">
+                        <form onSubmit={postComment}>
+                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
+                            <button>Post</button>
+                        </form>
+                    </div>
+                </div>
+                :
+                <>
+                </>
+            }
+        </>
+    )
     
     return(
         <div className="Page">
@@ -418,6 +573,7 @@ const IndividualPost = (props) => {
                 : 
                 <>
                     {display}
+                    {commentsDisplay}
                 </>
             }
         </div>

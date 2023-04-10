@@ -285,12 +285,13 @@ router.post('/:id/comments',
                 {'comments': updatedCommentsArray},
                 {new: true}
             )
+            .populate('author')
             .populate({
-                path: 'comments',
-                    populate: {
-                        path: 'author',
-                        model: 'User'
-                    }
+                path: 'comments', 
+                populate: {
+                    path: 'author',
+                    model: 'User'
+                }
             })
             // Successfully updated post's comments array
             .then((updatedPost) => {
@@ -320,45 +321,87 @@ router.put('/:id/comments/:commentId',
     // Successful Authentication
     (req, res, next) => {
 
-        // Get the comment
-        Comment.findById(req.params.commentId)
-            // Successfully found comment
-            .then(selectedComment => {
-                
-                let likesArray = selectedComment.likes;
-        
-                // If the user is already in the array, remomve them
-                if (likesArray.includes(req.user._id.toString())) {
-                    
-                    likesArray = likesArray.filter(like => {
-                        return like.toString() !== req.user._id.toString();
-                    })
-                }
-                // If the user is not in the array, add them
-                else {
-                    likesArray.push(req.user._id)
-                }
+        // Edit comment
+        if (req.body.editCommentInfo && req.body.editCommentInfo.requestType && req.body.editCommentInfo.requestType === 'edit') {
 
-                // Update comment
-                Comment.findByIdAndUpdate(req.params.commentId, 
-                    {'likes': likesArray},
-                    {new: true}
-                )
+            // Find and update the specified comment
+            Comment.updateOne(
+                {_id: req.params.commentId},
+                { $set: 
+                    {
+                        text: req.body.editCommentInfo.text
+                    }
+                }
+            )
+            // Successfully updated comment
+            .then(
+                // Get the parent post
+                Post.findById(req.params.id)
                 .populate('author')
-                // Successfully updated comment
-                .then((newComment) => {
-                    return res.status(200).json({ success: true, newComment: newComment });
+                .populate({
+                    path: 'comments', 
+                    populate: {
+                        path: 'author',
+                        model: 'User'
+                    }
                 })
-                // Unsuccessfully updated comment
+                // Successfully found parent post
+                .then(parentPost => {
+                    return res.status(200).json({success: true, auth: req.isAuthenticated(), updatedParentPost: parentPost});
+                })
+                // Unsuccessfully found parent post
+                .catch(err => {
+                    return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+                })
+            )
+            // Unsuccessfully updated comment
+            .catch(err => {
+                return res.status(500).json({success: false, err, auth: req.isAuthenticated()});
+            })
+
+        }
+        // Like/unlike
+        else {
+            // Get the comment
+            Comment.findById(req.params.commentId)
+                // Successfully found comment
+                .then(selectedComment => {
+                    
+                    let likesArray = selectedComment.likes;
+            
+                    // If the user is already in the array, remomve them
+                    if (likesArray.includes(req.user._id.toString())) {
+                        
+                        likesArray = likesArray.filter(like => {
+                            return like.toString() !== req.user._id.toString();
+                        })
+                    }
+                    // If the user is not in the array, add them
+                    else {
+                        likesArray.push(req.user._id)
+                    }
+
+                    // Update comment
+                    Comment.findByIdAndUpdate(req.params.commentId, 
+                        {'likes': likesArray},
+                        {new: true}
+                    )
+                    .populate('author')
+                    // Successfully updated comment
+                    .then((newComment) => {
+                        return res.status(200).json({ success: true, newComment: newComment });
+                    })
+                    // Unsuccessfully updated comment
+                    .catch(err => {
+                        return res.status(401).json({err, auth: req.isAuthenticated()});
+                    })
+            
+                })
+                // Unsuccessfully found comment
                 .catch(err => {
                     return res.status(401).json({err, auth: req.isAuthenticated()});
                 })
-        
-            })
-            // Unsuccessfully found comment
-            .catch(err => {
-                return res.status(401).json({err, auth: req.isAuthenticated()});
-            })
+        }
     },
     // Unsuccessful Authentication
     (err, req, res) => {
@@ -399,12 +442,12 @@ router.delete('/:id/comments/:commentId',
                             },
                             {new: true}    
                         )
-                        .populate('comments')
+                        .populate('author')
                         .populate({
                             path: 'comments', 
                             populate: {
                                 path: 'author',
-                                model: 'User',
+                                model: 'User'
                             }
                         })
                         // Successfully updated parent post
