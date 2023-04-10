@@ -10,7 +10,8 @@
     font-size: 24px;
 }
 .loginPage-title h1 {
-    margin: 1rem;
+    margin: 0;
+    margin-bottom: 1rem;
 }
 .loginForm-container {
     padding: 1rem;
@@ -67,7 +68,7 @@
     line-height: 32px;
 }
 .login-buttons #fbLoginButton {
-    background-color: purple;
+    background-color: #00a400;
     border: none;
     color: #fff;
     border-radius: 6px;
@@ -102,30 +103,3 @@
 .loginPageContainer .errorMessage p {
     margin: 0;
 }
-
-.footer {
-    border-top: 2px solid #dddfe2;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 1rem 0 1rem 0;
-}
-.footer #githubImg {
-    filter: invert(39%) sepia(36%) saturate(5799%) hue-rotate(202deg) brightness(96%) contrast(97%);
-}
-.footer #githubImg:hover {
-    animation: rotate 0.4s linear;
-  }
-  @keyframes rotate{
-    0%{
-        transform: rotate(0deg);
-    }
-    50%{
-        transform: rotate(180deg);
-    }
-    100%{
-        transform: rotate(360deg);
-    }
-  }

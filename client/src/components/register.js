@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../styles/register.css';
+import Footer from "./footer";
 
 const Register = (props) => {
 
@@ -65,30 +67,34 @@ const Register = (props) => {
 
     return (
         <div className="Page">
-            <h1>Register</h1>
+            <div className="registerPageContainer">
+                <div className="registerPage-title">
+                    <h1>fakebook</h1>
+                </div>
+                <div className="registerForm-container">
+                    <div className="registerForm-title">
+                        <p className="registerForm-mainTitle">Create a new account</p>
+                        <p className="registerForm-secondaryTitle">It's quick and easy.</p>
+                    </div>
+                    <form id="registerForm" onSubmit={registerForm}>
+                        <div className="registerForm-names">
+                            <input type="text" name="firstName" id="register-firstName" placeholder="First name"/>
+                            <input type="text" name="lastName" id="register-lastName" placeholder="Last name"/>
+                        </div>      
+                        <input type="text" name="username" id="register-username" placeholder="Username"/>          
+                        <input type="password" name="password" id="register-password" placeholder="Password"/>
+                        <input type="password" name="confirmPassword" id="register-confirmPassword" placeholder="Confirm Password"/>
 
-            <form onSubmit={registerForm}>
+                        <div className="registerForm-buttons">
+                            <button id="registerButton" form="registerForm">Sign Up</button>
+                            <a href="/login">Already have an account?</a>
+                        </div>
 
-                <label> First Name
-                    <input type="text" name="firstName" id="register-firstName"/>
-                </label>
-                <label> Last Name
-                    <input type="text" name="lastName" id="register-lastName"/>
-                </label>
-                <label> Username
-                    <input type="text" name="username" id="register-username"/>
-                </label>
-                <label> Password
-                    <input type="password" name="password" id="register-password"/>
-                </label>
-                <label> Confirm Password
-                    <input type="password" name="confirmPassword" id="register-confirmPassword"/>
-                </label>
-
-                <button>Register</button>
-
-                {errorMessage}
-            </form>
+                        {errorMessage}
+                    </form>
+                </div>
+            </div>
+            <Footer />
         </div>
     )
 }

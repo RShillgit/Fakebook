@@ -1,0 +1,27 @@
+.footer {
+    border-top: 2px solid #dddfe2;
+    position: fixed;
+    background-color: #fff;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 1rem 0;
+}
+.footer #githubImg {
+    filter: invert(39%) sepia(36%) saturate(5799%) hue-rotate(202deg) brightness(96%) contrast(97%);
+}
+.footer #githubImg:hover {
+    animation: rotate 0.4s linear;
+  }
+  @keyframes rotate{
+    0%{
+        transform: rotate(0deg);
+    }
+    50%{
+        transform: rotate(180deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+  }

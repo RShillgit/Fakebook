@@ -3,7 +3,8 @@ import {useCookies} from 'react-cookie';
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./loading";
 import '../styles/login.css';
-import githubMark from '../images/GitHubMark.png';
+import Footer from "./footer";
+
 
 const Login = (props) => {
 
@@ -162,11 +163,7 @@ const Login = (props) => {
                 {display}
                 {errorMessage}
             </div>
-            <div className="footer">
-                <a href="https://github.com/RShillgit" target="_blank" rel='noreferrer'>
-                    <img id="githubImg" src={githubMark} alt="Github"/>
-                </a>
-            </div>
+            <Footer />
         </div>
     )
 }
