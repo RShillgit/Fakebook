@@ -63,7 +63,7 @@ function App(props) {
   useEffect(() => {
     if(allPosts) {
       setDisplay(
-        <div>
+        <div className='homePageContainer'>
           <Navbar currentUser={currentUser.current} serverURL={props.serverURL} />
           <div className='non-navbar-content'>
   

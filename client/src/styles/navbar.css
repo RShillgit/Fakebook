@@ -1,7 +1,28 @@
 .navbar {
     display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    background-color: #fff;
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid blue;
     padding: 1rem;
+}
+#scrollToTopButton {
+    width: 50px;
+}
+#scrollToTopButton:hover {
+    cursor: pointer;
+}
+.navbar a img {
+    width: 30px;
+}
+
+/* Page offset */
+.non-navbar-content {
+    margin-top: 116px;
 }
