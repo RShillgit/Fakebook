@@ -4,6 +4,11 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 import '../styles/individualPost.css';
+import likeImg from '../images/like.png';
+import miniLikeImg from '../images/mini-like.png';
+import commentImg from '../images/chat.png';
+import editImg from '../images/edit.png';
+import deleteImg from '../images/trash.png';
 
 const IndividualPost = (props) => {
     
@@ -80,33 +85,65 @@ const IndividualPost = (props) => {
     useEffect(() => {
         if (selectedPost) {
             setDisplay(
-                <div>
+                <div className="individualPostPage">
                     <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
-                    {errorMessage}
-                    <div className="individualPost">
-                        {(selectedPost.author._id.toString() === currentUser.current._id)
-                            ?
-                            <div>
-                                <button onClick={() => renderEditPost()}>Edit Post</button>
-                                <button onClick={() => deletePost()}>Delete Post</button>
-                            </div>
-                            :<></>
-                        }
-                        <p>{selectedPost.author.name}</p>
-                        <p>{selectedPost.text}</p>
-                        <p>{selectedPost.timestamp}</p>
-
-                        <div className='individualPost-stats'>
-                            {selectedPost.likes.includes(userId.current) 
-                                ? <p className='liked' id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p> 
-                                : <p id={`likes-${selectedPost._id}`}>{selectedPost.likes.length}</p>
+                    <div className="non-navbar-content">
+                        {errorMessage}
+                        <div className="individualPost">
+                            {(selectedPost.author._id.toString() === currentUser.current._id)
+                                ?
+                                <div className='individualPost-creatorButtons'>
+                                    <button onClick={() => renderEditPost()}>
+                                        <img src={editImg} alt='Edit'/>
+                                    </button>
+                                    <button onClick={() => deletePost()}>
+                                        <img src={deleteImg} alt='Delete'/>
+                                    </button>
+                                </div>
+                                :<></>
                             }
-                            <p>{selectedPost.comments.length} comments</p>
-                        </div>
-            
-                        <div className='individualPost-buttons'>
-                            <button onClick={likePost}>Like</button>
-                            <button>Comment</button>
+                            <div className='individualPost-creationInfo'>
+                                <p className='individaulPost-creator'>{selectedPost.author.name}</p>
+                                <p className='individualPost-date'>{formatTimestamp(selectedPost.timestamp)}</p>
+                            </div>
+                            <p className='individualPost-text'>{selectedPost.text}</p>
+                            <div className='individualPost-stats'>
+                                {(selectedPost.likes.length > 0)
+                                    ? 
+                                    <p id={`likes-${selectedPost._id}`}>
+                                        <img id='likesStatImg' src={miniLikeImg} alt='Likes'/>
+                                        {selectedPost.likes.length}
+                                    </p> 
+                                    : 
+                                    <p id={`likes-${selectedPost._id}`}>
+                                        <img id='likesStatImg' src={miniLikeImg} alt='Likes'/>
+                                        
+                                    </p>
+                                }   
+                                {(selectedPost.comments.length > 0)
+                                    ?<p>{selectedPost.comments.length} <img id='commentsStatImg' src={commentImg} alt='Comments'/></p>
+                                    :<p><img id='commentsStatImg' src={commentImg} alt='Comments'/></p>
+                                }               
+                            </div>
+                
+                            <div className='individualPost-buttons'>
+                                {selectedPost.likes.includes(userId.current)
+                                    ?
+                                    <button className='liked' onClick={likePost}>
+                                        <img  src={likeImg} alt=''/>
+                                        Like
+                                    </button>
+                                    :
+                                    <button onClick={likePost}>
+                                        <img  src={likeImg} alt=''/>
+                                        Like
+                                    </button>
+                                } 
+                                <button>
+                                    <img src={commentImg} alt=''/>
+                                    Comment
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -399,6 +436,69 @@ const IndividualPost = (props) => {
         .catch(err => console.log(err))
     }
 
+      // Formats timestamp to display recency of each post
+    const formatTimestamp = (timestamp) => {
+
+        const currentTime = Date.now();
+        const convertedTimestamp = new Date(timestamp);
+        const epochTimestamp = convertedTimestamp.getTime();
+        const epochTimeElapsed = currentTime - epochTimestamp;
+
+        // Weeks elapsed
+        const weeksElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24 * 7));
+
+        // If less than a week has elapsed
+        if (weeksElapsed < 1) {
+
+        // Days, hours, minutes, seconds elapsed
+        const daysElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24));
+        const hoursElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60));
+        const minutesElapsed = Math.floor(epochTimeElapsed/(1000* 60));
+        const secondsElapsed = Math.floor(epochTimeElapsed/1000);
+
+        // If days have elapsed return the days
+        if (daysElapsed > 0) {
+            return `${daysElapsed}d`;
+        }
+        // Else if hours have elapsed return the hours
+        else if (hoursElapsed > 0) {
+            return `${hoursElapsed}h`;
+        }
+        // Else if minutes have elapsed return the minutes
+        else if (minutesElapsed > 0) {
+            return `${minutesElapsed}m`;
+        }
+        // Else return the seconds
+        else {
+            return `${secondsElapsed}s`;
+        }
+        }
+        // If more than a week has elapsed return MM/DD/YYYY date
+        else {
+
+        // Day
+        let day = convertedTimestamp.getDate();
+
+        // Month
+        let month = convertedTimestamp.getMonth() + 1;
+    
+        // Year
+        let year = convertedTimestamp.getFullYear();
+    
+        // 2 digit months and days
+        if (day < 10) {
+            day = '0' + day;
+        }
+        if (month < 10) {
+            month = `0${month}`;
+        }
+    
+        let formattedDate = `${month}/${day}/${year}`;
+    
+        return formattedDate;
+        }
+    }
+
     const editPostDisplay = (
         <div>
             {(selectedPost)
@@ -430,7 +530,7 @@ const IndividualPost = (props) => {
     )
 
     const commentsSection = (  
-        <>
+        <div className="commentsContainer">
             {(selectedPost)
                 ? 
                 <div className="commentSection">
@@ -438,16 +538,24 @@ const IndividualPost = (props) => {
                         return (
                             <div className="individualComment" key={comment._id} id={comment._id}>
 
-                                {(comment.author._id === currentUser.current._id)
-                                    ? 
-                                    <div>
-                                        <button onClick={() => editComment(comment)} >Edit</button>
-                                        <button onClick={() => deleteComment(comment)} >Delete</button>
+                                <div className="individualComment-bubble">
+                                    <div className="individualComment-main">
+                                        <a href={`/profile/${comment.author._id}`} className="individualComment-creator">{comment.author.name}</a>
+                                        <p className="individualComment-text">{comment.text}</p>
                                     </div>
-                                    : <></>
-                                }
-                                <p>{comment.author.name}</p>
-                                <p>{comment.text}</p>
+                                    {(comment.author._id === currentUser.current._id)
+                                        ? 
+                                        <div className='individualComment-creatorButtons'>
+                                            <button onClick={() => deleteComment(comment)} >
+                                                <img src={deleteImg} alt='Delete'/>
+                                            </button>
+                                            <button onClick={() => editComment(comment)} >
+                                                <img src={editImg} alt='Edit'/>
+                                            </button>
+                                        </div>
+                                        : <></>
+                                    }
+                                </div>
 
                                 <div className="individualComment-bottomRow">
                                     <div className="individualComment-bottomRow-left">
@@ -458,7 +566,11 @@ const IndividualPost = (props) => {
                                         <p>{comment.timestamp}</p>
                                     </div>
                                     <div className="individualComment-bottomRow-right">
-                                        <p>{comment.likes.length}</p>
+                                        {(comment.likes.length > 0)
+                                            ? <p><img src={miniLikeImg} alt="Likes"/>{comment.likes.length}</p>
+                                            : <p><img src={miniLikeImg} alt="Likes"/></p>
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -466,7 +578,7 @@ const IndividualPost = (props) => {
                     })}
                     <div className="postCommentSection">
                         <form onSubmit={postComment}>
-                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
+                            <textarea id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
                             <button>Post</button>
                         </form>
                     </div>
@@ -474,86 +586,90 @@ const IndividualPost = (props) => {
                 :
                 <></>
             }
-    </>
+    </div>
     )
 
     const commentsSectionWithEditing = (
         <>
             {(selectedPost)
                 ?
-                <div className="commentSection">
-                    {selectedPost.comments.map(comment => {
-                        return (
-                            <div className="individualComment" key={comment._id} id={comment._id}>
-                                {(editingComment && editingComment._id === comment._id)
-                                    ?
-                                    <>
-                                        {(comment.author._id === currentUser.current._id)
-                                            ? 
-                                            <div>
-                                                <p>{comment.author.name}</p>
-                                                <form onSubmit={editCommentFormSubmit} id="editCommentForm">
-                                                    <input type="text" value={editCommentText} placeholder="Aa" required={true}
-                                                        onChange={e => setEditCommentText(e.target.value)}
-                                                    />
-                                                </form>
-                                                <div>
-                                                    <button onClick={() => cancelEditComment()} >Cancel</button>
-                                                    <button form="editCommentForm">Submit</button>
-                                                </div>
+                <div className="commentsContainer">              
+                    <div className="commentSection">
+                        {selectedPost.comments.map(comment => {
+                            return (
+                                <div className="individualComment" key={comment._id} id={comment._id}>
+                                    {(editingComment && editingComment._id === comment._id)
+                                        ?
+                                        <>
+                                            {(comment.author._id === currentUser.current._id)
+                                                ? 
+                                                <>
+                                                    <div className="individualComment-bubble editing">
 
-
-                                                <div className="individualComment-bottomRow">
-                                                    <div className="individualComment-bottomRow-left">
-                                                        {comment.likes.includes(userId.current) 
-                                                            ? <p className='commentLike liked'>Like</p> 
-                                                            : <p className="commentLike">Like</p>
-                                                        }
-                                                        <p>{comment.timestamp}</p>
+                                                        <div className="individualComment-main editing">
+                                                            <p>{comment.author.name}</p>
+                                                            <form onSubmit={editCommentFormSubmit} id="editCommentForm">
+                                                                <textarea value={editCommentText} placeholder="Aa" required={true}
+                                                                    onChange={e => setEditCommentText(e.target.value)}
+                                                                />
+                                                            </form>
+                                                        </div>
+                                                        <div>
+                                                            <button onClick={() => cancelEditComment()} >Cancel</button>
+                                                            <button form="editCommentForm">Submit</button>
+                                                        </div>
                                                     </div>
-                                                    <div className="individualComment-bottomRow-right">
-                                                        <p>{comment.likes.length}</p>
-                                                    </div>
+                                                </>
+                                                : <></>
+                                            }
+                                        </>
+                                        :
+                                        <>
+                                            <div className="individualComment-bubble">
+                                                <div className="individualComment-main">
+                                                    <a href={`/profile/${comment.author._id}`} className="individualComment-creator">{comment.author.name}</a>
+                                                    <p className="individualComment-text">{comment.text}</p>
                                                 </div>
-                                            </div>
-                                            : <></>
-                                        }
-                                    </>
-                                    :
-                                    <>
-                                        {(comment.author._id === currentUser.current._id)
-                                            ? 
-                                            <div>
-                                                <button onClick={() => editComment(comment)} >Edit</button>
-                                                <button onClick={() => deleteComment(comment)} >Delete</button>
-                                            </div>
-                                            : <></>
-                                        }
-                                        <p>{comment.author.name}</p>
-                                        <p>{comment.text}</p>
-
-                                        <div className="individualComment-bottomRow">
-                                            <div className="individualComment-bottomRow-left">
-                                                {comment.likes.includes(userId.current) 
-                                                    ? <p className='commentLike liked' onClick={() => likeComment(comment)}>Like</p> 
-                                                    : <p className="commentLike" onClick={() => likeComment(comment)}>Like</p>
+                                                {(comment.author._id === currentUser.current._id)
+                                                    ? 
+                                                    <div className='individualComment-creatorButtons'>
+                                                        <button>
+                                                            <img src={deleteImg} alt='Delete'/>
+                                                        </button>
+                                                        <button>
+                                                            <img src={editImg} alt='Edit'/>
+                                                        </button>
+                                                    </div>
+                                                    : <></>
                                                 }
-                                                <p>{comment.timestamp}</p>
                                             </div>
-                                            <div className="individualComment-bottomRow-right">
-                                                <p>{comment.likes.length}</p>
+                            
+                                            <div className="individualComment-bottomRow">
+                                                <div className="individualComment-bottomRow-left">
+                                                    {comment.likes.includes(userId.current) 
+                                                        ? <p className='commentLike liked'>Like</p> 
+                                                        : <p className="commentLike">Like</p>
+                                                    }
+                                                    <p>{comment.timestamp}</p>
+                                                </div>
+                                                <div className="individualComment-bottomRow-right">
+                                                    {(comment.likes.length > 0)
+                                                        ? <p><img src={miniLikeImg} alt="Likes"/>{comment.likes.length}</p>
+                                                        : <p><img src={miniLikeImg} alt="Likes"/></p>
+                                                    }                                              
+                                                </div>
                                             </div>
-                                        </div>
-                                    </>
-                                }
-                            </div>
-                        )
-                    })}
-                    <div className="postCommentSection">
-                        <form onSubmit={postComment}>
-                            <input id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
-                            <button>Post</button>
-                        </form>
+                                        </>
+                                    }
+                                </div>
+                            )
+                        })}
+                        <div className="postCommentSection">
+                            <form onSubmit={(e) => e.preventDefault()}>
+                                <textarea id="commentTextInput" placeholder="Write a comment..." type="text"/>
+                                <button>Post</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 :

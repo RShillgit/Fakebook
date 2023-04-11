@@ -90,7 +90,7 @@ function App(props) {
                           <img src={editImg} alt='Edit'/>
                         </button>
                         <button onClick={() => deletePost(post)}>
-                        <img src={deleteImg} alt='Delete'/>
+                          <img src={deleteImg} alt='Delete'/>
                         </button>
                       </div>
                       :<></>

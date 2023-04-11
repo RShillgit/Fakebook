@@ -27,6 +27,7 @@
     padding: 1rem;
 }
 .create-post form textarea {
+    max-width: 90%;
     width: 90%;
     font-size: 17px;
     background-color: #EBEDF0;
@@ -63,29 +64,30 @@
     flex-direction: column;
     align-items: center;
     padding: 1rem;
+    margin-bottom: 1rem;
 }
-.allPosts .individualPost-creatorButtons {
+.individualPost-creatorButtons {
     display: flex;
     width: 100%;
     justify-content: space-between;
 } 
-.allPosts .individualPost-creatorButtons button {
+.individualPost-creatorButtons button {
     background-color: #fff;
     border: none;
 }
-.allPosts .individualPost-creatorButtons button:hover {
+.individualPost-creatorButtons button:hover {
     cursor: pointer;
 }
-.allPosts .individualPost-creatorButtons img {
+.individualPost-creatorButtons img {
     width: 25px;
 }
-.allPosts .individualPost-creationInfo {
+.individualPost-creationInfo {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
 }
-.allPosts .individualPost-creationInfo .individaulPost-creator {
+.individualPost-creationInfo .individaulPost-creator {
     text-decoration: none;
     border-bottom: 2px solid #fff;
     font-weight: 600;
@@ -98,7 +100,7 @@
     margin: 0;
     font-size: 16px;
 }
-.allPosts .individualPost-clickableArea {
+.individualPost-clickableArea {
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -106,17 +108,17 @@
     align-items: center;
     width: 100%;
 }
-.allPosts .individualPost-clickableArea .individualPost-text {
+.individualPost-clickableArea .individualPost-text {
     display: flex;
     margin: 0.5rem;
     width: 100%;
 }
-.allPosts .individualPost-stats {
+.individualPost-stats {
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
-.allPosts .individualPost-stats p {
+.individualPost-stats p {
     display: flex;
     gap: 5px;
     justify-content: center;
@@ -124,10 +126,10 @@
     margin-top: 0;
     margin-bottom: 0.5rem;
 }
-.allPosts .individualPost-stats img {
+.individualPost-stats img {
     width: 20px;
 }
-.allPosts .individualPost-buttons {
+.individualPost-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
@@ -145,7 +147,7 @@
     padding: 3px 0 3px 0;
     border-radius: 6px;
 }
-.allPosts .individualPost-buttons button {
+.individualPost-buttons button {
     border: none;
     display: flex;
     align-items: center;
@@ -156,14 +158,13 @@
     gap: 5px;
     border-radius: 6px;
 }
-.allPosts .individualPost-buttons a:hover, .allPosts .individualPost-buttons button:hover {
+.individualPost-buttons a:hover, .individualPost-buttons button:hover {
     background-color: #EBEDF0;
     cursor: pointer;
 }
-.allPosts .individualPost-buttons img {
+.individualPost-buttons img {
     width: 25px;
 }
-/* This also affects likes on individual post page */
 .individualPost-buttons button.liked img  {
     filter: invert(40%) sepia(80%) saturate(4498%) hue-rotate(203deg) brightness(99%) contrast(91%);
 }
