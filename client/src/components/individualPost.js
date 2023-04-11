@@ -9,6 +9,8 @@ import miniLikeImg from '../images/mini-like.png';
 import commentImg from '../images/chat.png';
 import editImg from '../images/edit.png';
 import deleteImg from '../images/trash.png';
+import closeImg from '../images/close.png';
+import checkImg from '../images/check.png';
 
 const IndividualPost = (props) => {
     
@@ -500,33 +502,37 @@ const IndividualPost = (props) => {
     }
 
     const editPostDisplay = (
-        <div>
+        <>
             {(selectedPost)
                 ?
-                <div>
+                <div className="individualPostPage">
                     <Navbar currentUser={currentUser.current} serverURL={props.serverURL}/>
-                    <div className="individualPost">
+                    <div className="non-navbar-content">
+                        <div className="individualPost editing">
+                            <h1>Edit Post</h1>
+                            <div className="individualPost-editPost">
 
-                        <h1>Edit Post</h1>
+                                <form onSubmit={editPostFormSubmit} id="individualPost-editForm">
+                                    <p>{selectedPost.author.name}</p>
+                                    <textarea type="text" value={editPostText} onChange={(e) => setEditPostText(e.target.value)} />
+                                    <p>{selectedPost.timestamp}</p>
+                                </form>
+                                <div className="individualPost-editPost-formButtons">
+                                    <button onClick={cancelEditPost}>
+                                        <img src={closeImg} alt="Cancel"/>
+                                    </button>
+                                    <button form="individualPost-editForm">
+                                        <img src={checkImg} alt="Confirm"/>
+                                    </button>
+                                </div>
 
-                        <div className="individualPost-editPost">
-
-                            <form onSubmit={editPostFormSubmit} id="individualPost-editForm">
-                                <p>{selectedPost.author.name}</p>
-                                <textarea type="text" value={editPostText} onChange={(e) => setEditPostText(e.target.value)} />
-                                <p>{selectedPost.timestamp}</p>
-                            </form>
-                            <div className="individualPost-editPost-formButtons">
-                                <button onClick={cancelEditPost}>Cancel</button>
-                                <button form="individualPost-editForm">Submit</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
                 :<></>
             }
-        </div>
+        </>
     )
 
     const commentsSection = (  
@@ -614,9 +620,13 @@ const IndividualPost = (props) => {
                                                                 />
                                                             </form>
                                                         </div>
-                                                        <div>
-                                                            <button onClick={() => cancelEditComment()} >Cancel</button>
-                                                            <button form="editCommentForm">Submit</button>
+                                                        <div className="individualComment-editComment-buttons">
+                                                            <button onClick={() => cancelEditComment()} >
+                                                                <img src={closeImg} alt="Cancel"/>
+                                                            </button>
+                                                            <button form="editCommentForm">
+                                                                <img src={checkImg} alt="Confirm"/>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </>

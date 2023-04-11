@@ -121,6 +121,38 @@
     width: 20px;
 }
 
+/* INDIVIDUAL POST EDITING */
+.individualPostPage .individualPost.editing {
+    margin: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #dddfe2;
+    border-radius: 8px;
+}
+.individualPost-editPost {
+    width: 100%;
+}
+.individualPostPage .individualPost.editing form textarea {
+    max-width: 100%;
+    width: 100%;
+}
+.individualPost-editPost-formButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.individualPost-editPost-formButtons button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: #fff;
+}
+.individualPost-editPost-formButtons button:hover {
+    cursor: pointer;
+}
+.individualPost-editPost-formButtons img {
+    width: 20px;
+}
+
 /* COMMENT EDITING */
 .individualComment-editing {
     display: flex;
@@ -132,4 +164,20 @@
 }
 .individualComment-main.editing textarea{
     max-width: 300px;
+}
+.individualComment-editComment-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.individualComment-editComment-buttons button {
+    border: none;
+    background-color: #EBEDF0;
+}
+.individualComment-editComment-buttons button:hover {
+    cursor: pointer;
+}
+.individualComment-editComment-buttons button img {
+    width: 20px;
 }
