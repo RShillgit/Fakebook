@@ -97,7 +97,7 @@ function App(props) {
                     }
                     <div className='individualPost-creationInfo'>
                       <a href={`/profile/${post.author._id}`} className='individaulPost-creator'>{post.author.name}</a>
-                      <p className='individualPost-date'>{post.timestamp}</p>
+                      <p className='individualPost-date'>{formatTimestamp(post.timestamp)}</p>
                     </div>
                     <a className='individualPost-clickableArea' href={`/posts/${post._id}`}>
                       <p className='individualPost-text'>{post.text}</p>
@@ -243,6 +243,69 @@ function App(props) {
         }
     })
     .catch(err => console.log(err))
+  }
+
+  // Formats timestamp to display recency of each post
+  const formatTimestamp = (timestamp) => {
+
+    const currentTime = Date.now();
+    const convertedTimestamp = new Date(timestamp);
+    const epochTimestamp = convertedTimestamp.getTime();
+    const epochTimeElapsed = currentTime - epochTimestamp;
+
+    // Weeks elapsed
+    const weeksElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24 * 7));
+
+    // If less than a week has elapsed
+    if (weeksElapsed < 1) {
+
+      // Days, hours, minutes, seconds elapsed
+      const daysElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24));
+      const hoursElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60));
+      const minutesElapsed = Math.floor(epochTimeElapsed/(1000* 60));
+      const secondsElapsed = Math.floor(epochTimeElapsed/1000);
+
+      // If days have elapsed return the days
+      if (daysElapsed > 0) {
+        return `${daysElapsed}d`;
+      }
+      // Else if hours have elapsed return the hours
+      else if (hoursElapsed > 0) {
+        return `${hoursElapsed}h`;
+      }
+      // Else if minutes have elapsed return the minutes
+      else if (minutesElapsed > 0) {
+        return `${minutesElapsed}m`;
+      }
+      // Else return the seconds
+      else {
+        return `${secondsElapsed}s`;
+      }
+    }
+    // If more than a week has elapsed return MM/DD/YYYY date
+    else {
+
+      // Day
+      let day = convertedTimestamp.getDate();
+
+      // Month
+      let month = convertedTimestamp.getMonth() + 1;
+  
+      // Year
+      let year = convertedTimestamp.getFullYear();
+  
+      // 2 digit months and days
+      if (day < 10) {
+          day = '0' + day;
+      }
+      if (month < 10) {
+          month = `0${month}`;
+      }
+  
+      let formattedDate = `${month}/${day}/${year}`;
+  
+      return formattedDate;
+    }
   }
 
   // Edit post redirection

@@ -125,7 +125,7 @@
     margin-bottom: 0.5rem;
 }
 .allPosts .individualPost-stats img {
-    width: 15px;
+    width: 20px;
 }
 .allPosts .individualPost-buttons {
     display: grid;
@@ -161,7 +161,7 @@
     cursor: pointer;
 }
 .allPosts .individualPost-buttons img {
-    width: 20px;
+    width: 25px;
 }
 /* This also affects likes on individual post page */
 .individualPost-buttons button.liked img  {
