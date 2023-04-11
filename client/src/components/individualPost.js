@@ -515,7 +515,7 @@ const IndividualPost = (props) => {
                                 <form onSubmit={editPostFormSubmit} id="individualPost-editForm">
                                     <p>{selectedPost.author.name}</p>
                                     <textarea type="text" value={editPostText} onChange={(e) => setEditPostText(e.target.value)} />
-                                    <p>{selectedPost.timestamp}</p>
+                                    <p>{formatTimestamp(selectedPost.timestamp)}</p>
                                 </form>
                                 <div className="individualPost-editPost-formButtons">
                                     <button onClick={cancelEditPost}>
@@ -569,7 +569,7 @@ const IndividualPost = (props) => {
                                             ? <p className='commentLike liked' onClick={() => likeComment(comment)}>Like</p> 
                                             : <p className="commentLike" onClick={() => likeComment(comment)}>Like</p>
                                         }
-                                        <p>{comment.timestamp}</p>
+                                        <p>{formatTimestamp(comment.timestamp)}</p>
                                     </div>
                                     <div className="individualComment-bottomRow-right">
                                         {(comment.likes.length > 0)
@@ -660,7 +660,7 @@ const IndividualPost = (props) => {
                                                         ? <p className='commentLike liked'>Like</p> 
                                                         : <p className="commentLike">Like</p>
                                                     }
-                                                    <p>{comment.timestamp}</p>
+                                                    <p>{formatTimestamp(comment.timestamp)}</p>
                                                 </div>
                                                 <div className="individualComment-bottomRow-right">
                                                     {(comment.likes.length > 0)
