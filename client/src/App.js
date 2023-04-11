@@ -4,6 +4,11 @@ import {useCookies} from 'react-cookie';
 import './styles/App.css';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './components/navbar';
+import likeImg from './images/like.png';
+import miniLikeImg from './images/mini-like.png';
+import commentImg from './images/chat.png';
+import editImg from './images/edit.png';
+import deleteImg from './images/trash.png';
 
 function App(props) {
 
@@ -37,7 +42,6 @@ function App(props) {
           else {
             // TODO: set error message or render error page
             // To view this error reload page when server isnt running
-            console.log(checkTokenResponse);
           }
       }
       else setAuth(false);
@@ -68,11 +72,11 @@ function App(props) {
           <div className='non-navbar-content'>
   
             <div className='create-post'>
-              <form onSubmit={createPostFormSubmit}>
-                <input type="text" placeholder='Whats on your mind?' id='newPostTextInput'/>
-                <button>Post</button>
-                {createPostErrorMessage}
-              </form>
+                <form onSubmit={createPostFormSubmit}>
+                  <textarea type="text" rows="1" placeholder={`Whats on your mind?`} id='newPostTextInput'/>
+                  <button>Post</button>
+                  {createPostErrorMessage}
+                </form>
             </div>
   
             <div className='allPosts'>
@@ -81,28 +85,48 @@ function App(props) {
                   <div className='individualPost' key={post._id}> 
                     {(post.author._id === currentUser.current._id)
                       ?
-                      <div>
-                        <button onClick={() => editPost(post)}>Edit Post</button>
-                        <button onClick={() => deletePost(post)}>Delete Post</button>
+                      <div className='individualPost-creatorButtons'>
+                        <button onClick={() => editPost(post)}>
+                          <img src={editImg} alt='Edit'/>
+                        </button>
+                        <button onClick={() => deletePost(post)}>
+                        <img src={deleteImg} alt='Delete'/>
+                        </button>
                       </div>
                       :<></>
                     }
+                    <div className='individualPost-creationInfo'>
+                      <a href={`/profile/${post.author._id}`} className='individaulPost-creator'>{post.author.name}</a>
+                      <p className='individualPost-date'>{post.timestamp}</p>
+                    </div>
                     <a className='individualPost-clickableArea' href={`/posts/${post._id}`}>
-                      <p>{post.author.name}</p>
-                      <p>{post.text}</p>
-                      <p>{post.timestamp}</p>
+                      <p className='individualPost-text'>{post.text}</p>
                       <div className='individualPost-stats'>
-                        {post.likes.includes(userId.current) 
-                          ? <p className='liked' id={`likes-${post._id}`}>{post.likes.length}</p> 
-                          : <p id={`likes-${post._id}`}>{post.likes.length}</p>
-                        }
-                        <p>{post.comments.length} comments</p>
+                        <p id={`likes-${post._id}`}> 
+                          <img id='likesStatImg' src={miniLikeImg} alt='Likes'/>
+                          {post.likes.length}
+                        </p>                   
+                        <p>{post.comments.length} <img id='commentsStatImg' src={commentImg} alt='Comments'/></p>
                       </div>
                     </a>
                     <div className='individualPost-buttons'>
-                      <button onClick={() => likePost(post)}>Like</button>
+                    {post.likes.includes(userId.current)
+                      ?
+                      <button className='liked' onClick={() => likePost(post)}>
+                        <img  src={likeImg} alt=''/>
+                        Like
+                      </button>
+                      :
+                      <button onClick={() => likePost(post)}>
+                        <img  src={likeImg} alt=''/>
+                        Like
+                      </button>
+                    }
                       <a href={`/posts/${post._id}`}>
-                        <button>Comment</button>
+                        <button>
+                          <img src={commentImg} alt=''/>
+                            Comment
+                        </button>
                       </a>
                     </div>
                   </div>
@@ -144,15 +168,6 @@ function App(props) {
 
       // If it worked, render new post
       if (data.success) {
-        
-        /*
-        // Add new post to the beginning of the allPosts array
-        let newAllPostsArray = [...allPosts]
-        newAllPostsArray.unshift(data.newPost);
-
-        // Update allPosts state to include this new post
-        setAllPosts(newAllPostsArray);
-        */
         setAllPosts(data.updatedAllPosts);
         e.target.reset();
       }

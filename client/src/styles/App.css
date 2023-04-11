@@ -1,47 +1,173 @@
+.homePageContainer {
+    background-color: #EBEDF0;
+}
+.homePageContainer .non-navbar-content {
+    display: flex;
+    flex-direction: column;
+}
+.create-post form, .allPosts .individualPost {
+    background-color: #fff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    min-width: 200px;
+    width: max(200px, 50vw);
+}
+
+/* CREATE POST */
 .create-post {
+    display: flex;
+    justify-content: center;
     margin: 1rem;
-    padding: 1rem;
-    border: 1px solid green;
 }
 .create-post form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 1rem;
+}
+.create-post form textarea {
+    width: 90%;
+    font-size: 17px;
+    background-color: #EBEDF0;
+    padding: 12px;
+    border-radius: 24px;
+    border: none;
+}
+.create-post form textarea:focus {
+    outline: none;
+}
+.create-post form button {
+    margin-top: 1rem;
+    width: 100%;
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #1877f2;
+    line-height: 24px;
+}
+.create-post form button:hover {
+    cursor: pointer;
 }
 
 /* POSTS SECTION */
 .allPosts {
-    margin: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid red;
 }
 .allPosts .individualPost {
-    margin: 1rem;
-    padding: 1rem;
-    border: 1px solid blue;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 1rem;
+}
+.allPosts .individualPost-creatorButtons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+} 
+.allPosts .individualPost-creatorButtons button {
+    background-color: #fff;
+    border: none;
+}
+.allPosts .individualPost-creatorButtons button:hover {
+    cursor: pointer;
+}
+.allPosts .individualPost-creatorButtons img {
+    width: 25px;
+}
+.allPosts .individualPost-creationInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+.allPosts .individualPost-creationInfo .individaulPost-creator {
+    text-decoration: none;
+    border-bottom: 2px solid #fff;
+    font-weight: 600;
+    color: black;
+}
+.allPosts .individualPost-creationInfo .individaulPost-creator:hover {
+    border-bottom: 2px solid black;
+}
+.allPosts .individualPost-creationInfo .individualPost-date {
+    margin: 0;
+    font-size: 16px;
 }
 .allPosts .individualPost-clickableArea {
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
     color: black;
-    text-align: center;
+    align-items: center;
+    width: 100%;
+}
+.allPosts .individualPost-clickableArea .individualPost-text {
+    display: flex;
+    margin: 0.5rem;
+    width: 100%;
 }
 .allPosts .individualPost-stats {
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
-.allPosts .individualPost-buttons {
+.allPosts .individualPost-stats p {
     display: flex;
-    justify-content: space-evenly;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+.allPosts .individualPost-stats img {
+    width: 15px;
+}
+.allPosts .individualPost-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     width: 100%;
+    gap: 5px;
+    padding: 5px;
+    border-top: 1px solid #dddfe2;
+    border-bottom: 1px solid #dddfe2;
+}
+.allPosts .individualPost-buttons a {
+    display: flex;
+    text-decoration: none;
+    justify-content: center;
+    width: 100%;
+    background-color: #fff;
+    padding: 3px 0 3px 0;
+    border-radius: 6px;
+}
+.allPosts .individualPost-buttons button {
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 3px 0 3px 0;
+    font-size: 16px;
+    gap: 5px;
+    border-radius: 6px;
+}
+.allPosts .individualPost-buttons a:hover, .allPosts .individualPost-buttons button:hover {
+    background-color: #EBEDF0;
+    cursor: pointer;
+}
+.allPosts .individualPost-buttons img {
+    width: 20px;
 }
 /* This also affects likes on individual post page */
-.individualPost-stats p.liked {
-    font-weight: 600;
-    color: blue;
+.individualPost-buttons button.liked img  {
+    filter: invert(40%) sepia(80%) saturate(4498%) hue-rotate(203deg) brightness(99%) contrast(91%);
 }
+.individualPost-buttons button.liked {
+    color: #1877f2;
+    font-weight: 600;
+} 
