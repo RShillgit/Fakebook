@@ -18,6 +18,12 @@
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
     width: max(200px, 90vw);
 }
+.individualPostPage .individualPost-creator, .individualPostPage .individualPost-date {
+    margin: 0;
+}
+.individualPostPage .individualPost-date {
+    font-size: 15px;
+}
 
 /* COMMENT SECTION */
 .commentsContainer {
@@ -26,18 +32,12 @@
     align-items: center;
     background-color: #EBEDF0;
 }
-.postCommentSection {
-    margin-top: 1rem;
-}
-#commentTextInput {
-    max-width: 90vw; 
-}
 .commentSection {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0 1rem 1rem 1rem;
-    margin: 0 1rem 1rem 1rem;
+    margin: 0 1rem 104px 1rem; /* 88px post comment secton height + 1rem */
     width: max(200px, 90vw);
     background-color: #fff;
     border-bottom: 1px solid #dddfe2;
@@ -52,6 +52,7 @@
     align-items: flex-start;
     margin: 1rem 1rem 0 1rem;
     word-wrap: break-word;
+    word-break: break-all;
     width: 100%;
     width: -moz-available;          /* WebKit-based browsers will ignore this. */
     width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
@@ -63,6 +64,7 @@
     background-color: #EBEDF0;
     padding: 1rem;
     border-radius: 8px;
+    max-width: 90%;
     gap: 1rem;
 }
 .individualComment-creator {
@@ -72,6 +74,8 @@
 }
 .individualComment-text {
     margin-bottom: 0;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 .individualComment-creatorButtons {
     display: flex;
@@ -99,6 +103,9 @@
     display: flex;
     gap: 1rem;
 }
+.individualComment-bottomRow-left p, .individualComment-bottomRow-right p {
+    margin: 0;
+}
 .individualComment-bottomRow-left .commentLike {
     border-bottom: 1px solid white;
 }
@@ -107,10 +114,10 @@
     border-bottom: 1px solid black;
 }
 .individualComment-bottomRow-left .commentLike.liked {
-    color: blue;
+    color: #1877f2;
 }
 .individualComment-bottomRow-left .commentLike.liked:hover {
-    border-bottom: 1px solid blue;
+    border-bottom: 1px solid #1877f2;
 }
 .individualComment-bottomRow-right p {
     display: flex;
@@ -120,6 +127,53 @@
 .individualComment-bottomRow-right img {
     width: 20px;
 }
+
+.postCommentSection {
+    margin-top: 1rem;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 -2px 4px rgb(0 0 0 / 10%);
+    width: 100%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    
+}
+.postCommentSection form { 
+    margin: 1rem;
+    display: flex; 
+}
+.postCommentSection form textarea {
+    border: none;
+    background-color: #EBEDF0;
+    resize: none;
+    border-radius: 14px 0 0 14px;
+    padding: 8px;
+    max-width: 80vw;
+    width: 80vw; 
+}
+.postCommentSection form textarea:focus {
+    outline: none;
+}
+.postCommentSection #postCommentButton { 
+    border-radius: 0 14px 14px 0px;
+    background-color: #EBEDF0;
+    border: none;
+}
+.postCommentSection #postCommentButton.sendable:hover {
+    cursor: pointer;
+}
+.postCommentSection #postCommentButton img {
+    filter: invert(82%) sepia(9%) saturate(171%) hue-rotate(173deg) brightness(96%) contrast(87%);
+    width: 25px;
+}
+.postCommentSection #postCommentButton.sendable img {
+    filter: invert(40%) sepia(80%) saturate(4498%) hue-rotate(203deg) brightness(99%) contrast(91%);
+} 
 
 /* INDIVIDUAL POST EDITING */
 .individualPostPage .individualPost.editing {
@@ -131,9 +185,27 @@
 .individualPost-editPost {
     width: 100%;
 }
+.individualPostPage .individualPost.editing #individualPost-editForm {
+    display: flex;
+    flex-direction: column;
+    
+}
 .individualPostPage .individualPost.editing form textarea {
+    align-self: center;
+    padding: 8px;
     max-width: 100%;
     width: 100%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    height: 100px;
+    resize: none;
+    border: none;
+    background-color: #EBEDF0;
+    border-radius: 16px;
+}
+.individualPostPage .individualPost.editing form textarea:focus {
+    outline: none;
 }
 .individualPost-editPost-formButtons {
     display: flex;
@@ -162,8 +234,24 @@
     border-radius: 8px;
     gap: 1rem;
 }
+.individualComment-bubble.editing {
+    padding-top: 0;
+}
 .individualComment-main.editing textarea{
-    max-width: 300px;
+    max-width: 100%;
+    width: 100%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    height: 50px;
+    resize: none;
+    padding: 8px;
+    border: none;
+    background-color: #fff;
+    border-radius: 16px;
+}
+.individualComment-main.editing textarea:focus {
+    outline: none;
 }
 .individualComment-editComment-buttons {
     display: flex;

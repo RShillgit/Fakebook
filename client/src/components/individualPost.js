@@ -11,6 +11,7 @@ import editImg from '../images/edit.png';
 import deleteImg from '../images/trash.png';
 import closeImg from '../images/close.png';
 import checkImg from '../images/check.png';
+import sendImg from '../images/send.png';
 
 const IndividualPost = (props) => {
     
@@ -105,7 +106,7 @@ const IndividualPost = (props) => {
                                 :<></>
                             }
                             <div className='individualPost-creationInfo'>
-                                <p className='individaulPost-creator'>{selectedPost.author.name}</p>
+                                <p className='individualPost-creator'>{selectedPost.author.name}</p>
                                 <p className='individualPost-date'>{formatTimestamp(selectedPost.timestamp)}</p>
                             </div>
                             <p className='individualPost-text'>{selectedPost.text}</p>
@@ -584,8 +585,20 @@ const IndividualPost = (props) => {
                     })}
                     <div className="postCommentSection">
                         <form onSubmit={postComment}>
-                            <textarea id="commentTextInput" placeholder="Write a comment..." type="text" required={true} />
-                            <button>Post</button>
+                            <textarea id="commentTextInput" placeholder="Write a comment..." type="text" required={true} 
+                            onChange={(e) => {
+                                const postCommentButton = document.getElementById('postCommentButton');
+                                if(e.target.value.length > 0) {
+                                    postCommentButton.classList.add('sendable');
+                                }
+                                else {
+                                    postCommentButton.classList.remove('sendable');
+                                }
+                            }}
+                            />
+                            <button id="postCommentButton">
+                                <img src={sendImg} alt="Post"/>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -613,7 +626,7 @@ const IndividualPost = (props) => {
                                                     <div className="individualComment-bubble editing">
 
                                                         <div className="individualComment-main editing">
-                                                            <p>{comment.author.name}</p>
+                                                            <p className="individualComment-creator">{comment.author.name}</p>
                                                             <form onSubmit={editCommentFormSubmit} id="editCommentForm">
                                                                 <textarea value={editCommentText} placeholder="Aa" required={true}
                                                                     onChange={e => setEditCommentText(e.target.value)}
@@ -676,8 +689,10 @@ const IndividualPost = (props) => {
                         })}
                         <div className="postCommentSection">
                             <form onSubmit={(e) => e.preventDefault()}>
-                                <textarea id="commentTextInput" placeholder="Write a comment..." type="text"/>
-                                <button>Post</button>
+                                <textarea id="commentTextInput" placeholder="Write a comment..." type="text"/>                               
+                                <button id="postCommentButton">
+                                    <img src={sendImg} alt="Post"/>
+                                </button>
                             </form>
                         </div>
                     </div>
