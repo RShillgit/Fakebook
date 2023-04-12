@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Loading from "./loading";
 import Navbar from "./navbar";
 import '../styles/messages.css';
+import closeImg from '../images/close.png';
+import sendImg from '../images/send.png';
 
 const Messages = (props) => {
 
@@ -77,7 +79,9 @@ const Messages = (props) => {
                                                         <p>{chat.messages[0].content} · {formatTimestamp(chat.messages[0].timestamp)}</p>
                                                     </div>
                                                 </div>
-                                                <button onClick={() => deleteChat(chat)}>Delete</button>
+                                                <button onClick={() => deleteChat(chat)}>
+                                                    <img src={closeImg} alt="Delete"/>
+                                                </button>
                                             </div>
                                             )
                                         }
@@ -120,7 +124,9 @@ const Messages = (props) => {
                                     <div className="chat-allMessages-individualMessage currentUser" key={message._id} >
                                         <p className="individualMessage-timestamp">{formatMessageTimestamp(message, messagesArrayReversed)}</p>
                                         <div className="individualMessage-bubble">
-                                            <button onClick={() => deleteMessage(message)}>X</button>
+                                            <button onClick={() => deleteMessage(message)}>
+                                                <img src={closeImg} alt="Delete"/>
+                                            </button>
                                             <p>{message.content}</p>
                                         </div>
                                         
@@ -140,8 +146,20 @@ const Messages = (props) => {
                     </div>
                     <div className="chat-writeMessage">
                         <form onSubmit={sendMessage} id="sendMessageForm">
-                            <input id="messageTextInput" type="text" placeholder="Aa" />
-                            <button>Send</button>
+                            <input id="messageTextInput" type="text" placeholder="Aa" required={true}
+                            onChange={(e) => {
+                                const sendMessageButton = document.getElementById('sendMessageButton');
+                                if(e.target.value.length > 0) {
+                                    sendMessageButton.classList.add('readyToSend');
+                                }
+                                else {
+                                    sendMessageButton.classList.remove('readyToSend');
+                                }
+                            }}
+                            />
+                            <button id="sendMessageButton">
+                                <img src={sendImg} alt="Send"/>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -349,6 +367,7 @@ const Messages = (props) => {
         }
     }
 
+    // Format messsage timestamp based on when previous message was sent
     const formatMessageTimestamp = (message, messagesArray) => {
 
         let formattedTimestamp;

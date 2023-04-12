@@ -1,8 +1,7 @@
 .messages-container {
     display: grid;
     grid-template-columns: 1fr 3fr;
-    background-color: #F5F6F7;
-
+    background-color: #fff;
     min-height: calc(100vh - 55px);
 }
 
@@ -21,20 +20,41 @@
 }
 .sidebar-currentChats-individualChat {
     border-radius: 8px;
-    background-color: #F5F6F7;
+    background-color: #fff;
     margin-bottom: 0.5rem;     
 }
 .sidebar-currentChats-individualChat:hover {
-    background-color: #EBEDF0;
+    background-color: #F5F6F7;
+}
+.sidebar-currentChats-individualChat:hover .sidebar-currentChats-individualChat-info button {
+    background-color: #F5F6F7;
 }
 .sidebar-currentChats-individualChat.selectedSidebarChat {
     background-color: rgba(45, 136, 255, 0.1);
+}
+.sidebar-currentChats-individualChat.selectedSidebarChat .sidebar-currentChats-individualChat-info button {
+    background-color: rgba(45, 136, 255, 0.01);
+}
+.sidebar-currentChats-individualChat-info button {
+    border: none;
+    background-color: #fff;
+}
+.sidebar-currentChats-individualChat-info button:hover {
+    cursor: pointer;
+}
+.sidebar-currentChats-individualChat-info button img {
+    width: 15px;
+    padding: 4px;
+    border-radius: 1rem;
+}
+.sidebar-currentChats-individualChat-info button:hover img {
+    background-color: #dddfe2;
 }
 .sidebar-currentChats-individualChat-info {
     display: flex;
     align-items: center;
     padding: 0.5rem;
-    gap: 0.5rem;
+    justify-content: space-between;
 }
 .sidebar-currentChats-individualChat-clickable {
     display: flex;
@@ -71,7 +91,7 @@
     align-items: center;
 }
 .messages-searchbar label input {
-    background-color: #F5F6F7;
+    background-color: #fff;
     border: none;
     font-size: 16px;
     width: 90%;
@@ -115,6 +135,31 @@
     flex-direction: column;
     width: 100%;
 }
+.chat-allMessages-individualMessage .individualMessage-bubble {
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.chat-allMessages-individualMessage .individualMessage-bubble button {
+    border: none;
+    align-self: flex-end;
+    background-color: #1877f2;
+}
+.chat-allMessages-individualMessage .individualMessage-bubble button:hover img {
+    cursor: pointer;
+    background-color: lightgray;
+    border-radius: 1rem;
+}
+.chat-allMessages-individualMessage .individualMessage-bubble button img {
+    width: 12px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+    border-radius: 1rem;
+    padding: 4px;
+}
 .chat-allMessages-individualMessage .individualMessage-bubble p {
     margin: 0;
 }
@@ -127,22 +172,15 @@
 }
 .chat-allMessages-individualMessage.currentUser .individualMessage-bubble {
     background-color: #1877f2;
-    color: #fff;
-    padding: 0.5rem;
-    border-radius: 1rem;
     margin-right: 0.5rem;
-    margin-bottom: 2px;
 }
 .chat-allMessages-individualMessage.recipientUser, .chat-allMessages-individualMessage.recipientUser .individualMessage-bubble {
     align-self: flex-start;
 }
 .chat-allMessages-individualMessage.recipientUser .individualMessage-bubble {
-    background-color: green;
-    color: #fff;
-    padding: 0.5rem;
-    border-radius: 1rem;
+    background-color: #dddfe2;
+    color: #1c1e21;
     margin-left: 0.5rem;
-    margin-bottom: 2px;
 }
 .chat-allMessages-individualMessage.recipientUser {
     align-self: flex-start;
@@ -172,5 +210,16 @@
     outline: none;
 }
 .chat-writeMessage form button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: #fff;
     margin-left: 8px;
+}
+.chat-writeMessage form button img {
+    width: 20px;
+    filter: invert(97%) sepia(5%) saturate(575%) hue-rotate(183deg) brightness(86%) contrast(94%);
+}
+.chat-writeMessage form button.readyToSend img {
+    filter: invert(40%) sepia(80%) saturate(4498%) hue-rotate(203deg) brightness(99%) contrast(91%);
 }
