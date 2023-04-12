@@ -439,7 +439,7 @@ const IndividualPost = (props) => {
         .catch(err => console.log(err))
     }
 
-      // Formats timestamp to display recency of each post
+    // Formats timestamp to display recency of each post
     const formatTimestamp = (timestamp) => {
 
         const currentTime = Date.now();

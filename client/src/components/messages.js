@@ -52,36 +52,40 @@ const Messages = (props) => {
     useEffect(() => {
         if(auth && allUsers) {
             setDisplay(
-                <div>
-                    <div className="sidebar-currentChats">
-                        <h1>Chats</h1>
-                        {currentUser.chats.map(chat => {
-                            return (  
-                                <div key={chat._id}>
-                                    {chat.members.map(member => {
-                                        if(member._id !== currentUser._id) {
-                                            return (
-                                                <div className="sidebar-currentChats-individualChat"  key={member._id}>
-                                                    <div className="sidebar-currentChats-individualChat-clickable"
-                                                     onClick={() => {
+                <div className="sidebar-currentChats">
+                    <h2>Chats</h2>
+                    {currentUser.chats.map(chat => {
+                        return (  
+                            <div className="sidebar-currentChats-individualChat" id={`sidebarChat-${chat._id}`} key={chat._id}>
+                                {chat.members.map(member => {
+                                    if(member._id !== currentUser._id) {
+                                        return (
+                                            <div className="sidebar-currentChats-individualChat-info" key={member._id}>
+                                                <div className="sidebar-currentChats-individualChat-clickable"
+                                                    onClick={() => {
                                                         // FIND USER FROM ALL USERS THAT MATCHES MEMBER._ID
                                                         const selectedUser = allUsers.filter(user => {
                                                             return user._id === member._id
                                                         })
-                                                        userSelect(selectedUser[0])}
-                                                    }>
+                                                        userSelect(selectedUser[0])
+                                                    }
+                                                }>
+                                                    <div className="individualChat-chatRecipient">
                                                         <p>{member.name}</p>
                                                     </div>
-                                                    <button onClick={() => deleteChat(chat)}>Delete</button>
+                                                    <div className="individualChat-chatPreview">
+                                                        <p>{chat.messages[0].content} · {formatTimestamp(chat.messages[0].timestamp)}</p>
+                                                    </div>
                                                 </div>
-                                                )
-                                            }
-                                            return null
-                                    })}
-                                </div>                               
-                            )
-                        })}
-                    </div>
+                                                <button onClick={() => deleteChat(chat)}>Delete</button>
+                                            </div>
+                                            )
+                                        }
+                                        return null
+                                })}
+                            </div>                               
+                        )
+                    })}
                 </div>
             )
         }
@@ -105,22 +109,30 @@ const Messages = (props) => {
 
             setMessagesDisplay(
                 <div className="chat-container">
+                    <div className="chat-title">
+                        <h4>{messageReceiver.name}</h4>
+                    </div>
                     <div className="chat-allMessages">
                         {messagesArrayReversed.map(message => {
 
                             if(message.sender === currentUser._id.toString()) {
                                 return (
                                     <div className="chat-allMessages-individualMessage currentUser" key={message._id} >
-                                        <button onClick={() => deleteMessage(message)}>Delete</button>
-                                        <p>{message.content}</p>
-                                        <p>{message.timestamp}</p>
+                                        <p className="individualMessage-timestamp">{formatMessageTimestamp(message, messagesArrayReversed)}</p>
+                                        <div className="individualMessage-bubble">
+                                            <button onClick={() => deleteMessage(message)}>X</button>
+                                            <p>{message.content}</p>
+                                        </div>
+                                        
                                     </div>
                                 )
                             } else {
                                 return (
                                     <div className="chat-allMessages-individualMessage recipientUser" key={message._id} > 
-                                        <p>{message.content}</p>
-                                        <p>{message.timestamp}</p>
+                                        <p className="individualMessage-timestamp">{formatMessageTimestamp(message, messagesArrayReversed)}</p>
+                                        <div className="individualMessage-bubble">
+                                            <p>{message.content}</p>
+                                        </div>
                                     </div>
                                 )
                             }
@@ -184,6 +196,10 @@ const Messages = (props) => {
     // Onclick that selects message receiver user
     const userSelect = (selectedUser) => {
 
+        // Remove the "selectedSidebarChat" class from sidebar chats
+        const selectedSidebarChats = document.querySelectorAll('.selectedSidebarChat');
+        selectedSidebarChats.forEach(element => element.classList.remove('selectedSidebarChat'));
+
         // Check for chats with this user
         const checkForRecipient = currentUser.chats.filter(chat => {
             if (chat.members) {
@@ -217,6 +233,9 @@ const Messages = (props) => {
             .catch(err => console.log(err))
         }
         else {
+            // Add the "selectedSidebarChat" to the selectedUser
+            const sidebarSelectedChat = document.getElementById(`sidebarChat-${checkForRecipient[0]._id}`)
+            sidebarSelectedChat.classList.add('selectedSidebarChat')
             setMessageReceiver(selectedUser);
             setSearchQuery(""); // Clear the input
         } 
@@ -267,51 +286,195 @@ const Messages = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Formats timestamp to display recency of each post
+    const formatTimestamp = (timestamp) => {
+
+        const currentTime = Date.now();
+        const convertedTimestamp = new Date(timestamp);
+        const epochTimestamp = convertedTimestamp.getTime();
+        const epochTimeElapsed = currentTime - epochTimestamp;
+
+        // Weeks elapsed
+        const weeksElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24 * 7));
+
+        // If less than a week has elapsed
+        if (weeksElapsed < 1) {
+
+        // Days, hours, minutes, seconds elapsed
+        const daysElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60 * 24));
+        const hoursElapsed = Math.floor(epochTimeElapsed/(1000 * 60 * 60));
+        const minutesElapsed = Math.floor(epochTimeElapsed/(1000* 60));
+        const secondsElapsed = Math.floor(epochTimeElapsed/1000);
+
+        // If days have elapsed return the days
+        if (daysElapsed > 0) {
+            return `${daysElapsed}d`;
+        }
+        // Else if hours have elapsed return the hours
+        else if (hoursElapsed > 0) {
+            return `${hoursElapsed}h`;
+        }
+        // Else if minutes have elapsed return the minutes
+        else if (minutesElapsed > 0) {
+            return `${minutesElapsed}m`;
+        }
+        // Else return the seconds
+        else {
+            return `${secondsElapsed}s`;
+        }
+        }
+        // If more than a week has elapsed return MM/DD/YYYY date
+        else {
+
+        // Day
+        let day = convertedTimestamp.getDate();
+
+        // Month
+        let month = convertedTimestamp.getMonth() + 1;
+
+        // Year
+        let year = convertedTimestamp.getFullYear();
+
+        // 2 digit months and days
+        if (day < 10) {
+            day = '0' + day;
+        }
+        if (month < 10) {
+            month = `0${month}`;
+        }
+
+        let formattedDate = `${month}/${day}/${year}`;
+
+        return formattedDate;
+        }
+    }
+
+    const formatMessageTimestamp = (message, messagesArray) => {
+
+        let formattedTimestamp;
+
+        // Get year, month, and day from current day and message
+        const todaysDate = new Date();
+        const todaysYear = todaysDate.getFullYear();
+        const todaysMonth = todaysDate.getMonth() + 1;
+        const todaysDay = todaysDate.getDate();
+
+        const messageDate = new Date(message.timestamp);
+        const messageYear = messageDate.getFullYear();
+        const messageMonth = messageDate.getMonth() + 1;
+        const messageDay = messageDate.getDate();
+
+        // If the year, month, and day match render today-specific timestamp
+        if (todaysYear === messageYear && todaysMonth === messageMonth && todaysDay === messageDay) {
+
+            let hour = messageDate.getHours();
+        
+            let min  = messageDate.getMinutes();
+            min = (min < 10 ? "0" : "") + min;
+
+            // PM
+            if (hour > 12) {
+                hour = hour - 12;
+                formattedTimestamp = `${hour}:${min} PM`;
+            }
+            // AM
+            else {
+                formattedTimestamp = `${hour}:${min} AM`;
+            } 
+        }
+        // Else render MM/DD/YYYY timestamp
+        else {
+            formattedTimestamp = `${messageMonth}/${messageDay}/${messageYear}`;
+        }
+        // Get the index of the message
+        const messageIndex = messagesArray.findIndex(msg => msg._id === message._id);
+
+        // If the message is NOT the first message
+        if (messageIndex > 0) {
+
+            // Get the previous message
+            let previousMessage = messagesArray[messageIndex - 1];
+
+            // Year, month, day
+            const previousMessageDate = new Date(previousMessage.timestamp);
+            const previousMessageYear = previousMessageDate.getFullYear();
+            const previousMessageMonth = previousMessageDate.getMonth() + 1;
+            const previousMessageDay = previousMessageDate.getDate();
+
+            // If the previous message was sent on the same day as the current message
+            if (previousMessageYear === messageYear && previousMessageMonth === messageMonth && previousMessageDay === messageDay) {
+
+                // Both sent today
+                if (todaysYear === messageYear && todaysMonth === messageMonth && todaysDay === messageDay) {
+                    
+                    // Compare times
+                    let previousMessageHours = previousMessageDate.getHours();
+                    let previousMessageMinutes = previousMessageDate.getMinutes();
+
+                    let currentMessageHours = messageDate.getHours();
+                    let currentMessageMinutes  = messageDate.getMinutes();
+
+                    // Same hour and less than 5 minutes apart
+                    if(previousMessageHours === currentMessageHours && Math.abs(previousMessageMinutes - currentMessageMinutes) <= 5) {
+                        console.log("within 5 min")
+                        formattedTimestamp = "";
+                        return formattedTimestamp;
+                    }
+                    // More than 5 minutes apart
+                    else return formattedTimestamp;
+                }
+                else return formattedTimestamp;
+            }
+            else return formattedTimestamp;
+        }
+        // Render formatted timestamp
+        else return formattedTimestamp;
+    }
+
     return (
         <div className="Page">
             {(currentUser)
                 ? <Navbar currentUser={currentUser} serverURL={props.serverURL} />
                 : <></>
             }
-            <div className="messages-container">
-                <div className="messages-sidebar">
-                    {display}
-                </div>
-                <div className="messages-main">
-                    
-                    {(allUsers)
-                        ?
-                        <div className="messages-searchbar">
-                            <label>
-                                To:
-                                <input type="text" placeholder="Search A Name" onChange={e => setSearchQuery(e.target.value)} value={searchQuery}/>
-                            </label>
-                            <div className="messages-searchbar-suggestions">
-                                {
-                                    allUsers.filter(user => {
-                                        if (searchQuery === '') {
-                                            return null;
-                                        } else if (user.name.toLowerCase().includes(searchQuery.toLowerCase()) && user._id !== currentUser._id ) {
-                                            return user;
-                                        } else {
-                                            return null;
-                                        }
-                                    }).map((user) => (
-                                        <div className="messages-searchbar-suggestions-individualSuggestion" onClick={() => userSelect(user)} key={user._id}>
-                                            <p>{user.name}</p>
-                                        </div>
-                                    ))
-                                }
+            <div className="non-navbar-content">
+                <div className="messages-container">
+                    <div className="messages-sidebar">
+                        {display}
+                    </div>
+                    <div className="messages-main">
+                        
+                        {(allUsers)
+                            ?
+                            <div className="messages-searchbar">
+                                <label>
+                                    To:
+                                    <input type="text" placeholder="Search A Name" onChange={e => setSearchQuery(e.target.value)} value={searchQuery}/>
+                                </label>
+                                <div className="messages-searchbar-suggestions">
+                                    {
+                                        allUsers.filter(user => {
+                                            if (searchQuery === '') {
+                                                return null;
+                                            } else if (user.name.toLowerCase().includes(searchQuery.toLowerCase()) && user._id !== currentUser._id ) {
+                                                return user;
+                                            } else {
+                                                return null;
+                                            }
+                                        }).map((user) => (
+                                            <div className="messages-searchbar-suggestions-individualSuggestion" onClick={() => userSelect(user)} key={user._id}>
+                                                <p>{user.name}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        :<></>
-                    }
-
-                    {messagesDisplay}
+                            :<></>
+                        }
+                        {messagesDisplay}
+                    </div>              
                 </div>
-                
             </div>
-
         </div>
     )
 }
