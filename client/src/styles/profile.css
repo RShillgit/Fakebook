@@ -223,13 +223,40 @@
 /* About Tab */
 .profileContent-about {
     display: flex;
+    margin: 1rem;
+    border-radius: 8px;
+    background-color: #fff;
     flex-direction: column;
-    align-items: center;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    min-width: 285px;
+}
+.about-header {
+    margin: 0 1rem 0 1rem;
+    border-bottom: 1px solid #dddfe2;
+}
+.about-header h3 {
+    margin-top: 1rem;
+    margin-bottom: 4px;
 }
 .aboutInfo {
+    margin: 0 1rem 1rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: baseline;
+}
+.aboutInfo label {
+    display: flex;
+    margin-top: 1rem;
+    align-items: center;
+    font-weight: 600;
+    gap: 8px;
+}
+.aboutInfo label p {
+    margin: 0;
+    font-weight: 100;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 #editProfileForm {
     display: flex;
@@ -242,5 +269,63 @@
     display: flex;
     gap: 1rem;
     width: 100%;
-    justify-content: space-between;
+    align-items: center;
+}
+#editProfileForm label input {
+    border: 1px solid #dddfe2;
+    border-radius: 5px;
+    line-height: 25px;
+    padding-left: 8px;
+    font-size: 14px;
+    width: 100%;
+}
+#editProfileForm label textarea {
+    resize: vertical;
+    width: 100%;
+}
+#editProfileForm label input:focus {
+    outline: none;
+}
+#editProfileForm .react-tel-input {
+    font-size: 15px;
+    position: relative;
+    width: 100%;
+}
+#editProfileForm .react-tel-input input.form-control {
+    width: 100%;
+    height: auto;
+    border: 1px solid #dddfe2;
+    padding-left: 48px;
+    font-size: 15px;
+}
+.react-tel-input ul.country-list {
+    width: min-content;
+}
+.editProfileForm-buttons {
+    display: flex;
+    padding: 0 1rem 1rem 1rem;
+    gap: 1rem;
+}
+.editProfileForm-buttons button:hover {
+    cursor: pointer;
+}
+.editProfileForm-buttons #editProfileCancel {
+    border: none;
+    background-color: #fff;
+}
+.editProfileForm-buttons #editProfileCancel img {
+    width: 20px;
+}
+.editProfileForm-buttons #editProfileSubmit {
+    border: none;
+    background-color: rgba(45, 136, 255, 0.1);
+    width: 100%;
+    padding: 5px 0 5px 0;
+    border-radius: 5px;
+    color: #1877f2;
+    font-size: 18px;
+    font-weight: 600;
+}
+.editProfileForm-buttons #editProfileSubmit:hover {
+    background-color: rgba(45, 136, 255, 0.2);
 }

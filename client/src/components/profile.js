@@ -11,6 +11,7 @@ import deleteImg from '../images/trash.png';
 import likeImg from '../images/like.png';
 import miniLikeImg from '../images/mini-like.png';
 import commentImg from '../images/chat.png';
+import closeImg from '../images/close.png';
 
 const Profile = (props) => {
 
@@ -224,17 +225,8 @@ const Profile = (props) => {
         .then(res => res.json())
         .then(data => {
             if (data.success === true && data.newUser) {
-
-                // Remove 'active' class from about tab
-                const aboutTab = document.getElementById("profileHeader-navigation-list-about");
-                if (aboutTab.classList.contains('active')) {
-                    aboutTab.classList.remove('active');
-                }
-
                 // Set currentProfile to new user
                 setCurrentProfile(data.newUser);
-
-                // TODO: Maybe find a way to just rerender about tab
             }
         })
         .catch(err => console.log(err))
@@ -569,17 +561,17 @@ const Profile = (props) => {
     )
     const aboutTabDisplay = (
         <div className="profileContent">
-            <h1>Profile</h1>
             <div className="profileContent-about"> 
+                <div className="about-header">
+                    <h3>About</h3>
+                </div>
                 {(currentProfile)
                     ?
                     <div className="aboutInfo">
-                        <p>Name: {currentProfile.name}</p>
-                        <p>Bio: {currentProfile.bio}</p>
-                        <p>Email: {currentProfile.email}</p>
-                        <p>Phone: {currentProfile.phone}</p>
-                        <p>Employment: </p>
-                        <p>Education: </p>
+                        <label>Name:<p>{currentProfile.name}</p></label>
+                        <label>Bio:<p>{currentProfile.bio}</p></label>
+                        <label>Email:<p>{currentProfile.email}</p></label>
+                        <label>Phone:<p>{currentProfile.phone}</p></label> 
                     </div>
                     :
                     <div className="aboutInfo">
@@ -590,26 +582,27 @@ const Profile = (props) => {
     )
     const editingAboutTabDisplay = (
         <div className="profileContent">
-            <h1>About</h1>
             <div className="profileContent-about">
+                <div className="about-header">
+                    <h3>About</h3>
+                </div>
                 <form onSubmit={editProfileFormSubmit} id="editProfileForm">
                     <label> Name:
                         <input onChange={e => setEditedName(e.target.value)} value={editedName} type="text" required={true} id='editProfile-name' />
                     </label>
                     <label> Bio:
-                        <input type="text" onChange={e => setEditedBio(e.target.value)} value={editedBio} id='editProfile-bio' />
+                        <textarea type="text" onChange={e => setEditedBio(e.target.value)} value={editedBio} id='editProfile-bio' />
                     </label>
                     <label> Email:
                         <input type="email" onChange={e => setEditedEmail(e.target.value)} value={editedEmail} id='editProfile-email' />
                     </label>
                     <label> Phone:
-                        
                         <PhoneInput onChange={phone => setEditedPhone(phone)} value={editedPhone} id='editProfile-phone' />
                     </label>
                 </form>
                 <div className="editProfileForm-buttons">
-                    <button onClick={cancelEditProfile}>Cancel</button>
-                    <button form="editProfileForm">Submit</button>
+                    <button id="editProfileCancel" onClick={cancelEditProfile}><img src={closeImg} alt="Cancel"/></button>
+                    <button id="editProfileSubmit" form="editProfileForm">Edit your About info</button>
                 </div>
             </div>
         </div> 
