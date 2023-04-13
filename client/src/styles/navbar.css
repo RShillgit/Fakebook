@@ -11,6 +11,9 @@
     align-items: center;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
     padding: 3px 1rem 0 1rem;
+    height: 52px;
+    min-height: 52px;
+    max-height: 52px;
 }
 #scrollToTopButton {
     width: 40px;

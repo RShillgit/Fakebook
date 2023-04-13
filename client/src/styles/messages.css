@@ -1,3 +1,7 @@
+.non-navbar-content.messenger {
+    margin-top: 54px;
+}
+
 .messages-container {
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -80,6 +84,7 @@
     flex-direction: column;
     border: 1px solid #dddfe2;
     border-bottom: none;
+    min-height: 100%;
 }
 .messages-searchbar {
     border-bottom: 1px solid #dddfe2;
@@ -122,6 +127,8 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    height: 100%;
+    justify-content: space-between;
 }
 .chat-allMessages {
     display: flex;

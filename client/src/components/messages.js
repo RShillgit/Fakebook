@@ -152,7 +152,7 @@ const Messages = (props) => {
                             <input id="messageTextInput" type="text" placeholder="Aa" required={true}
                             onChange={(e) => {
                                 const sendMessageButton = document.getElementById('sendMessageButton');
-                                if(e.target.value.length > 0) {
+                                if(e.target.value.length > 0) {   
                                     sendMessageButton.classList.add('readyToSend');
                                 }
                                 else {
@@ -444,7 +444,6 @@ const Messages = (props) => {
 
                     // Same hour and less than 5 minutes apart
                     if(previousMessageHours === currentMessageHours && Math.abs(previousMessageMinutes - currentMessageMinutes) <= 5) {
-                        console.log("within 5 min")
                         formattedTimestamp = "";
                         return formattedTimestamp;
                     }
@@ -469,7 +468,7 @@ const Messages = (props) => {
                 ? <Navbar currentUser={currentUser} serverURL={props.serverURL} />
                 : <></>
             }
-            <div className="non-navbar-content">
+            <div className="non-navbar-content messenger">
                 <div className="messages-container">
                     <div className="messages-sidebar">
                         {display}
