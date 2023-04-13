@@ -609,50 +609,64 @@ const Profile = (props) => {
     )
     const friendsTabDisplay = (
         <div className="profileContent">
-            <h1>Friends Page</h1>
-            {(currentProfile && currentProfile.friends.length > 0)
-                ?                 
-                <div className="profileContent-friends">
-                    {currentProfile.friends.map(friend => {
-                        return (
-                            <div key={friend._id} className="profileContent-individualFriend">
-                                <p>{friend.name}</p>
-                                {(currentProfile && currentProfile._id === userId.current)
-                                    ?<button onClick={() => removeFriend(friend._id)}>Remove Friend</button>
-                                    :<></>
-                                }
-                            </div>
-                        )
-                    })}
-                </div>   
-                :
-                <div className="profileContent-friends">
-                    <p>No Friends</p>
+            <div className="profileContent-friends">
+                <div className="about-header">
+                    <h3>Friends</h3>
                 </div>
-            }
-            {(currentProfile && currentProfile._id === userId.current && currentProfile.friend_requests.length > 0)
-                ?
-                <div className="profileContent-friendRequests">
-                    {currentProfile.friend_requests.map(friendRequest => {
-                        return (
-                            <div className="profileContent-individualFriendRequest" key={friendRequest._id}>
-                                <a href={`/profile/${friendRequest._id}`}>
-                                    {friendRequest.name} sent you a friend request
-                                </a>
-                                <button onClick={() => acceptFriendRequest(friendRequest._id)}>Accept</button>
-                                <button onClick={() => declineFriendRequest(friendRequest._id)}>Decline</button>
-                            </div>
-                        )
-                    })}
-                </div>
-                :
-                <>
-                    {(currentProfile && currentProfile._id === userId.current)
-                        ? <p>No Friend Requests</p>
-                        : <></>
-                    }
-                </>
-            }
+                {(currentProfile && currentProfile.friends.length > 0)
+                    ?                 
+                    <div className="profileContent-currentFriends">
+                        {currentProfile.friends.map(friend => {
+                            return (
+                                <div key={friend._id} className="profileContent-individualFriend">
+                                    <a href={`/profile/${friend._id}`}>
+                                        {friend.name}
+                                    </a>
+                                    {(currentProfile && currentProfile._id === userId.current)
+                                        ?<button id="removeFriendButton" onClick={() => removeFriend(friend._id)}><img src={closeImg} alt="Remove Friend"/></button>
+                                        :<></>
+                                    }
+                                </div>
+                            )
+                        })}
+                    </div>   
+                    :
+                    <div className="profileContent-currentFriends">
+                        <p>No Friends</p>
+                    </div>
+                }
+                {(currentProfile && currentProfile._id === userId.current && currentProfile.friend_requests.length > 0)
+                    ?
+                    <div className="profileContent-friendRequests">
+                        <div className="friendRequests-header">
+                            <h4>Friend Requests</h4>
+                        </div>
+                        {currentProfile.friend_requests.map(friendRequest => {
+                            return (
+                                <div className="profileContent-individualFriendRequest" key={friendRequest._id}>
+                                    <a href={`/profile/${friendRequest._id}`}>
+                                        {friendRequest.name}
+                                    </a>
+                                    <div className="individualFriendRequest-buttons">
+                                        <button id="confirmFriendRequest" onClick={() => acceptFriendRequest(friendRequest._id)}>Confirm</button>
+                                        <button id="deleteFriendRequest" onClick={() => declineFriendRequest(friendRequest._id)}>Delete</button>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    :
+                    <>
+                        <div className="friendRequests-header">
+                            <h4>Friend Requests</h4>
+                        </div>
+                        {(currentProfile && currentProfile._id === userId.current)
+                            ? <p>No Friend Requests</p>
+                            : <></>
+                        }
+                    </>
+                }
+            </div>
         </div>
     )
 

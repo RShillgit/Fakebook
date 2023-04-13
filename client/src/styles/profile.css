@@ -329,3 +329,87 @@
 .editProfileForm-buttons #editProfileSubmit:hover {
     background-color: rgba(45, 136, 255, 0.2);
 }
+
+/* Friends */
+.profileContent-friends {
+    display: flex;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #fff;
+    flex-direction: column;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    min-width: 285px;
+}
+.profileContent-friends .about-header {
+    margin: 0;
+}
+.profileContent-friends .about-header h3 {
+    margin-top: 0;
+}
+
+.profileContent-individualFriend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.profileContent-individualFriend a {
+    text-decoration: none;
+    color: black;
+    margin: 8px 0 8px 0;
+}
+.profileContent-individualFriend #removeFriendButton {
+    border: none;
+    background-color: #EBEDF0;
+    border-radius: 16px;
+    padding: 2px 6px 2px 6px;
+}
+.profileContent-individualFriend #removeFriendButton img {
+    width: 10px;
+}
+.profileContent-individualFriend #removeFriendButton:hover {
+    cursor: pointer;
+    background-color: #dddfe2;
+}
+.friendRequests-header {
+    border-bottom: 1px solid #dddfe2;
+    margin-bottom: 8px;
+}
+.friendRequests-header h4 {
+    margin-bottom: 5px;
+}
+.profileContent-individualFriendRequest {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.profileContent-individualFriendRequest a {
+    text-decoration: none;
+    color: black;
+}
+.individualFriendRequest-buttons {
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+}
+.individualFriendRequest-buttons button {
+    border: none;
+    padding: 8px 24px 8px 24px;
+    width: 120px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.individualFriendRequest-buttons button:hover {
+    cursor: pointer;
+}
+.individualFriendRequest-buttons #confirmFriendRequest {
+    background-color: #1877f2;
+    color: #fff;
+}
+.individualFriendRequest-buttons #confirmFriendRequest:hover {
+    background-color: #1B74E4;
+}
+.individualFriendRequest-buttons #deleteFriendRequest:hover {
+    background-color: #dddfe2;
+}
