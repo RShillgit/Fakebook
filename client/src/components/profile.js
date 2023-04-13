@@ -458,6 +458,7 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    // Selects list or grid posts display
     const postsViewSelect = (e) => {
 
         // Remove "grid" class from posts section

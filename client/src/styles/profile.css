@@ -65,6 +65,7 @@
 .profileContent-header-posts {
     display: flex;
     justify-content: center;
+    margin-bottom: 1rem;
 }
 .profileContent-header-posts .headerContainer {
     background-color: #fff;
@@ -80,9 +81,6 @@
     margin: 0;
     padding: 0.5rem 0 0.5rem 0;
     border-bottom: 1px solid #dddfe2;
-}
-.profileContent-header-posts .headerContainer .profileContent {
-    
 }
 .profileContent-header-posts .headerContainer .profileContent ul {
     padding: 0;
@@ -115,7 +113,6 @@
 .profileContent-header-posts .headerContainer .profileContent ul li.selected {
     border-bottom: 4px solid #1877f2;
 }
-
 .profileContent-posts {
     display: flex;
     flex-direction: column;
@@ -123,18 +120,20 @@
 }
 .profileContent-posts.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 400px));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 1rem;
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem;
     justify-content: center;
-    grid-template-rows: auto;
 }
 .profileContent-posts.grid .profileContent-individualPost {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     justify-self: center;
     align-self: center;
     margin: 0;
     width: 90%;
+    height: 80%;
     width: -moz-available;          /* WebKit-based browsers will ignore this. */
     width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
     width: fill-available;
@@ -147,7 +146,7 @@
     flex-direction: column;
     align-items: center;
     margin: 1rem;
-    margin-bottom: 0;
+    margin-top: 0;
     padding: 1rem;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
@@ -194,6 +193,7 @@
     width: 100%;
     text-decoration: none;
     color: black;
+    justify-content: center;
 }
 .profileContent-individualPost a p {
     margin: 0;
