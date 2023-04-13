@@ -1,19 +1,25 @@
+.Page.ProfilePage {
+    background-color: #F0F2F5;
+    min-height: calc(100vh - 55px);
+}
 .profileHeader {
     display: flex;
     flex-direction: column;
-    margin: 1rem;
+    padding: 0 1rem 0 1rem;
+    margin-top: 55px;
+    background-color: #fff;
+    border-bottom: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 .profileHeader-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 1rem;
     margin-bottom: 0;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dddfe2;
 }
 .profileHeader-navigation {
     display: flex;
-    border-bottom: 1px solid black;
 }
 .profileHeader-navigation-list {
     display: flex;
@@ -23,17 +29,19 @@
     list-style: none;
     width: 100%;
 }
-.profileHeader-navigation-list li {
+.profileHeader-navigation-list li p {
+    margin: 4px;
     padding: 1rem;
-    margin: 0.5rem;
+    font-weight: 600;
+    border-radius: 8px;
 }
-.profileHeader-navigation-list li:hover {
+.profileHeader-navigation-list li p:hover {
     cursor: pointer;
-    background-color: lightgray;
+    background-color: #EBEDF0;
 }
 .profileHeader-navigation-list li.active {
-    color: blue;
-    border-bottom: 2px solid blue;
+    color: #1877f2;
+    border-bottom: 2px solid #1877f2;
 }
 
 /* Posts Tab */
@@ -49,12 +57,37 @@
     align-items: center;
     margin: 1rem;
     padding: 1rem;
-    border: 1px solid black;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    background-color: #fff;
+}
+.profileContent-individualPost-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.profileContent-individualPost-header .headerCredentials {
+    display: flex;
+    flex-direction: column;
+}
+.profileContent-individualPost-header .headerCredentials p {
+    margin: 0;
+}
+.profileContent-individualPost-header .headerCredentials .profile-individualPost-author {
+    font-weight: 600;
+}
+.profileContent-individualPost-header .headerCredentials .profile-individualPost-timestamp {
+    font-size: 14px;
+}
+.profileContent-individualPost-header .profile-posts-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .profileContent-individualPost a {
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 100%;
     text-decoration: none;
     color: black;

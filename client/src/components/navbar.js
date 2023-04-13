@@ -5,12 +5,13 @@ import homeImg from '../images/home.png';
 import messengerImg from '../images/messenger.png';
 import profileImg from '../images/user.png';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 const Navbar = (props) => {
 
     const [cookie, setCookie, removeCookie] = useCookies(['token']);
     const location = useLocation();
+    const {profileId} = useParams();
 
     // Srolls to the top of the page
     const scrollToTop = (e) => {
@@ -40,7 +41,7 @@ const Navbar = (props) => {
         else if (location.pathname === '/messages') {
             messagesButtonContainer.classList.add('currentlyActive');
         }
-        else if (location.pathname.includes("profile")) {
+        else if (location.pathname.includes("profile") && props.currentUser._id === profileId) {
             profileButtonContainer.classList.add('currentlyActive');
         }
     }, [])

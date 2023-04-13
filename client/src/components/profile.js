@@ -65,7 +65,7 @@ const Profile = (props) => {
         // If there is a profile
         if(currentProfile) {
             setDisplay(
-                <div>
+                <>
                     <Navbar currentUser={authedUser.current} serverURL={props.serverURL}/>
                     <div className="profileHeader">
                         <div className="profileHeader-actions">
@@ -89,13 +89,19 @@ const Profile = (props) => {
                         </div>
                         <div className="profileHeader-navigation">
                             <ul className="profileHeader-navigation-list">
-                                <li id="profileHeader-navigation-list-posts" onClick={navigationTabClick}>Posts</li>
-                                <li id="profileHeader-navigation-list-about" onClick={navigationTabClick}>About</li>
-                                <li id="profileHeader-navigation-list-friends" onClick={navigationTabClick}>Friends</li>
+                                <li id="profileHeader-navigation-list-posts" >
+                                    <p onClick={navigationTabClick}>Posts</p>
+                                </li>
+                                <li id="profileHeader-navigation-list-about" >
+                                    <p onClick={navigationTabClick}>About</p>
+                                </li>
+                                <li id="profileHeader-navigation-list-friends" >
+                                    <p onClick={navigationTabClick}>Friends</p>
+                                </li>
                             </ul>
                         </div>
                     </div>
-                </div>
+                </>
             )
 
             // Get the tabs
@@ -145,20 +151,20 @@ const Profile = (props) => {
             if(tab.classList.contains('active')) {
                 tab.classList.remove('active');
             }
-            if (tab === e.target) {
+            if (tab === e.target.parentElement) {
                 tab.classList.toggle('active');
             }
         })
         // Posts Tab
-        if (e.target === postsTab) {
+        if (e.target.innerHTML === 'Posts') { //e.target === postsTab
             setTabDisplay(postsTabDisplay);
         }
         // About Tab
-        else if (e.target === aboutTab) {
+        else if (e.target.innerHTML === 'About') {
             setTabDisplay(aboutTabDisplay);
         }
         // Friends Tab
-        else if (e.target === friendsTab) {
+        else if (e.target.innerHTML === 'Friends') {
             setTabDisplay(friendsTabDisplay);
         }
     }
@@ -410,8 +416,20 @@ const Profile = (props) => {
                     {currentProfile.posts.map(post => {
                         return (
                             <div className="profileContent-individualPost" key={post._id}>
-                                <button onClick={() => editPost(post)}>Edit Post</button>
-                                <button onClick={() => deletePost(post)}>Delete Post</button>
+                                <div className="profileContent-individualPost-header">
+                                    <div className="headerCredentials">
+                                        <p className="profile-individualPost-author">{currentProfile.name}</p>
+                                        <p className="profile-individualPost-timestamp">{post.timestamp}</p>
+                                    </div>
+                                    {(currentProfile._id === userId.current)
+                                        ?
+                                        <div className="profile-posts-buttons">
+                                            <button onClick={() => editPost(post)}>Edit Post</button>
+                                            <button onClick={() => deletePost(post)}>Delete Post</button>
+                                        </div>
+                                        :<></>
+                                    }
+                                </div>
                                 <a href={`/posts/${post._id}`}>
                                     <p>{post.text}</p>
                                     <div className="profileContent-individualPost-stats">
@@ -527,7 +545,7 @@ const Profile = (props) => {
     )
 
     return(
-        <div className="Page">
+        <div className="Page ProfilePage">
             {display}
             {tabDisplay}
         </div>
