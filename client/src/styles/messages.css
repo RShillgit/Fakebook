@@ -128,7 +128,7 @@
     flex-direction: column;
     width: 100%;
     margin-bottom: 1rem;
-    min-height: 67.5vh;
+    min-height: 70vh;
 }
 .chat-allMessages-individualMessage {
     display: flex;

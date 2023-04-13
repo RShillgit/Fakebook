@@ -76,7 +76,10 @@ const Messages = (props) => {
                                                         <p>{member.name}</p>
                                                     </div>
                                                     <div className="individualChat-chatPreview">
-                                                        <p>{chat.messages[0].content} · {formatTimestamp(chat.messages[0].timestamp)}</p>
+                                                        {(chat.messages[0])
+                                                            ?<p>{chat.messages[0].content} · {formatTimestamp(chat.messages[0].timestamp)}</p>
+                                                            :<></>
+                                                        }
                                                     </div>
                                                 </div>
                                                 <button onClick={() => deleteChat(chat)}>
@@ -204,7 +207,14 @@ const Messages = (props) => {
         })
         .then(res => res.json())
         .then(data => {
+            // Remove "readyToSend" class from send button
+            const readyToSendButton = document.getElementById('sendMessageButton');
+            readyToSendButton.classList.remove('readyToSend');
+
+            // Reset form
             sendMessageForm.reset();
+
+            // Set updated sates
             setMessageReceiver(data.newMessageReceiver);
             setAllUsers(data.newAllUsers);
         })
@@ -383,7 +393,7 @@ const Messages = (props) => {
         const messageMonth = messageDate.getMonth() + 1;
         const messageDay = messageDate.getDate();
 
-        // If the year, month, and day match render today-specific timestamp
+        // If the message was sent today, render today-specific timestamp
         if (todaysYear === messageYear && todaysMonth === messageMonth && todaysDay === messageDay) {
 
             let hour = messageDate.getHours();
@@ -423,10 +433,9 @@ const Messages = (props) => {
             // If the previous message was sent on the same day as the current message
             if (previousMessageYear === messageYear && previousMessageMonth === messageMonth && previousMessageDay === messageDay) {
 
-                // Both sent today
+                // Both sent today, compare times
                 if (todaysYear === messageYear && todaysMonth === messageMonth && todaysDay === messageDay) {
                     
-                    // Compare times
                     let previousMessageHours = previousMessageDate.getHours();
                     let previousMessageMinutes = previousMessageDate.getMinutes();
 
@@ -442,7 +451,11 @@ const Messages = (props) => {
                     // More than 5 minutes apart
                     else return formattedTimestamp;
                 }
-                else return formattedTimestamp;
+                // Sent on the same day, but not today
+                else {
+                    formattedTimestamp = "";
+                    return formattedTimestamp;
+                } 
             }
             else return formattedTimestamp;
         }
