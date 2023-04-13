@@ -6,6 +6,11 @@ import Navbar from "./navbar";
 import '../styles/profile.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import editImg from '../images/edit.png';
+import deleteImg from '../images/trash.png';
+import likeImg from '../images/like.png';
+import miniLikeImg from '../images/mini-like.png';
+import commentImg from '../images/chat.png';
 
 const Profile = (props) => {
 
@@ -406,6 +411,53 @@ const Profile = (props) => {
         navigate(`/posts/${postForEditing._id}`, {state: {editing: true, originPage: 'profile'}})
     }
 
+    // Like A Post
+    const likePost = (clickedPost) => {
+
+        // Get the associated likes 
+        const selectedPostsLikes = document.getElementById(`likes-${clickedPost._id}`)
+
+        // Toggle the "liked" class
+        selectedPostsLikes.classList.toggle("liked");
+
+        // Send a requestType which will let the middleware know to like or update post
+        const requestInfo = {
+        requestType: 'like',
+        selectedPost: clickedPost
+        }
+
+        fetch(`${props.serverURL}/posts/${clickedPost._id}`, {
+        method: 'PUT',
+        headers: { 
+            "Content-Type": "application/json",
+            Authorization: cookie.token,
+        },
+        body: JSON.stringify(requestInfo),
+        mode: 'cors'
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            // Update currentProfile posts array to include new likes array
+            const updatedPostsArray = [...currentProfile.posts].map(post => {
+                if(post._id === clickedPost._id) {
+                    return {
+                        ...post,
+                        likes: data.newLikesArray
+                    }
+                }
+                else return post;
+            })
+
+            // Update currentProfile state
+            let updatedCurrentProfile = {...currentProfile};
+            updatedCurrentProfile.posts = updatedPostsArray;
+            setCurrentProfile(updatedCurrentProfile);
+        })
+        // TODO: Error Page/Message
+        .catch(err => console.log(err))
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
@@ -424,8 +476,12 @@ const Profile = (props) => {
                                     {(currentProfile._id === userId.current)
                                         ?
                                         <div className="profile-posts-buttons">
-                                            <button onClick={() => editPost(post)}>Edit Post</button>
-                                            <button onClick={() => deletePost(post)}>Delete Post</button>
+                                            <button onClick={() => deletePost(post)}>
+                                                <img src={deleteImg} alt="Delete"/>
+                                            </button>
+                                            <button onClick={() => editPost(post)}>
+                                                <img src={editImg} alt="Edit"/>
+                                            </button>
                                         </div>
                                         :<></>
                                     }
@@ -433,10 +489,31 @@ const Profile = (props) => {
                                 <a href={`/posts/${post._id}`}>
                                     <p>{post.text}</p>
                                     <div className="profileContent-individualPost-stats">
-                                        <p>{post.likes.length} likes</p>
-                                        <p>{post.comments.length} comments</p>
+                                        <p id={`likes-${post._id}`}> 
+                                            <img id='likesStatImg' src={miniLikeImg} alt='Likes'/>
+                                            {post.likes.length}
+                                        </p> 
+                                        <p>{post.comments.length} <img id='commentsStatImg' src={commentImg} alt='Comments'/></p>
                                     </div>
                                 </a>
+                                <div className='individualPost-buttons'>
+                                    {post.likes.includes(userId.current)
+                                        ?
+                                        <button className='liked' onClick={() => likePost(post)}>
+                                            <img src={likeImg} alt=''/>
+                                            Like
+                                        </button>
+                                        :
+                                        <button onClick={() => likePost(post)}>
+                                            <img src={likeImg} alt=''/>
+                                            Like
+                                        </button>
+                                    } 
+                                    <a href={`/posts/${post._id}`}>
+                                        <img src={commentImg} alt=''/>
+                                        Comment
+                                    </a>
+                                </div>
                             </div>    
                         )
                     })}

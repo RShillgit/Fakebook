@@ -133,12 +133,12 @@ const IndividualPost = (props) => {
                                 {selectedPost.likes.includes(userId.current)
                                     ?
                                     <button className='liked' onClick={likePost}>
-                                        <img  src={likeImg} alt=''/>
+                                        <img src={likeImg} alt=''/>
                                         Like
                                     </button>
                                     :
                                     <button onClick={likePost}>
-                                        <img  src={likeImg} alt=''/>
+                                        <img src={likeImg} alt=''/>
                                         Like
                                     </button>
                                 } 
