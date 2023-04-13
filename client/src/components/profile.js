@@ -76,7 +76,7 @@ const Profile = (props) => {
                         <div className="profileHeader-actions">
                             <h1>{currentProfile.name}</h1>
                             {(currentProfile._id === userId.current) 
-                                ? <button onClick={editProfile}>Edit Profile</button>
+                                ? <button onClick={editProfile}><img src={editImg} alt=""/>Edit Profile</button>
                                 : 
                                 <>
                                     {(currentProfile.friend_requests.some(req => req._id === userId.current))
@@ -458,10 +458,51 @@ const Profile = (props) => {
         .catch(err => console.log(err))
     }
 
+    const postsViewSelect = (e) => {
+
+        // Remove "grid" class from posts section
+        const postsContent = document.querySelector('.profileContent-posts');
+        if(postsContent.classList.contains('grid')) {
+            postsContent.classList.remove('grid');
+        }
+
+        // Remove "selected" class from both list items
+        const listItem1 = document.getElementById("postsViewSelect-listItem1");
+        const listItem2 = document.getElementById("postsViewSelect-listItem2");
+        listItem1.classList.remove('selected');
+        listItem2.classList.remove('selected');
+
+        // List View
+        if (e.target.id === 'postsViewSelect-list') {
+            listItem1.classList.add('selected');
+        }
+        // Grid view
+        else if (e.target.id === 'postsViewSelect-grid') {
+            listItem2.classList.add('selected');
+            postsContent.classList.add('grid');
+        }
+    }
+
     // Displays for each tab
     const postsTabDisplay = (
         <div className="profileContent">
-            <h1>Posts Page</h1>
+            <div className="profileContent-header-posts">
+                <div className="headerContainer">
+                    <header>
+                        <h2>Posts Page</h2>
+                    </header>
+                    <div className="profileContent">
+                        <ul>
+                            <li id="postsViewSelect-listItem1" className="selected">
+                                <button id="postsViewSelect-list" onClick={postsViewSelect}>List View</button>
+                            </li>
+                            <li id="postsViewSelect-listItem2">
+                                <button id="postsViewSelect-grid" onClick={postsViewSelect}>Grid View</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             {(currentProfile && currentProfile.posts.length > 0)
                 ?
                 <div className="profileContent-posts">

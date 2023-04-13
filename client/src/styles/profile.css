@@ -18,6 +18,23 @@
     margin-bottom: 0;
     border-bottom: 1px solid #dddfe2;
 }
+.profileHeader-actions button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    background-color: #EBEDF0;
+}
+.profileHeader-actions button:hover {
+    cursor: pointer;
+    background-color: #dddfe2;
+}
+.profileHeader-actions button img {
+    width: 20px;
+}
 .profileHeader-navigation {
     display: flex;
 }
@@ -45,17 +62,92 @@
 }
 
 /* Posts Tab */
+.profileContent-header-posts {
+    display: flex;
+    justify-content: center;
+}
+.profileContent-header-posts .headerContainer {
+    background-color: #fff;
+    width: 80%;
+    padding: 0 1rem 0 1rem;
+    margin: 1rem;
+    margin-bottom: 0;
+    border: 1px solid #dddfe2;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+    border-radius: 8px;
+}
+.profileContent-header-posts .headerContainer header h2 {
+    margin: 0;
+    padding: 0.5rem 0 0.5rem 0;
+    border-bottom: 1px solid #dddfe2;
+}
+.profileContent-header-posts .headerContainer .profileContent {
+    
+}
+.profileContent-header-posts .headerContainer .profileContent ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.profileContent-header-posts .headerContainer .profileContent ul li {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-bottom: 4px solid #fff;
+}
+.profileContent-header-posts .headerContainer .profileContent button {
+    margin-top: 4px;
+    border: none;
+    background-color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    width: 100%;
+    padding: 8px 0 8px 0;
+    border-radius: 6px;
+}
+.profileContent-header-posts .headerContainer .profileContent button:hover {
+    cursor: pointer;
+    background-color: #EBEDF0;
+}
+.profileContent-header-posts .headerContainer .profileContent ul li.selected {
+    border-bottom: 4px solid #1877f2;
+}
+
 .profileContent-posts {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+.profileContent-posts.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 400px));
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    grid-template-rows: auto;
+}
+.profileContent-posts.grid .profileContent-individualPost {
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    margin: 0;
+    width: 90%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    margin: 0;
+}
+
 .profileContent-individualPost {
     display: flex;
     width: 80%;
     flex-direction: column;
     align-items: center;
     margin: 1rem;
+    margin-bottom: 0;
     padding: 1rem;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
