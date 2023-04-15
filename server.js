@@ -63,7 +63,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*
 // Prevent CORS Errors 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'https://deadpan-meal-production.up.railway.app'); // Change in deployment 
@@ -71,14 +70,6 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Headers', '*'); //res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
-});
-*/
-
-app.options("/", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://deadpan-meal-production.up.railway.app");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.sendStatus(204);
 });
 
 app.use('/', indexRouter);
