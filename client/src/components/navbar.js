@@ -4,6 +4,7 @@ import fakebookLogo from '../images/fakebook.png';
 import homeImg from '../images/home.png';
 import messengerImg from '../images/messenger.png';
 import profileImg from '../images/user.png';
+import logoutImg from '../images/logout.png';
 import { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
@@ -77,7 +78,12 @@ const Navbar = (props) => {
                 </a>
             </div>
 
-            <button onClick={userLogout}>Logout</button>
+            <div className='buttonContainer' id='profileButtonContainer'>
+                <button onClick={userLogout}>
+                    <img src={logoutImg} alt='Log Out'/>
+                    Log Out
+                </button>
+            </div>
         </div>
     )
 

@@ -9,6 +9,7 @@
     margin-top: 55px;
     background-color: #fff;
     border-bottom: 1px solid #dddfe2;
+    min-width: 234px;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 .profileHeader-actions {
@@ -71,8 +72,7 @@
     background-color: #fff;
     width: 80%;
     padding: 0 1rem 0 1rem;
-    margin: 1rem;
-    margin-bottom: 0;
+    margin-top: 1rem;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
     border-radius: 8px;
@@ -82,7 +82,7 @@
     padding: 0.5rem 0 0.5rem 0;
     border-bottom: 1px solid #dddfe2;
 }
-.profileContent-header-posts .headerContainer .profileContent ul {
+.profileContent-header-posts .headerContainer .postsViewOptions ul {
     padding: 0;
     margin: 0;
     list-style: none;
@@ -90,13 +90,13 @@
     justify-content: space-evenly;
     width: 100%;
 }
-.profileContent-header-posts .headerContainer .profileContent ul li {
+.profileContent-header-posts .headerContainer .postsViewOptions ul li {
     width: 100%;
     display: flex;
     justify-content: center;
     border-bottom: 4px solid #fff;
 }
-.profileContent-header-posts .headerContainer .profileContent button {
+.profileContent-header-posts .headerContainer .postsViewOptions button {
     margin-top: 4px;
     border: none;
     background-color: #fff;
@@ -106,11 +106,11 @@
     padding: 8px 0 8px 0;
     border-radius: 6px;
 }
-.profileContent-header-posts .headerContainer .profileContent button:hover {
+.profileContent-header-posts .headerContainer .postsViewOptions button:hover {
     cursor: pointer;
     background-color: #EBEDF0;
 }
-.profileContent-header-posts .headerContainer .profileContent ul li.selected {
+.profileContent-header-posts .headerContainer .postsViewOptions ul li.selected {
     border-bottom: 4px solid #1877f2;
 }
 .profileContent-posts {
@@ -120,7 +120,7 @@
 }
 .profileContent-posts.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     padding: 1rem 1rem 0 1rem;
     justify-content: center;
@@ -139,7 +139,9 @@
     width: fill-available;
     margin: 0;
 }
-
+.profileContent {
+    min-width: 250px;
+}
 .profileContent-individualPost {
     display: flex;
     width: 80%;
@@ -229,7 +231,6 @@
     flex-direction: column;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    min-width: 285px;
 }
 .about-header {
     margin: 0 1rem 0 1rem;
@@ -282,6 +283,7 @@
 #editProfileForm label textarea {
     resize: vertical;
     width: 100%;
+    padding-left: 8px;
 }
 #editProfileForm label input:focus {
     outline: none;
@@ -340,7 +342,6 @@
     flex-direction: column;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    min-width: 285px;
 }
 .profileContent-friends .about-header {
     margin: 0;
@@ -377,6 +378,7 @@
     margin-bottom: 8px;
 }
 .friendRequests-header h4 {
+    margin-top: 16px;
     margin-bottom: 5px;
 }
 .profileContent-individualFriendRequest {
@@ -412,4 +414,23 @@
 }
 .individualFriendRequest-buttons #deleteFriendRequest:hover {
     background-color: #dddfe2;
+}
+
+@media (max-width: 350px) {
+    .profileHeader {
+        padding: 0 8px 0 8px;
+    }
+    .profileHeader-navigation-list li p {
+        padding: 8px;
+    }
+}
+@media (max-width: 325px) {
+    #editProfileForm label {
+        flex-direction: column;
+        gap: 0;
+        align-items: flex-start;
+    }
+    #editProfileForm .react-tel-input input.form-control {
+        font-size: 14px;
+    }
 }

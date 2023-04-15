@@ -4,6 +4,7 @@
     align-items: center;
     background: #f0f2f5;
     padding: 2rem;
+    height: 100vh;
 }
 .loginPage-title {
     color: #1877f2;
@@ -102,4 +103,25 @@
 }
 .loginPageContainer .errorMessage p {
     margin: 0;
+}
+
+@media (max-width: 425px) {
+    .loginPageContainer {
+        padding: 0;
+        padding-top: 1rem;
+        min-width: 300px;
+    }
+    .loginForm-container {
+        padding: 12px;
+        width: auto;
+    }
+    .loginForm-title {
+        padding-bottom: 12px;
+    }
+    .login-buttons {
+        gap: 8px;
+    }
+    #loginForm {
+        margin-bottom: 8px;
+    }
 }

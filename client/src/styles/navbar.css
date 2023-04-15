@@ -14,6 +14,7 @@
     height: 52px;
     min-height: 52px;
     max-height: 52px;
+    min-width: 234px;
 }
 #scrollToTopButton {
     width: 40px;
@@ -22,22 +23,32 @@
     cursor: pointer;
 }
 .buttonContainer {
-    min-width: 50px;
     display: flex;
+    justify-content: center;
 }
-.buttonContainer a {
+.buttonContainer a, .buttonContainer button {
     padding: 8px;
     border-radius: 6px;
-    min-width: 50px;
     display: flex;
     justify-content: center;
     border-bottom: 3px solid #fff;
 }
-.buttonContainer a:hover {
+.buttonContainer a:hover, .buttonContainer button:hover {
     background-color: #EBEDF0;
 }
-.navbar a img {
+.navbar a img, .navbar button img {
     width: 30px;
+}
+.buttonContainer button {
+    background-color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+}
+.buttonContainer button:hover {
+    cursor: pointer;
 }
 .currentlyActive {
     border-bottom: 3px solid #1877f2;
@@ -49,4 +60,26 @@
 /* Page offset */
 .non-navbar-content {
     margin-top: 55px; 
+}
+
+@media (max-width: 400px) {
+    .navbar {
+        padding: 3px 8px 0 8px;
+    }
+    .buttonContainer a, .buttonContainer button {
+        padding: 4px;
+    }
+}
+@media (max-width: 350px) {
+    #scrollToTopButton {
+        width: 35px;
+    }
+    .navbar a img, .navbar button img {
+        width: 25px;
+    }
+}
+@media (max-width: 250px) {
+    .navbar {
+        max-width: 234px;
+    }
 }

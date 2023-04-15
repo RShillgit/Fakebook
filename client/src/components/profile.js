@@ -484,7 +484,7 @@ const Profile = (props) => {
                     <header>
                         <h2>Posts Page</h2>
                     </header>
-                    <div className="profileContent">
+                    <div className="postsViewOptions">
                         <ul>
                             <li id="postsViewSelect-listItem1" className="selected">
                                 <button id="postsViewSelect-list" onClick={postsViewSelect}>List View</button>

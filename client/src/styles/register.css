@@ -4,6 +4,7 @@
     align-items: center;
     background: #f0f2f5;
     padding: 2rem;
+    min-width: 250px;
 }
 .registerPage-title {
     color: #1877f2;
@@ -83,6 +84,47 @@
     cursor: pointer;
 }
 .registerForm-buttons a {
+    text-align: center;
     text-decoration: none;
     color: #1877f2;
+}
+
+@media (max-width: 450px) {
+    .registerPageContainer {
+        padding-top: 1rem;
+    }
+    .registerForm-names input {
+        width: auto;
+    }
+    .registerForm-container {
+        width: 100%;
+    }
+    .registerForm-names {
+        gap: 8px;
+        flex-direction: column;
+    }
+}
+@media (max-width: 350px) {
+    .registerPageContainer {
+        padding: 0;
+        padding-top: 1rem;
+    }
+    .registerForm-title {
+        padding: 10px 8px;
+    }
+    #registerForm {
+        padding: 8px;
+    }
+    #registerForm input {
+        padding: 8px;
+    }
+}
+@media (max-width: 250px) {
+    .registerForm-buttons {
+        padding: 8px 0 8px 0;
+    }
+    .registerForm-buttons #registerButton {
+        min-width: min-content;
+    }
+
 }

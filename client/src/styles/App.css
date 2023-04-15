@@ -4,6 +4,7 @@
 .homePageContainer .non-navbar-content {
     display: flex;
     flex-direction: column;
+    min-width: 250px;
 }
 .create-post form, .allPosts .individualPost {
     background-color: #fff;
@@ -11,7 +12,8 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
     min-width: 200px;
-    width: max(200px, 50vw);
+    width: max(234px, 50vw);
+    min-width: 234px;
 }
 
 /* CREATE POST */
@@ -172,3 +174,9 @@
     color: #1877f2;
     font-weight: 600;
 } 
+
+@media (max-width: 400px) {
+    .allPosts .individualPost, .create-post form {
+        padding: 8px;
+    }
+}

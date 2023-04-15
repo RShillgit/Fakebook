@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     background-color: #EBEDF0;
+    min-width: 250px;
 }
 .individualPostPage .individualPost {
     margin: 1rem 1rem 0 1rem;
@@ -16,7 +17,8 @@
     border-right: 1px solid #dddfe2;
     border-radius: 8px 8px 0 0;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    width: max(200px, 90vw);
+    width: max(234px, 90vw);
+    min-width: 234px;
 }
 .individualPostPage .individualPost-creator, .individualPostPage .individualPost-date {
     margin: 0;
@@ -31,6 +33,7 @@
     flex-direction: column;
     align-items: center;
     background-color: #EBEDF0;
+    min-width: 250px;
 }
 .commentSection {
     display: flex;
@@ -38,7 +41,8 @@
     align-items: flex-start;
     padding: 0 1rem 1rem 1rem;
     margin: 0 1rem 104px 1rem; /* 88px post comment secton height + 1rem */
-    width: max(200px, 90vw);
+    width: max(234px, 90vw);
+    min-width: 234px;
     background-color: #fff;
     border-bottom: 1px solid #dddfe2;
     border-left: 1px solid #dddfe2;
@@ -268,4 +272,16 @@
 }
 .individualComment-editComment-buttons button img {
     width: 20px;
+}
+
+@media (max-width: 400px) {
+    .individualPostPage .individualPost {
+        padding: 8px 8px 0 8px;
+    }
+    .commentSection {
+        padding: 0 8px 8px 8px;
+    }
+    .postCommentSection form {
+        margin: 1rem 0 1rem 0;
+    }
 }
