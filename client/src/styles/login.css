@@ -105,6 +105,15 @@
     margin: 0;
 }
 
+.registeredSuccessfully {
+    display: flex;
+    justify-content: center;
+}
+.registeredSuccessfully p {
+    margin-top: 0;
+    color: #00a400;
+}
+
 @media (max-width: 425px) {
     .loginPageContainer {
         padding: 0;

@@ -66,13 +66,12 @@
 .profileContent-header-posts {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
+    margin: 1rem 0 1rem 0;
 }
 .profileContent-header-posts .headerContainer {
     background-color: #fff;
     width: 80%;
     padding: 0 1rem 0 1rem;
-    margin-top: 1rem;
     border: 1px solid #dddfe2;
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
     border-radius: 8px;
@@ -122,7 +121,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
-    padding: 1rem 1rem 0 1rem;
+    padding: 0 1rem 0 1rem;
     justify-content: center;
 }
 .profileContent-posts.grid .profileContent-individualPost {
@@ -415,7 +414,11 @@
 .individualFriendRequest-buttons #deleteFriendRequest:hover {
     background-color: #dddfe2;
 }
-
+@media (max-width: 400px) {
+    .individualFriendRequest-buttons button {
+        width: fit-content;
+    }
+}
 @media (max-width: 350px) {
     .profileHeader {
         padding: 0 8px 0 8px;
@@ -425,6 +428,10 @@
     }
 }
 @media (max-width: 325px) {
+    .profileContent-individualFriendRequest {
+        flex-direction: column;
+        gap: 0;
+    }
     #editProfileForm label {
         flex-direction: column;
         gap: 0;

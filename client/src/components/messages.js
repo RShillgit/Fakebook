@@ -40,12 +40,8 @@ const Messages = (props) => {
     // Anytime auth changes, set display
     useEffect(() => {
 
-        // Loading
-        if (auth === null) {
-            setDisplay(<Loading />)
-        }
         // Not Logged In redirect to login
-        else if (auth === false) {
+        if (auth === false) {
             navigate('/login')
         }
     }, [auth])
@@ -464,6 +460,10 @@ const Messages = (props) => {
 
     return (
         <div className="Page">
+            {(auth === null)
+                ? <Loading />
+                : <></>
+            }
             {(currentUser)
                 ? <Navbar currentUser={currentUser} serverURL={props.serverURL} />
                 : <></>

@@ -1,6 +1,10 @@
+import '../styles/loading.css';
+
 const Loading = () => {
     return (
-        <h1>Loading...</h1>
+        <div className="loadingScreen">
+            <div className="spin"></div>
+        </div>
     )
 }
 export default Loading;

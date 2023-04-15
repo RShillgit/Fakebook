@@ -49,7 +49,11 @@ const Login = (props) => {
             // If sent from register route with registered successfully message
             if (state) {
                 if (state.registeredMessage) {
-                    setRegisteredSuccessfullyMessage(state.registeredMessage);
+                    setRegisteredSuccessfullyMessage(
+                        <div className="registeredSuccessfully">
+                            <p>{state.registeredMessage}</p>
+                        </div>
+                    );
                 }
             }
             setDisplay(
