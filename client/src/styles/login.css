@@ -60,7 +60,7 @@
     border-bottom: 1px solid #fff;
 }
 .login-buttons #guestLoginButton {
-    background-color: orange;
+    background-color: #FFBA00;
     border: none;
     color: #fff;
     border-radius: 6px;
@@ -77,8 +77,15 @@
     font-weight: 600;
     line-height: 32px;
 }
-.login-buttons button:hover, #loginButton:hover {
+.login-buttons button:hover, #loginForm #loginButton:hover {
     cursor: pointer;
+    background-color: #1B74E4;
+}
+.login-buttons #guestLoginButton:hover {
+    background-color: hsl(40, 89%, 52%);
+}
+.login-buttons #fbLoginButton:hover {
+    background-color: #31A24C;
 }
 .login-buttons #registerLink:hover {
     border-bottom: 1px solid #1877f2;

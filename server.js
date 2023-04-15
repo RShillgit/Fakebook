@@ -13,7 +13,6 @@ const postsRouter = require('./routes/posts');
 const profileRouter = require('./routes/profile');
 const friendsRouter = require('./routes/friends');
 const messagesRouter = require('./routes/messages');
-const jwtUtils = require('./utils/jwtUtils');
 
 var app = express();
 
@@ -66,7 +65,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Prevent CORS Errors 
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Change to http://localhost:3000 in development
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // TODO: Change in deployment
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', '*'); 
   res.setHeader('Access-Control-Allow-Credentials', true);

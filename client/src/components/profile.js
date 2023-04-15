@@ -446,7 +446,6 @@ const Profile = (props) => {
             updatedCurrentProfile.posts = updatedPostsArray;
             setCurrentProfile(updatedCurrentProfile);
         })
-        // TODO: Error Page/Message
         .catch(err => console.log(err))
     }
 

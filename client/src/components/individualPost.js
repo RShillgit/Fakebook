@@ -214,7 +214,6 @@ const IndividualPost = (props) => {
 
             setSelectedPost(newSelectedPost)
         })
-        // TODO: Error Page/Message
         .catch(err => console.log(err))
     }
 
@@ -247,8 +246,6 @@ const IndividualPost = (props) => {
             setSelectedPost(data.updatedPost);
             e.target.reset();
         })
-
-        // TODO: Rendering Erros
         .catch(err => console.log(err))
       
     }

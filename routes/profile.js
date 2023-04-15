@@ -54,7 +54,7 @@ router.get('/:id',
         return res.status(401).json({err, auth: req.isAuthenticated()});
     }
 );
-// TODO POST
+// POST
 router.post('/:id', (req, res, next) => {
     res.send(`POST request on User ${req.params.id}`);
 });

@@ -53,6 +53,7 @@
 }
 .create-post form button:hover {
     cursor: pointer;
+    background-color: #1B74E4;
 }
 
 /* POSTS SECTION */

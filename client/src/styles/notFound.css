@@ -1,0 +1,24 @@
+.notFound {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    margin: 1rem;
+    background-color: #fff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+.notFound a button {
+    border: none;
+    background-color: #1877f2;
+    font-size: 24px;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+}
+.notFound a button:hover {
+    cursor: pointer;
+    background-color: #1B74E4;
+}

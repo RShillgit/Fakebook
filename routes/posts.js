@@ -117,7 +117,7 @@ router.get('/:id',
         return res.status(401).json({err, auth: req.isAuthenticated()});
     }
 )
-// TODO: Individual post POST request
+// Individual post POST request
 router.post('/:id', 
     (req, res, next) => {
 

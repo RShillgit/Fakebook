@@ -32,16 +32,10 @@ function App(props) {
 
           // If the resposne is successful
           if (checkTokenResponse.success === true) {
-            userId.current = checkTokenResponse.userToken.sub; // TODO: checkTokenResponse Also includes iat & exp values
+            userId.current = checkTokenResponse.userToken.sub; 
             currentUser.current = checkTokenResponse.currentUser
             setAllPosts(checkTokenResponse.allPosts)
             setAuth(checkTokenResponse.auth)
-          }
-
-          // If the response is unsuccessful
-          else {
-            // TODO: set error message or render error page
-            // To view this error reload page when server isnt running
           }
       }
       else setAuth(false);
@@ -221,7 +215,6 @@ function App(props) {
         else return post;
       }))
     })
-    // TODO: Error Page/Message
     .catch(err => console.log(err))
   }
 

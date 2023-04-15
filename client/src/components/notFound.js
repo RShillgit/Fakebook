@@ -1,11 +1,17 @@
+import '../styles/notFound.css';
+
 const NotFound = (props) => {
 
     return (
-        <div>
-            <h1>URL Not Found</h1>
-            <a href="/">
-                <button>Home</button>
-            </a>
+        <div className="Page">
+            <div className="notFound">
+                <div className="notFound-title">
+                    <h1>Oops... URL Not Found</h1>
+                </div>
+                <a href="/">
+                    <button>Return Home</button>
+                </a>
+            </div>
         </div>
     )
 
