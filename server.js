@@ -63,6 +63,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/*
 // Prevent CORS Errors 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'https://deadpan-meal-production.up.railway.app'); // Change in deployment
@@ -71,6 +72,7 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
+*/
 
 app.use('/', indexRouter);
 app.use('/posts', passport.authenticate('jwt', {session: false}), postsRouter);
