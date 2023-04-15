@@ -200,8 +200,8 @@ const IndividualPost = (props) => {
                 "Content-Type": "application/json",
                 Authorization: cookie.token,
             },
-            body: JSON.stringify(requestInfo),
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify(requestInfo)
         })
         .then(res => res.json())
         .then(data => {
@@ -238,8 +238,8 @@ const IndividualPost = (props) => {
                 "Content-Type": "application/json",
                 Authorization: cookie.token,
             },
-            body: JSON.stringify(commentInfo),
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify(commentInfo)
         })
         .then(res => res.json())
         .then(data => {
@@ -295,8 +295,8 @@ const IndividualPost = (props) => {
                 "Content-Type": "application/json",
                 Authorization: cookie.token,
             },
-            body: JSON.stringify(requestInfo),
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify(requestInfo)
         })
         .then(res => res.json())
         .then(data => {
@@ -339,8 +339,8 @@ const IndividualPost = (props) => {
                 "Content-Type": "application/json",
                 Authorization: cookie.token,
             },
-            body: JSON.stringify({editCommentInfo}),
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify({editCommentInfo})
         })
         .then(res => res.json())
         .then(data => {

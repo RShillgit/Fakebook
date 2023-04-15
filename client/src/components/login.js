@@ -139,8 +139,8 @@ const Login = (props) => {
         fetch(`${props.serverURL}/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(login_information),
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify(login_information)
         })
         .then((res) => res.json())
         .then((data) => {
