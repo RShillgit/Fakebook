@@ -4,7 +4,7 @@ A facebook inspired social media application
 ## Tech Stack
 Node.js, Express.js, Mongoose, MongoDB, React.js, CSS
 
-### Functionality
+## Functionality
 - register a new account, login, login with facebook, login as a guest
 - Create, view, update, and delete posts, like/unlike posts
 - Create, view, update, and delete comments, like/unlike comments
