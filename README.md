@@ -1,4 +1,4 @@
-# Odin-Book
+# Fakebook
 A facebook inspired social media application
 
 ## Tech Stack
