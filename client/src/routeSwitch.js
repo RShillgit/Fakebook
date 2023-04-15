@@ -23,7 +23,7 @@ const RouteSwitch = () => {
         .catch(err => {return false})
     }
 
-    const serverURL = 'https://fakebook-production-1e52.up.railway.app/auth/facebook/callback';
+    const serverURL = 'https://fakebook-production-1e52.up.railway.app';
 
     return (
         <BrowserRouter>
