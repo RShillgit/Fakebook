@@ -39,7 +39,7 @@ router.get('/',
 * ------------------ REGISTER ------------------ 
 */
 router.get('/register', (req, res, next) => {
-  res.render('register');
+  
 })
 router.post('/register', (req, res, next) => {
 
