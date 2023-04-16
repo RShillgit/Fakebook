@@ -136,7 +136,7 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
       const tokenObject = jwtUtils.issueJWT(user);
 
       // Send token as cookie for the front end to use
-      res.cookie('token', tokenObject.token);
+      res.cookie('token', tokenObject.token, {secure: true, sameSite: 'none'});
 
       // Redirect to front end home page
       return res.redirect( 302, process.env.client_url); 
