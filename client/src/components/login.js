@@ -80,7 +80,6 @@ const Login = (props) => {
                                 <a href={fbURL}>
                                     <button id="fbLoginButton">Log In With Facebook</button>
                                 </a>
-                                <button onClick={facebookLogin}>Test FB</button>
                             </div>
                         </div>
                     </div>
@@ -160,16 +159,6 @@ const Login = (props) => {
                 setCookie('token', data.token, {path: '/'})
             }
         })
-    }
-    
-    const facebookLogin = () => {
-        fetch(fbURL, {
-            headers: { "Content-Type": "application/json" },
-            mode: 'cors',
-        })
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
     }
 
     return (
