@@ -1,6 +1,9 @@
 # Fakebook
 A facebook inspired social media application
 
+## View It Live
+https://deadpan-meal-production.up.railway.app/login
+
 ## Tech Stack
 Node.js, Express.js, Mongoose, MongoDB, React.js, CSS
 
