@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {useCookies} from 'react-cookie';
-import { useLocation, useNavigate } from "react-router-dom";
+import { redirect, useLocation, useNavigate } from "react-router-dom";
 import Loading from "./loading";
 import '../styles/login.css';
 import Footer from "./footer";
