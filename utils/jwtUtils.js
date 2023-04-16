@@ -31,4 +31,3 @@ module.exports = {
     issueJWT,
     jwtVerify
 }
-//module.exports.issueJWT = issueJWT;
