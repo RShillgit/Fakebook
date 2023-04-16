@@ -138,6 +138,8 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
       // Send token as cookie for the front end to use
       res.cookie('token', tokenObject.token);
 
+      res.cookie('test', 'testvalue');
+
       // Redirect to front end home page
       return res.redirect( 302, process.env.client_url); 
     })
