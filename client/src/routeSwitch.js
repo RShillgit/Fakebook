@@ -14,7 +14,8 @@ const RouteSwitch = () => {
         return fetch(url, {
             headers: {
                 Authorization: token
-            }
+            },
+            credentials: 'include',
         })
         .then(res => {
             const data = res.json()
