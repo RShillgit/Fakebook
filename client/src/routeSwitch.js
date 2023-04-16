@@ -15,7 +15,6 @@ const RouteSwitch = () => {
             headers: {
                 Authorization: token
             },
-            credentials: 'include',
         })
         .then(res => {
             const data = res.json()
