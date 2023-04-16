@@ -23,11 +23,9 @@ const Login = (props) => {
     useEffect(() => {
 
         (async () => {
-            console.log(cookie.token)
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {
                 const validToken = await props.checkToken(`${props.serverURL}/login`, cookie.token);
-                console.log(validToken)
                 setAuth(validToken.auth)
             }
             else setAuth(false);
