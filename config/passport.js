@@ -66,7 +66,7 @@ passport.deserializeUser((userId, done) => {
 passport.use(new FacebookStrategy({
     clientID: process.env.fb_id,
     clientSecret: process.env.fb_secret,
-    callbackURL: process.env.fb_callback_url, // TODO: CHANGE IN DEPLOYMENT
+    callbackURL: process.env.fb_callback_url, // CHANGE IN DEPLOYMENT
     profileFields: ['id', 'displayName', 'name', 'gender', 'picture.type(large)', 'email']
     },
 

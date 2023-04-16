@@ -130,6 +130,7 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
     .then((user) => {
       // If no user redirect back to the front end which will not authenticate the user
       if (!user) {
+        res.json({response: "No User", request: req.user})
         return res.redirect(process.env.client_url); 
       }
       // Create token
