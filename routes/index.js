@@ -130,7 +130,6 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
     .then((user) => {
       // If no user redirect back to the front end which will not authenticate the user
       if (!user) {
-        res.json({err: 'failed'})
         return res.redirect(process.env.client_url); 
       }
       // Create token
@@ -139,7 +138,6 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
       // Send token as cookie for the front end to use
       res.cookie('token', tokenObject.token); // {secure: true, sameSite: 'none'} caused "This access token as already been used" error
 
-      res.json({err: 'success'})
       // Redirect to front end home page
       return res.redirect( 302, process.env.client_url); 
     })

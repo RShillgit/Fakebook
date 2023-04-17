@@ -80,7 +80,6 @@ const Login = (props) => {
                                 <a href={fbURL}>
                                     <button id="fbLoginButton">Log In With Facebook</button>
                                 </a>
-                                <button onClick={facebookLogin}>FB Test</button>
                             </div>
                         </div>
                     </div>
@@ -160,17 +159,6 @@ const Login = (props) => {
                 setCookie('token', data.token, {path: '/'})
             }
         })
-    }
-
-    const facebookLogin = () => {
-        fetch(fbURL, {
-            headers: { "Content-Type": "application/json" , "Access-Control-Allow-Origin": "https://deadpan-meal-production.up.railway.app"},
-            mode: 'cors',
-            credentials: 'include'
-        })
-        .then((res) => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
     }
 
     return (
