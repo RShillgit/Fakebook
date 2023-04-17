@@ -138,8 +138,10 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
       // Send token as cookie for the front end to use
       res.cookie('token', tokenObject.token); // {secure: true, sameSite: 'none'} caused "This access token as already been used" error
 
+      const uriString = encodeURI(tokenObject.token)
+
       // Redirect to front end home page
-      return res.redirect( 302, process.env.client_url); 
+      return res.redirect( 302, process.env.client_url + uriString); 
     })
   }
 );
