@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {useCookies} from 'react-cookie';
-import { redirect, useLocation, useNavigate } from "react-router-dom";
+import { redirect, useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "./loading";
 import '../styles/login.css';
 import Footer from "./footer";
@@ -18,10 +18,16 @@ const Login = (props) => {
     const [display, setDisplay] = useState();
     const navigate = useNavigate();
     const [auth, setAuth] = useState(null);
+    const {fbToken} = useParams();
 
     // Anytime the cookie changes, set auth
     useEffect(() => {
-
+        
+        // If facebook token exists in URI set cookie
+        if (fbToken) {
+            setCookie('token', fbToken, {path: '/'});
+        }
+        
         (async () => {
             // If there is a token present, run checkToken function to see if its valid
             if(cookie.token) {

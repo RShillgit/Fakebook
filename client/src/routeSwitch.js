@@ -23,7 +23,7 @@ const RouteSwitch = () => {
         .catch(err => {return false})
     }
 
-    const serverURL = 'https://fakebook-production-1e52.up.railway.app';
+    const serverURL = 'https://fakebook-production-1e52.up.railway.app'; 
 
     return (
         <BrowserRouter>
@@ -31,6 +31,7 @@ const RouteSwitch = () => {
                 <Route path="/" element={<App serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/register" element={<Register serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/login" element={<Login serverURL={serverURL} checkToken={checkToken}/>} />
+                <Route path="/login/:fbToken" element={<Login serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/messages" element={<Messages serverURL={serverURL} checkToken={checkToken}/>} />
                 <Route path="/profile/:profileId" element={<Profile serverURL={serverURL} checkToken={checkToken} />} />
                 <Route path="/posts/:postId" element={<IndividualPost serverURL={serverURL} checkToken={checkToken} />} />
