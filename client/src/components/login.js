@@ -164,7 +164,7 @@ const Login = (props) => {
 
     const facebookLogin = () => {
         fetch(fbURL, {
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json" , "Access-Control-Allow-Origin": "https://deadpan-meal-production.up.railway.app"},
             mode: 'cors',
             credentials: 'include'
         })
