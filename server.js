@@ -36,7 +36,7 @@ app.set('view engine', 'pug');
  * ----------------- SESSION -----------------
  */
 app.use(session({
-  secure: true, // SET SECURE TO TRUE FOR DEVELOPMENT ENVIROMENT
+  secure: true, 
   resave: false,
   saveUninitialized: true,
   secret: process.env.session_secret, 
@@ -67,7 +67,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'https://deadpan-meal-production.up.railway.app'); // Change in deployment 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); //res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); 
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });

@@ -135,9 +135,7 @@ router.get("/auth/facebook/callback", passport.authenticate("facebook", {
       // Create token
       const tokenObject = jwtUtils.issueJWT(user);
 
-      // Send token as cookie for the front end to use
-      //res.cookie('token', tokenObject.token); // {secure: true, sameSite: 'none'} caused "This access token as already been used" error
-
+      // Send token in the URI for the front end to verify
       const uriString = encodeURI(tokenObject.token)
 
       // Redirect to front end home page
