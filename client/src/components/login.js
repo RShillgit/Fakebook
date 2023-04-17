@@ -163,7 +163,7 @@ const Login = (props) => {
     }
 
     const facebookLogin = () => {
-        fetch(`${props.serverURL}/login`, {
+        fetch(fbURL, {
             headers: { "Content-Type": "application/json" },
             mode: 'cors',
             credentials: 'include'
