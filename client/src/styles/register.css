@@ -5,6 +5,7 @@
     background: #f0f2f5;
     padding: 2rem;
     min-width: 250px;
+    height: calc(100vh - 75px); /* 100vh - height of footer */
 }
 .registerPage-title {
     color: #1877f2;
