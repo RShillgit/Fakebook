@@ -114,6 +114,9 @@
     min-width: max-content;
     max-width: 40%;
     box-shadow: 0 5px 20px rgb(0 0 0 / 10%);
+    z-index: 1;
+    max-height: 80%;
+    overflow: auto;
 }
 .messages-searchbar-suggestions-individualSuggestion {
     padding: 4px 8px 4px 8px;
